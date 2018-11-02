@@ -13,14 +13,14 @@ download.file(url="http://data.gharchive.org/2015-01-01-0.json.gz",
               cacheOK = TRUE)
 
 theFile <- file("2015-01-01-0.json.gz","r") 
-theLines <- readLines(theFile) # Besoin de 18 Mb memoire vive...
+theLines <- readLines(theFile) # Need 18 Mb of memory...
 close(myFile)
 # some infos
 myJSONs <- fromJSON(theLines[1])
 names(myJSONs)
 myJSONs$type # in ["pushEvent","ReleaseEvent","ForkEvent", and 11 others... ]
 myJSONs$actor$login
-myJSONs$repo$name
+strsplit(myJSONs$repo$name,"/")[[1]][2]
 myJSONs$payload # changes with the type ... :(
 myJSONs$public
 
@@ -29,22 +29,68 @@ myJSONs$public
 
 ########################
 ######################## Start Process DATA
+theEvents <- list()
 theTypes <- c()
 theLogins <- c()
+theRepos <- c()
 theComments <- c()
 theDescription <- c()
+nbOfDeletes <- 0
 #nbOfPublic <- 0 # all of them are public :(
 n <- length(theLines)
 for(line in theLines){
   line = fromJSON(line)
   theTypes = c(theTypes,line$type)
   theLogins = c(theLogins, line$actor$login)
-  if(line$type == "CommitCommentEvent"){
-    theComments = c(theComments, line$payload$comment$body)
-  }
-  if(line$type == "CreateEvent"){
-    theDescription = c(theDescription, line$payload$description)
-  }
+  theRepos = c(theRepos,strsplit(line$repo$name,"/")[[1]][2])
+  theEvents[[line$type]] = c(theEvents[[line$type]], switch(line$type,
+                          "CommitCommentEvent"=line$payload$comment$body,
+                          "CreateEvent"=list("description"=line$payload$description,
+                                             "ref_type"=line$payload$ref_type),
+                          "DeleteEvent"=line$payload$ref_type,
+                          "ForkEvent"=list("name"=line$payload$forkee$name, 
+                                           "login"=line$payload$forkee$owner,
+                                           "description"=line$payload$forkee$description,
+                                           "ref_type"=line$payload$ref_type,
+                                           "size"=line$payload$forkee$size),
+                          "GollumEvent"=line$payload$pages$page_name,                   
+                          "IssueCommentEvent"=list("issueTitle"=line$payload$issue$title,
+                                                   "issueUserLogin"=line$payload$issue$user$login,
+                                                   "issueComments"=line$payload$issue$comments,
+                                                   "issueBody"=line$payload$issue$body,
+                                                   "commentUserLogin"=line$payload$comment$user$login,
+                                                   "commentBody"=line$payload$comment$body),
+                          "IssuesEvent"=list("action"=line$payload$action,
+                                             "issueId"=line$payload$issue$id,
+                                             "issueTitle"=line$payload$issue$title,
+                                             "issueUserLogin"=line$payload$issue$user$login,
+                                             "issueState"=line$payload$issue$state,
+                                             "issueComments"=line$payload$issue$comments,
+                                             "issueBody"=line$payload$issue$body),                   
+                          "MemberEvent"="", #noUsefullInfos :(
+                          "PublicEvent"="", #noUsefullInfos :(
+                          "PullRequestEvent"=list("action"=line$payload$action,
+                                                  "pull_requestState"=line$payload$pull_request$state,
+                                                  "pull_requestTitle"=line$payload$pull_request$title,
+                                                  "pull_requestUserLogin"=line$payload$pull_request$user$login,
+                                                  "pull_requestBody"=line$payload$pull_request$body,
+                                                  "pull_requestHeadRepoName"=line$payload$pull_request$head$repo$name,
+                                                  "pull_requestHeadRepoSize"=line$payload$pull_request$head$repo$size,
+                                                  "pull_requestHeadRepoLanguage"=line$payload$pull_request$head$repo$language,
+                                                  "pull_requestHeadRepoHas_wiki"=line$payload$pull_request$head$repo$has_wiki,
+                                                  "pull_requestHeadRepoHas_pages"=line$payload$pull_request$head$repo$has_pages,
+                                                  "pull_requestHeadRepoForks_count"=line$payload$pull_request$head$repo$forks_count,
+                                                  "pull_requestBaseRepoOpen_issues"=line$payload$pull_request$base$repo$open_issues,
+                                                  "pull_requestBaseRepoWatchers"=line$payload$pull_request$base$repo$watchers,
+                                                  "pull_requestMerged"=line$payload$pull_request$merged,
+                                                  "pull_requestCommits"=line$payload$pull_request$commits,
+                                                  "pull_requestAdditions"=line$payload$pull_request$additions,
+                                                  "pull_requestDeletions"=line$payload$pull_request$deletions,
+                                                  "pull_requestChanged_files"=line$payload$pull_request$changed_files),              
+                          "PullRequestReviewCommentEvent"="", ### TODO
+                          "PushEvent"="", ### TODO
+                          "ReleaseEvent"="", ### TODO
+                          "WatchEvent"="")) ### TODO
 }
 ######################## End Process DATA
 ######################## 
@@ -54,8 +100,8 @@ for(line in theLines){
 
 theTypes <- table(theTypes) # a exporter...
 theLogins <-table(table(theLogins)) # a exporter...
-theComments = table(strsplit(paste(theComments, collapse=" "), " "))
-theDescription = table(strsplit(paste(theDescription, collapse=" "), " "))
+theComments = table(strsplit(paste(theEvents$CommitCommentEvent, collapse=" "), " "))
+theDescription = table(strsplit(paste(theEvents$CreateEvent, collapse=" "), " "))
 
 ######################## End transforming Data
 ########################
@@ -77,7 +123,7 @@ pie(theDescription[theDescription > 12][-1])
 ### WIP ... 
 names(theTypes)
 # to see whats is in differents payloads ->
-for(theNames in names(theTypes)[1]){
+for(theNames in names(theTypes)[10]){
   print("------------------------------------------------------------------------------------------------------------")
   print(theNames)
   print("------------------------------------------------------------------------------------------------------------")
@@ -85,7 +131,6 @@ for(theNames in names(theTypes)[1]){
     line = fromJSON(line)
     if(line$type == theNames){
       print(line$payload)
-      break;
     }
   }
 }
