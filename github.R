@@ -15,14 +15,6 @@ download.file(url="http://data.gharchive.org/2015-01-01-0.json.gz",
 theFile <- file("2015-01-01-0.json.gz","r") 
 theLines <- readLines(theFile) # Need 18 Mb of memory...
 close(myFile)
-# some infos
-myJSONs <- fromJSON(theLines[1])
-names(myJSONs)
-myJSONs$type # in ["pushEvent","ReleaseEvent","ForkEvent", and 11 others... ]
-myJSONs$actor$login
-strsplit(myJSONs$repo$name,"/")[[1]][2]
-myJSONs$payload # changes with the type ... :(
-myJSONs$public
 
 ######################## End Extracting DATA
 ######################## 
@@ -43,54 +35,70 @@ for(line in theLines){
   theTypes = c(theTypes,line$type)
   theLogins = c(theLogins, line$actor$login)
   theRepos = c(theRepos,strsplit(line$repo$name,"/")[[1]][2])
-  theEvents[[line$type]] = c(theEvents[[line$type]], switch(line$type,
+  theEvents[[line$type]] = rbind(theEvents[[line$type]], switch(line$type,
                           "CommitCommentEvent"=line$payload$comment$body,
-                          "CreateEvent"=list("description"=line$payload$description,
+                          "CreateEvent"=data.frame("description"=if(!is.null(line$payload$description)) line$payload$description else "",
                                              "ref_type"=line$payload$ref_type),
                           "DeleteEvent"=line$payload$ref_type,
-                          "ForkEvent"=list("name"=line$payload$forkee$name, 
-                                           "login"=line$payload$forkee$owner,
-                                           "description"=line$payload$forkee$description,
-                                           "ref_type"=line$payload$ref_type,
+                          "ForkEvent"=data.frame("name"=line$payload$forkee$name, 
+                                           "login"=line$payload$forkee$owner$login,
+                                           "description"=if(!is.null(line$payload$forkee$description)) line$payload$forkee$description else "" ,
+                                           "ref_type"=if(!is.null(line$payload$ref_type)) line$payload$ref_type else "" ,
                                            "size"=line$payload$forkee$size),
                           "GollumEvent"=line$payload$pages$page_name,                   
-                          "IssueCommentEvent"=list("issueTitle"=line$payload$issue$title,
+                          "IssueCommentEvent"=data.frame("issueTitle"=line$payload$issue$title,
                                                    "issueUserLogin"=line$payload$issue$user$login,
                                                    "issueComments"=line$payload$issue$comments,
-                                                   "issueBody"=line$payload$issue$body,
+                                                   "issueBody"=if(!is.null(line$payload$issue$body)) line$payload$issue$body else "",
                                                    "commentUserLogin"=line$payload$comment$user$login,
                                                    "commentBody"=line$payload$comment$body),
-                          "IssuesEvent"=list("action"=line$payload$action,
+                          "IssuesEvent"=data.frame("action"=line$payload$action,
                                              "issueId"=line$payload$issue$id,
                                              "issueTitle"=line$payload$issue$title,
                                              "issueUserLogin"=line$payload$issue$user$login,
                                              "issueState"=line$payload$issue$state,
                                              "issueComments"=line$payload$issue$comments,
-                                             "issueBody"=line$payload$issue$body),                   
-                          "MemberEvent"="", #noUsefullInfos :(
-                          "PublicEvent"="", #noUsefullInfos :(
-                          "PullRequestEvent"=list("action"=line$payload$action,
+                                             "issueBody"=if(!is.null(line$payload$issue$body)) line$payload$issue$body else ""),                   
+                          "MemberEvent"=1, #noUsefullInfos :(
+                          "PublicEvent"=1, #noUsefullInfos :(
+                          "PullRequestEvent"=data.frame("action"=line$payload$action,
                                                   "pull_requestState"=line$payload$pull_request$state,
                                                   "pull_requestTitle"=line$payload$pull_request$title,
                                                   "pull_requestUserLogin"=line$payload$pull_request$user$login,
-                                                  "pull_requestBody"=line$payload$pull_request$body,
-                                                  "pull_requestHeadRepoName"=line$payload$pull_request$head$repo$name,
-                                                  "pull_requestHeadRepoSize"=line$payload$pull_request$head$repo$size,
-                                                  "pull_requestHeadRepoLanguage"=line$payload$pull_request$head$repo$language,
-                                                  "pull_requestHeadRepoHas_wiki"=line$payload$pull_request$head$repo$has_wiki,
-                                                  "pull_requestHeadRepoHas_pages"=line$payload$pull_request$head$repo$has_pages,
-                                                  "pull_requestHeadRepoForks_count"=line$payload$pull_request$head$repo$forks_count,
-                                                  "pull_requestBaseRepoOpen_issues"=line$payload$pull_request$base$repo$open_issues,
+                                                  "pull_requestBody"=if(!is.null(line$payload$pull_request$body)) line$payload$pull_request$body else "",
+                                                  "pull_requestBaseRepoName"=line$payload$pull_request$base$repo$name,
+                                                  "pull_requestBaseRepoSize"=line$payload$pull_request$base$repo$size,
+                                                  "pull_requestBaseRepoLanguage"=if(!is.null(line$payload$pull_request$base$repo$language)) line$payload$pull_request$base$repo$language else "",
+                                                  "pull_requestBaseRepoHas_wiki"=line$payload$pull_request$base$repo$has_wiki,
+                                                  "pull_requestBaseRepoHas_pages"=line$payload$pull_request$base$repo$has_pages,
+                                                  "pull_requestBaseRepoForks_count"=line$payload$pull_request$base$repo$forks_count,
+                                                  "pull_requestBaseRepoOpen_issues"=line$payload$pull_request$base$repo$open_issues_count,
                                                   "pull_requestBaseRepoWatchers"=line$payload$pull_request$base$repo$watchers,
                                                   "pull_requestMerged"=line$payload$pull_request$merged,
                                                   "pull_requestCommits"=line$payload$pull_request$commits,
                                                   "pull_requestAdditions"=line$payload$pull_request$additions,
                                                   "pull_requestDeletions"=line$payload$pull_request$deletions,
                                                   "pull_requestChanged_files"=line$payload$pull_request$changed_files),              
-                          "PullRequestReviewCommentEvent"="", ### TODO
-                          "PushEvent"="", ### TODO
-                          "ReleaseEvent"="", ### TODO
-                          "WatchEvent"="")) ### TODO
+                          "PullRequestReviewCommentEvent"=data.frame("action"=line$payload$action,
+                                                               "commentUserLogin"=line$payload$comment$user$login,
+                                                               "commentBody"=if(!is.null(line$payload$comment$body)) line$payload$comment$body else "",
+                                                               "state"=line$payload$pull_request$state,
+                                                               "title"=line$payload$pull_request$title,
+                                                               "pullRequestBody"=if(!is.null(line$payload$pull_request$body)) line$payload$pull_request$body else "",
+                                                               "pull_requestBaseRepoName"=line$payload$pull_request$base$repo$name,
+                                                               "pull_requestBaseRepoSize"=line$payload$pull_request$base$repo$size,
+                                                               "pull_requestBaseRepoLanguage"=if(!is.null(line$payload$pull_request$base$repo$language)) line$payload$pull_request$base$repo$language else "",
+                                                               "pull_requestBaseRepoHas_wiki"=line$payload$pull_request$base$repo$has_wiki,
+                                                               "pull_requestBaseRepoHas_pages"=line$payload$pull_request$base$repo$has_pages,
+                                                               "pull_requestBaseRepoForks_count"=line$payload$pull_request$base$repo$forks_count,
+                                                               "pull_requestBaseRepoOpen_issues"=line$payload$pull_request$base$repo$open_issues_count,
+                                                               "pull_requestBaseRepoWatchers"=line$payload$pull_request$base$repo$watchers),
+                          "PushEvent"=line$payload$size,
+                          "ReleaseEvent"=data.frame("action"=line$payload$action,
+                                              "releaseName"=line$payload$release$name,
+                                              "releaseAuthorLogin"=line$payload$release$author$login,
+                                              "releaseBody"=line$payload$release$body),
+                          "WatchEvent"=line$payload$action))
 }
 ######################## End Process DATA
 ######################## 
@@ -101,7 +109,7 @@ for(line in theLines){
 theTypes <- table(theTypes) # a exporter...
 theLogins <-table(table(theLogins)) # a exporter...
 theComments = table(strsplit(paste(theEvents$CommitCommentEvent, collapse=" "), " "))
-theDescription = table(strsplit(paste(theEvents$CreateEvent, collapse=" "), " "))
+theDescription = table(strsplit(paste(theEvents$CreateEvent$description, collapse=" "), " "))
 
 ######################## End transforming Data
 ########################
@@ -119,18 +127,3 @@ pie(theDescription[theDescription > 12][-1])
 
 ######################## End visualising Data
 ########################
-
-### WIP ... 
-names(theTypes)
-# to see whats is in differents payloads ->
-for(theNames in names(theTypes)[10]){
-  print("------------------------------------------------------------------------------------------------------------")
-  print(theNames)
-  print("------------------------------------------------------------------------------------------------------------")
-  for(line in theLines){
-    line = fromJSON(line)
-    if(line$type == theNames){
-      print(line$payload)
-    }
-  }
-}
