@@ -4,7 +4,7 @@ library(jsonlite)
 ######################## Start Extracting DATA
 
 print(getwd()) # the Data will be extracted here
-setwd("~/Desktop/mbds/R")
+setwd("~/Desktop/mbds/R") # to change the place were data will be extracted
 download.file(url="http://data.gharchive.org/2015-01-01-0.json.gz", 
               destfile="2015-01-01-0.json.gz", 
               method="internal",
@@ -14,7 +14,7 @@ download.file(url="http://data.gharchive.org/2015-01-01-0.json.gz",
 
 theFile <- file("2015-01-01-0.json.gz","r") 
 theLines <- readLines(theFile) # Need 18 Mb of memory...
-close(myFile)
+close(theFile)
 
 ######################## End Extracting DATA
 ######################## 
@@ -26,7 +26,6 @@ theTypes <- c()
 theLogins <- c()
 theRepos <- c()
 theComments <- c()
-theDescription <- c()
 nbOfDeletes <- 0
 #nbOfPublic <- 0 # all of them are public :(
 n <- length(theLines)
@@ -93,7 +92,8 @@ for(line in theLines){
                                                                "pull_requestBaseRepoForks_count"=line$payload$pull_request$base$repo$forks_count,
                                                                "pull_requestBaseRepoOpen_issues"=line$payload$pull_request$base$repo$open_issues_count,
                                                                "pull_requestBaseRepoWatchers"=line$payload$pull_request$base$repo$watchers),
-                          "PushEvent"=line$payload$size,
+                          "PushEvent"=data.frame("name"= line$payload$commits$author$name,
+                                                 "message" = line$payload$commits$message),
                           "ReleaseEvent"=data.frame("action"=line$payload$action,
                                               "releaseName"=line$payload$release$name,
                                               "releaseAuthorLogin"=line$payload$release$author$login,
@@ -106,10 +106,16 @@ for(line in theLines){
 ######################## Start transforming Data
 ########################
 
-theTypes <- table(theTypes) # a exporter...
-theLogins <-table(table(theLogins)) # a exporter...
-theComments = table(strsplit(paste(theEvents$CommitCommentEvent, collapse=" "), " "))
-theDescription = table(strsplit(paste(theEvents$CreateEvent$description, collapse=" "), " "))
+theTypes <- table(theTypes)
+theLogins <-table(table(theLogins))
+theComments = table(strsplit(tolower(paste(theEvents$CommitCommentEvent, collapse=" ")), " "))
+theDescription = table(strsplit(tolower(paste(theEvents$CreateEvent$description, collapse=" ")), " "))
+langues = table(theEvents$PullRequestEvent$pull_requestBaseRepoLanguage)
+languageInPullRequests = langues[names(langues) != ""]
+langues = table(theEvents$PullRequestReviewCommentEvent$pull_requestBaseRepoLanguage)
+languagesInPullRequestComments = langues[names(langues) != ""]
+commitMessages = theEvents$PushEvent$message
+commitMessages = tail(sort(table(strsplit(tolower(paste(commitMessages, collapse=" ")), " "))),100)
 
 ######################## End transforming Data
 ########################
@@ -122,8 +128,19 @@ barplot(theLogins / sum(theLogins),
         ylab = "part from total number of commits", 
         main= "Repartition of the number of commits made in one hour par person")
 pie(theTypes, labels = names(theTypes), main="Pie Chart of Git Events")
-pie(theComments[theComments > 10])
+pie(theComments[theComments > 5])
 pie(theDescription[theDescription > 12][-1])
+pie(languageInPullRequests,main="Programming languages used in PullRequest")
+pie(languagesInPullRequestComments, main="Programming languages used in PullRequestComments")
+pie(commitMessages, main = "words used the most in commits...")
 
 ######################## End visualising Data
 ########################
+
+# A exporter :
+# theLogins / sum(theLogins)
+# theTypes
+# theComments[theComments > 10]
+# languageInPullRequests
+# languagesInPullRequestComments
+# etc...
