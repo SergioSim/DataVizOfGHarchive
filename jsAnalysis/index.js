@@ -16,6 +16,11 @@ function getFromGHArchive(date) {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', ghArchiveURL, true);
         xhr.responseType = 'arraybuffer';
+        xhr.onprogress = (e) => {
+            if (e.lengthComputable && (e.loaded / e.total) === 1) {
+                console.log("Downloaded from GHArchive for date", date);
+            }
+        }
         xhr.onload = (e) => {
             if (xhr.status == 200) {
                 const data=pako.inflate(new Uint8Array(xhr.response),{to:'string'});
@@ -39,21 +44,64 @@ function getFromGHArchive(date) {
     });
 }
 
+/* 
+    EventTypes doc : https://developer.github.com/v3/activity/events/types/ 
+*/
+const eventTypes = {
+    push: "PushEvent",
+    pullRequest: "PullRequestEvent", 
+    watch: "WatchEvent", 
+    gollum: "GollumEvent", 
+    issues: "IssuesEvent", 
+    issueComment: "IssueCommentEvent", 
+    fork: "ForkEvent", 
+    create: "CreateEvent", 
+    delete: "DeleteEvent", 
+    release: "ReleaseEvent", 
+    pullRequestReviewComment: "PullRequestReviewCommentEvent", 
+    member: "MemberEvent", 
+    commitComment: "CommitCommentEvent", 
+    public: "PublicEvent"
+};
+
 /*
     Usage sample :
     As with any promise, you have to return it basically, but launched without beeing returned works also for demo reasons
 */
-getFromGHArchive("2018-01-01-15").then((parsedObjects) => {
-    console.log('Your objects', parsedObjects);
-});
-
-/* in a function context : */
-function drawThing(){
-    return getFromGHArchive("2018-01-01-15").then((parsedObjects) => {
-        console.log('Your objects', parsedObjects);
-        // code to draw here
+const currentDate = "2018-01-01-15";
+getFromGHArchive(currentDate).then((parsedObjects) => {
+    // console.log('Your objects', parsedObjects);
+    /*
+    How to build eventTypes list ? =>
+        // Using a set to avoid duplicate
+        const types = new Set();
+        parsedObjects.forEach((object) => {
+            types.add(object.type);
+        })
+        console.log('Types received', types);
+    */
+    // Filtering every pullRequest
+    const pullRequests = parsedObjects.filter((object) => {
+        return object.type === eventTypes.pullRequest
     });
-}
+
+    // Instanciate a new languages object
+    const languages = {};
+    // foreach pr
+    pullRequests.forEach((pr) => {
+        // find language
+        const languageUsed = pr.payload.pull_request.base.repo.language;
+        // if this key exists in languages object, just increment
+        if(languages[languageUsed]){
+            languages[languageUsed]++;
+        } else {
+            // not found before, so, starting at 1
+            languages[languageUsed] = 1;
+        }
+    });
+
+    console.log(`Languages distribution in pull requests :`, languages);
+});
 
 /*
     Simple pie chart with D3 (and fake data given in data.json)
