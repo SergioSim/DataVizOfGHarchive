@@ -64,6 +64,15 @@ const eventTypes = {
     public: "PublicEvent"
 };
 
+function buildEvents(objects){
+    // Using a set to avoid duplicates
+    const types = new Set();
+    objects.forEach((object) => {
+        types.add(object.type);
+    })
+    return types;
+}
+
 /*
     Usage sample :
     As with any promise, you have to return it basically, but launched without beeing returned works also for demo reasons
@@ -71,36 +80,31 @@ const eventTypes = {
 const currentDate = "2018-01-01-15";
 getFromGHArchive(currentDate).then((parsedObjects) => {
     // console.log('Your objects', parsedObjects);
-    /*
-    How to build eventTypes list ? =>
-        // Using a set to avoid duplicate
-        const types = new Set();
-        parsedObjects.forEach((object) => {
-            types.add(object.type);
-        })
-        console.log('Types received', types);
-    */
     // Filtering every pullRequest
     const pullRequests = parsedObjects.filter((object) => {
         return object.type === eventTypes.pullRequest
     });
 
     // Instanciate a new languages object
-    const languages = {};
+    const languages = [];
+    const languageSet = new Set();
     // foreach pr
     pullRequests.forEach((pr) => {
         // find language
         const languageUsed = pr.payload.pull_request.base.repo.language;
-        // if this key exists in languages object, just increment
-        if(languages[languageUsed]){
-            languages[languageUsed]++;
+        if(!languageSet.has(languageUsed)){
+            languageSet.add(languageUsed);
+            languages.push({language: languageUsed, count: 1});
         } else {
-            // not found before, so, starting at 1
-            languages[languageUsed] = 1;
+            const lang = languages.find((langage) => {
+                return langage.language === languageUsed;
+            })
+            lang.count++;
         }
     });
 
     console.log(`Languages distribution in pull requests :`, languages);
+    document.querySelector('#receivedData').innerHTML = JSON.stringify(languages, null, 2);
 });
 
 /*
