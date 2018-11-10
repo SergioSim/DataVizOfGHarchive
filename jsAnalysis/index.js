@@ -124,22 +124,22 @@ function drawPie(data){
             .append("g")
             .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    const color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb",
-        "#e78ac3","#a6d854","#ffd92f"]);
+    const color = d3.scaleOrdinal()
+	.range(["#2C93E8","#838690","#F56C4E", "#002FA7", "#FF0000"]);
 
     const pie = d3.pie()
         .value(d => d.count)
         .sort(null);
 
     const arc = d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius);
-
-    var labelArc = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(0);
+    
+    const labelArc = d3.arc()
 	.outerRadius(radius - 40)
 	.innerRadius(radius - 40);
 
-    var g = svg.selectAll("path")
+    const g = svg.selectAll("path")
         .data(pie(data))
         .enter().append("g")
         .attr("class", "arc")
@@ -148,11 +148,10 @@ function drawPie(data){
         .attr("fill", (d, i) => color(i))
         .attr("d", arc)
         .attr("stroke", "white")
-        .attr("stroke-width", "6px")
         .each(function(d) { this._current = d; });
 
     g.append("text")
         .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-        .text(function(d) { return d.data.language;})
+        .text(function(d) { return d.data.language ? d.data.language : 'Undefined';})
         .style("fill", "#fff");
 }
