@@ -1,6 +1,5 @@
 const d3 = require('d3');
 const pako = require('pako');
-const data = require('./data.json');
 
 /**
  * Retrieve data from GHArchive (using Cors anywhere to avoid cors issues)
@@ -11,6 +10,8 @@ const data = require('./data.json');
  * @returns
  */
 function getFromGHArchive(date) {
+    console.log("Starting download from GHArchive for date", date);
+
     return new Promise((resolve, reject) => {
         const ghArchiveURL = `https://cors-anywhere.herokuapp.com/http://data.gharchive.org/${date}.json.gz`;
         const xhr = new XMLHttpRequest();
@@ -103,54 +104,55 @@ getFromGHArchive(currentDate).then((parsedObjects) => {
         }
     });
 
+    drawPie(languages);
     console.log(`Languages distribution in pull requests :`, languages);
     document.querySelector('#receivedData').innerHTML = JSON.stringify(languages, null, 2);
 });
 
 /*
-    Simple pie chart with D3 (and fake data given in data.json)
+    Simple pie chart with D3
 */
-const width = 540;
-const height = 540;
-const radius = Math.min(width, height) / 2;
+function drawPie(data){
+    const width = 540;
+    const height = 540;
+    const radius = Math.min(width, height) / 2;
 
-const svg = d3.select("#pie_chart")
-    .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    const svg = d3.select("#pie_chart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-const color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb",
-     "#e78ac3","#a6d854","#ffd92f"]);
+    const color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb",
+        "#e78ac3","#a6d854","#ffd92f"]);
 
-const pie = d3.pie()
-    .value(d => d.count)
-    .sort(null);
+    const pie = d3.pie()
+        .value(d => d.count)
+        .sort(null);
 
-const arc = d3.arc()
-    .innerRadius(0)
-    .outerRadius(radius);
+    const arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius);
 
-function arcTween(a) {
-    const i = d3.interpolate(this._current, a);
-    this._current = i(1);
-    return (t) => arc(i(t));
-}
+    var labelArc = d3.arc()
+	.outerRadius(radius - 40)
+	.innerRadius(radius - 40);
 
-d3.selectAll("input")
-    .on("change", update);
-
-function update(val = this.value) {
-    const path = svg.selectAll("path")
-        .data(pie(data[val]));
-    path.transition().duration(200).attrTween("d", arcTween);
-    path.enter().append("path")
+    var g = svg.selectAll("path")
+        .data(pie(data))
+        .enter().append("g")
+        .attr("class", "arc")
+        
+    g.append("path")
         .attr("fill", (d, i) => color(i))
         .attr("d", arc)
         .attr("stroke", "white")
         .attr("stroke-width", "6px")
         .each(function(d) { this._current = d; });
-}
 
-update("oranges");
+    g.append("text")
+        .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+        .text(function(d) { return d.data.language;})
+        .style("fill", "#fff");
+}
