@@ -5,7 +5,7 @@ library(jsonlite)
 
 print(getwd()) # the Data will be extracted here
 setwd("~/Desktop/mbds/R") # to change the place were data will be extracted
-download.file(url="http://data.gharchive.org/2015-01-01-0.json.gz", 
+download.file(url="http://data.gharchive.org/2018-01-01-0.json.gz", 
               destfile="2015-01-01-0.json.gz", 
               method="internal",
               quiet = FALSE, 
@@ -95,9 +95,9 @@ for(line in theLines){
                           "PushEvent"=data.frame("name"= line$payload$commits$author$name,
                                                  "message" = line$payload$commits$message),
                           "ReleaseEvent"=data.frame("action"=line$payload$action,
-                                              "releaseName"=line$payload$release$name,
+                                              "releaseName"=if(!is.null(line$payload$release$name)) line$payload$release$name else "",
                                               "releaseAuthorLogin"=line$payload$release$author$login,
-                                              "releaseBody"=line$payload$release$body),
+                                              "releaseBody"=if(!is.null(line$payload$release$body)) line$payload$release$body else ""),
                           "WatchEvent"=line$payload$action))
 }
 ######################## End Process DATA
@@ -133,6 +133,11 @@ pie(theDescription[theDescription > 12][-1])
 pie(languageInPullRequests,main="Programming languages used in PullRequest")
 pie(languagesInPullRequestComments, main="Programming languages used in PullRequestComments")
 pie(commitMessages, main = "words used the most in commits...")
+barplot(sort(table(theEvents$PushEvent$name), decreasing = TRUE)) #some make more than 150 push events in one hour :/
+pie(table(theEvents$CreateEvent$ref_type),main="create event ref-Tyoe")
+barplot(table(theEvents$PullRequestEvent$action), main="Number of pullRequestEventActions")
+barplot(table(theEvents$PullRequestEvent$pull_requestState), main="state of pullRequestEventActions") #very similar...
+theEvents$PullRequestEvent$pull_requestTitle
 
 ######################## End visualising Data
 ########################

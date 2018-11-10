@@ -106,7 +106,7 @@ function getAndDrawPRDistribution(date){
                 lang.count++;
             }
         });
-
+        languages.sort((a,b) => (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0));
         drawPie(languages);
         console.log(`Languages distribution in pull requests :`, languages);
         document.querySelector('#debug').innerHTML = JSON.stringify(languages, null, 2);
@@ -140,8 +140,8 @@ function drawPie(data){
         .innerRadius(0);
     
     const labelArc = d3.arc()
-	.outerRadius(radius - 40)
-	.innerRadius(radius - 40);
+	.outerRadius(radius - 80)
+	.innerRadius(radius - 80);
 
     const g = svg.selectAll("path")
         .data(pie(data))
@@ -157,5 +157,5 @@ function drawPie(data){
     g.append("text")
         .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
         .text(function(d) { return d.data.language ? d.data.language : 'Undefined';})
-        .style("fill", "#fff");
+        .style("fill", "black");
 }
