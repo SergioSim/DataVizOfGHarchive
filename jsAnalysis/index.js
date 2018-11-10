@@ -1,6 +1,10 @@
 const d3 = require('d3');
 const pako = require('pako');
 
+document.querySelector('#startAnalysis').addEventListener('click', () => {
+    getAndDrawPRDistribution(document.querySelector('#dateWanted').value);
+});
+
 /**
  * Retrieve data from GHArchive (using Cors anywhere to avoid cors issues)
  * Uncompress gz with Pako (only lib who can ungz in Browser)
@@ -74,40 +78,40 @@ function buildEvents(objects){
     return types;
 }
 
-/*
-    Usage sample :
-    As with any promise, you have to return it basically, but launched without beeing returned works also for demo reasons
-*/
-const currentDate = "2018-01-01-15";
-getFromGHArchive(currentDate).then((parsedObjects) => {
-    // console.log('Your objects', parsedObjects);
-    // Filtering every pullRequest
-    const pullRequests = parsedObjects.filter((object) => {
-        return object.type === eventTypes.pullRequest
-    });
+function getAndDrawPRDistribution(date){
+    if(!date){
+        return;
+    }
 
-    // Instanciate a new languages object
-    const languages = [];
-    const languageSet = new Set();
-    // foreach pr
-    pullRequests.forEach((pr) => {
-        // find language
-        const languageUsed = pr.payload.pull_request.base.repo.language;
-        if(!languageSet.has(languageUsed)){
-            languageSet.add(languageUsed);
-            languages.push({language: languageUsed, count: 1});
-        } else {
-            const lang = languages.find((langage) => {
-                return langage.language === languageUsed;
-            })
-            lang.count++;
-        }
-    });
+    return getFromGHArchive(date).then((parsedObjects) => {
+        // Filtering every pullRequest
+        const pullRequests = parsedObjects.filter((object) => {
+            return object.type === eventTypes.pullRequest
+        });
 
-    drawPie(languages);
-    console.log(`Languages distribution in pull requests :`, languages);
-    document.querySelector('#receivedData').innerHTML = JSON.stringify(languages, null, 2);
-});
+        // Instanciate a new languages object
+        const languages = [];
+        const languageSet = new Set();
+        // foreach pr
+        pullRequests.forEach((pr) => {
+            // find language
+            const languageUsed = pr.payload.pull_request.base.repo.language;
+            if(!languageSet.has(languageUsed)){
+                languageSet.add(languageUsed);
+                languages.push({language: languageUsed, count: 1});
+            } else {
+                const lang = languages.find((langage) => {
+                    return langage.language === languageUsed;
+                })
+                lang.count++;
+            }
+        });
+
+        drawPie(languages);
+        console.log(`Languages distribution in pull requests :`, languages);
+        document.querySelector('#debug').innerHTML = JSON.stringify(languages, null, 2);
+    });
+}
 
 /*
     Simple pie chart with D3
