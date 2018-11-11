@@ -92,15 +92,6 @@ function getAndDrawPRDistribution(date){
 function getAndDrawCommonWords(date){
     const commonEnglishWords = commonWords.default;
     return download(date).then((events) => {
-        /*
-        David refactor :
-
-        Je ferais une Map de word vers count, 
-        pour chaque commit message 
-        tu le sépares en words 
-        et tu incrémentes le count associé.
-        Enfin tu tries la map par count. 
-        */
         const pushEvents = filterDataByEvent(events, eventTypes.push);
 
         const wordsMap = {};
