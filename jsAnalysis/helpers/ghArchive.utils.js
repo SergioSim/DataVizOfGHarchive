@@ -83,6 +83,35 @@ export async function getFromGHArchive(date, progress) {
     });
 }
 
+/**
+ *
+ *
+ * @export
+ * @param {string} yearMonth 2018-01
+ * @param {number} numberOfDays 1-3 (don't be mad)
+ * @param {number} numberOfHours 10
+ * @param {Element} progress 
+ */
+export async function getPeriodFromGH(yearMonth, numberOfDays, numberOfHours, progress){
+    const days = new Array(numberOfDays);
+    const hours = new Array(numberOfHours);
+
+    const fullData = [];
+    for(let v = 1; v < days.length+1; v++){
+        for(let i = 0; i < hours.length; i++){
+            let currentDay = v;
+            if(v < 9){
+                currentDay = "0"+v;
+            }
+            const parsed = await getFromGHArchive(yearMonth + `-${currentDay}-${i}`, progress);
+            fullData.push(parsed);
+        }
+    }
+
+    // Flattening into one single big (and fat) array
+    return [].concat.apply([], fullData);
+}
+
 function cacheData(date, parsed, progress, resolve) {
     return set(date, parsed)
         .then(() => {

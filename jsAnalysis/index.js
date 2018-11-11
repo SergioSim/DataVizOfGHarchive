@@ -9,11 +9,12 @@ const { drawPie } = require('./helpers/d3.utils');
 
 // HTML Elements
 const debugZone = document.querySelector('#debug');
+const debugProgress = document.querySelector('#debugProgress');
 
 UIUtils.bindAccordions();
 
 // GHArchive utils
-const { eventTypes, getFromGHArchive, filterDataByEvent } = require('./helpers/ghArchive.utils');
+const { eventTypes, getFromGHArchive, filterDataByEvent, getPeriodFromGH } = require('./helpers/ghArchive.utils');
 // Analysis #1 Languages distributions in Pull requests for a given date
 UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilisés dans les pull requests à une date donnée", 
     async function(){
@@ -131,3 +132,5 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans l
 });
 
 UIUtils.bindAccordions();
+
+// getPeriodFromGH("2018-01", 1, 10, debugProgress);
