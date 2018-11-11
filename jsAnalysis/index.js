@@ -54,7 +54,7 @@ function getAndDrawPRDistribution(date){
             }
         });
         // Sort languages in ascending order
-        languages.sort((a,b) => (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0));
+        languages.sort((a,b) => a.count - b.count);
         // draw d3 pie
         drawPie(languages);
 
