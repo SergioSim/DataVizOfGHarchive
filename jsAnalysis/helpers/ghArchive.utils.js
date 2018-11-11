@@ -62,6 +62,11 @@ export async function getFromGHArchive(date, progress) {
                 progress.value = e.loaded;
             }
         }
+        const onError = function () {
+            progress.style.display = 'none';
+            reject();
+        };
+        xhr.onerror = 
         xhr.onload = (e) => {
             if (xhr.status == 200) {
                 const data=pako.inflate(new Uint8Array(xhr.response),{to:'string'});
@@ -84,10 +89,11 @@ export async function getFromGHArchive(date, progress) {
                             resolve(parsed);
                         }).catch((err) => {console.log("error while saving in cache", err)});
             } else {
+                onError()
                 reject();
             }
         };
-
+        
         xhr.send(null);
     });
 }

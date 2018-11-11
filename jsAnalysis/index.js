@@ -5,6 +5,8 @@ require("@babel/polyfill");
 const downloadProgress = document.querySelector('#downloadProgress');
 const debugZone = document.querySelector('#debug');
 const startButton = document.querySelector('#startAnalysis');
+const dateField = document.querySelector('#dateWanted');
+
 startButton.addEventListener('click', () => {
     const dateWanted = document.querySelector('#dateWanted').value;
     getAndDrawPRDistribution(dateWanted);
@@ -57,10 +59,13 @@ function getAndDrawPRDistribution(date){
         languages.sort((a,b) => a.count - b.count);
         // draw d3 pie
         drawPie(languages);
+        dateField.style.border = "";
 
         // @tools debug
         console.log(`Languages distribution in pull requests :`, languages);
         debugZone.style.display = "block";
         debugZone.innerHTML = JSON.stringify(languages, null, 2);
+    }).catch((err) => {
+        dateField.style.border = "1px solid red";
     });
 }
