@@ -28,23 +28,33 @@ function getAndDrawPRDistribution(date){
 
         // Instanciate a new languages object
         const languages = [];
+        // Used to know if we should increment or decrement
         const languageSet = new Set();
         // foreach pr
         pullRequests.forEach((pr) => {
             // find language
             const languageUsed = pr.payload.pull_request.base.repo.language;
+            // If our set doesn't contains language
             if(!languageSet.has(languageUsed)){
+                // add language
                 languageSet.add(languageUsed);
+                // push this language
                 languages.push({language: languageUsed, count: 1});
             } else {
+                // Find language in languages array
                 const lang = languages.find((langage) => {
                     return langage.language === languageUsed;
                 })
+                // increment
                 lang.count++;
             }
         });
+        // Sort languages in ascending order
         languages.sort((a,b) => (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0));
+        // draw d3 pie
         drawPie(languages);
+
+        // @tools debug
         console.log(`Languages distribution in pull requests :`, languages);
         debugZone.style.display = "block";
         debugZone.innerHTML = JSON.stringify(languages, null, 2);
