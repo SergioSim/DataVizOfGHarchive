@@ -1,4 +1,4 @@
-const makeAnalysisContainer = (id, title, onStart, onDomMount) => {
+const makeAnalysisContainer = (id, title, onStart) => {
     const container = document.querySelector('.analysis-container');
     const div = document.createElement('div');
 
@@ -14,7 +14,6 @@ const makeAnalysisContainer = (id, title, onStart, onDomMount) => {
     div.innerHTML = analysis;
 
     container.appendChild(div);
-    if(onDomMount) onDomMount();
 
     const input = div.querySelector('.date-label');
     const pie = div.querySelector('.pie');
@@ -27,7 +26,6 @@ const makeAnalysisContainer = (id, title, onStart, onDomMount) => {
     };
 
     onStart = onStart.bind(context);
-
     div.querySelector('.analysis-start').addEventListener('click', onStart);
 
     return true;

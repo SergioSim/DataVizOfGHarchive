@@ -6,21 +6,7 @@ const UIUtils = require('./helpers/ui.utils').default;
 // HTML Elements
 const downloadProgress = document.querySelector('#downloadProgress');
 const debugZone = document.querySelector('#debug');
-// TODO XXX : Cleanup this mess (blurp)
-const startButton = document.querySelector('#startAnalysis');
-const startButton2 = document.querySelector('#startAnalysis2');
 const dateField = document.querySelector('#dateWanted');
-
-// UI Listeners
-startButton.addEventListener('click', () => {
-    const dateWanted = document.querySelector('#dateWanted').value;
-    getAndDrawPRDistribution(dateWanted);
-});
-
-startButton2.addEventListener('click', () => {
-    const dateWanted = document.querySelector('#dateWanted2').value;
-    getAndDrawCommonWords(dateWanted);
-});
 
 UIUtils.bindAccordions();
 
@@ -33,10 +19,10 @@ const { eventTypes, getFromGHArchive, filterDataByEvent } = require('./helpers/g
 const download = (date) => getFromGHArchive(date, downloadProgress);
 
 // Analysis #1 Languages distributions in Pull requests for a given date
-function getAndDrawPRDistribution(date){
-    if(!date){
-        return;
-    }
+UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilisés dans les pull requests à une date donnée", 
+function(){
+    const date = this.input.value;
+    if(!date) return;
 
     return download(date).then((parsedObjects) => {
         // Filtering every pullRequest
@@ -66,21 +52,25 @@ function getAndDrawPRDistribution(date){
         // Sort languages in ascending order
         languages.sort((a,b) => a.count - b.count);
         // draw d3 pie
-        drawPie(languages,date,"#pie_chart", "language", "count");
-        dateField.style.border = "";
+        drawPie(languages,date, this.pie, "language", "count");
+        this.input.style.border = "";
 
         // @tools debug
         console.log(`Languages distribution in pull requests :`, languages);
         debugZone.style.display = "block";
         debugZone.innerHTML = JSON.stringify(languages, null, 2);
     }).catch((err) => {
-        dateField.style.border = "1px solid red";
+        debugger;
+        this.input.style.border = "1px solid red";
     });
-}
+});
 
 UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans les commits messages à une heure donnée", 
 function(){
     const date = this.input.value;
+    if(!date){
+        return;
+    }
     return download(this.input.value).then((events) => {
         const pushEvents = filterDataByEvent(events, eventTypes.push);
 
@@ -124,6 +114,6 @@ function(){
         console.timeEnd();
         console.log(firstTwentyWords);
     });
-}, function() {
-    UIUtils.bindAccordions();
 });
+
+UIUtils.bindAccordions();
