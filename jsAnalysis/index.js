@@ -1,8 +1,8 @@
 // Used to make an ES2015+ ready environment on current browsers
 require("@babel/polyfill");
 
-const commonWords = require('./helpers/commonWords');
-
+const commonWords = require('./helpers/commonWords').default;
+const UIUtils = require('./helpers/ui.utils').default;
 // HTML Elements
 const downloadProgress = document.querySelector('#downloadProgress');
 const debugZone = document.querySelector('#debug');
@@ -22,18 +22,7 @@ startButton2.addEventListener('click', () => {
     getAndDrawCommonWords(dateWanted);
 });
 
-const acc = document.querySelectorAll(".accordion");
-for(const accordion of acc){
-    accordion.addEventListener('click', () => {
-        accordion.classList.toggle('active');
-        const panel = accordion.nextElementSibling;
-        if (panel.style.display === "block") {
-            panel.style.display = "none";
-        } else {
-            panel.style.display = "block";
-        }
-    })
-}
+UIUtils.bindAccordions();
 
 // Custom helpers 
 // D3 Related should be exported from that package
@@ -89,9 +78,10 @@ function getAndDrawPRDistribution(date){
     });
 }
 
-function getAndDrawCommonWords(date){
-    const commonEnglishWords = commonWords.default;
-    return download(date).then((events) => {
+UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans les commits messages à une heure donnée", 
+function(){
+    const date = this.input.value;
+    return download(this.input.value).then((events) => {
         const pushEvents = filterDataByEvent(events, eventTypes.push);
 
         const wordsMap = {};
@@ -111,7 +101,7 @@ function getAndDrawCommonWords(date){
                         const lowerCased = word.toLowerCase();
                         if(lowerCased === date.substring(0, date.length-3)) continue;
                         // filter english words
-                        if(commonEnglishWords.indexOf(lowerCased) !== -1) continue;
+                        if(commonWords.indexOf(lowerCased) !== -1) continue;
                         // filter if length 0
                         if(lowerCased.length === 0) continue;
                         // Increment or append
@@ -130,8 +120,10 @@ function getAndDrawCommonWords(date){
         const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
         // Take only 20
         const firstTwentyWords = wordsSorted.splice(0,20);
-        drawPie(firstTwentyWords, date, "#pie_chartCommonWords", "word", "occurences");
+        drawPie(firstTwentyWords, date, this.pie, "word", "occurences");
         console.timeEnd();
         console.log(firstTwentyWords);
     });
-}
+}, function() {
+    UIUtils.bindAccordions();
+});
