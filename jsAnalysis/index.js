@@ -93,7 +93,9 @@ function getAndDrawCommonWords(date){
             const commits = push.payload.commits;
             for(const commit of commits){
                 const commitMessage = commit.message;
-                commitMessageSet.add(commitMessage);
+                if(commitMessage && commitMessage.indexOf('Merge') == -1){
+                    commitMessageSet.add(commitMessage);
+                }
             }
         }
         console.log(commitMessageSet);
