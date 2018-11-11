@@ -92,54 +92,45 @@ function getAndDrawPRDistribution(date){
 function getAndDrawCommonWords(date){
     const commonEnglishWords = commonWords.default;
     return download(date).then((events) => {
+        /*
+        David refactor :
 
+        Je ferais une Map de word vers count, 
+        pour chaque commit message 
+        tu le sépares en words 
+        et tu incrémentes le count associé.
+        Enfin tu tries la map par count. 
+        */
         const pushEvents = filterDataByEvent(events, eventTypes.push);
 
-        let commitMessageSet = new Set();
+        const wordsMap = {};
+
         for(const push of pushEvents){
             const commits = push.payload.commits;
             for(const commit of commits){
                 const commitMessage = commit.message;
                 if(commitMessage && commitMessage.indexOf('Merge') == -1){
-                    commitMessageSet.add(commitMessage);
+                    const commitWords = commitMessage.split(' ');
+                    for(const word of commitWords){
+                        const lowerCased = word.toLowerCase();
+                        if(lowerCased.length === 0) continue;
+                        if(wordsMap[lowerCased]){
+                            wordsMap[lowerCased].occurences++;
+                        } else {
+                            wordsMap[lowerCased] = { word: lowerCased, occurences: 1};
+                        }
+                    }
                 }
             }
         }
-
-        const getOccurrence = (array, value) => {
-            return array.filter((v) => (v === value)).length;
-        }
-
-        const commitMessages = Array.from(commitMessageSet);
-
-        let words = [];
-        commitMessages.forEach((commitMessage) => {
-            const splitSpace = commitMessage.split(' ');
-            words.push(splitSpace);
-        });
-        words = [].concat.apply([], words)
-            .map((word) => word.trim().toLowerCase())
-            .filter((word) => commonEnglishWords.indexOf(word) == -1)
-            .filter((word) => word && word.length > 1)
-            .sort();
-
-        const occurencesSet = new Set();
-        const occurencesArr = [];
-
-        words.forEach((word) => {
-            if(!occurencesSet.has(word)){
-                const occurences = getOccurrence(words, word);
-                if(occurences > 1){
-                    // debugger;
-                    occurencesArr.push({word, occurences});
-                    occurencesSet.add(word)
-                }
-            }
-        })
-
+        const words = Object.keys(wordsMap).map(e => wordsMap[e]);
+        const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences)
+                            .filter((word) => commonEnglishWords.indexOf(word) == -1);// filter english words
+        console.log(wordsSorted);
+        /* 
         const occurencesSorted = occurencesArr.sort((occA, occB) => occB.occurences - occA.occurences);
         const firstTwentyWords = occurencesSorted.splice(0, 20);
         drawPie(firstTwentyWords, date, "#pie_chartCommonWords", "word", "occurences");
-        console.log(firstTwentyWords);
+        console.log(firstTwentyWords);*/
     });
 }
