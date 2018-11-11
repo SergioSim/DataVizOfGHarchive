@@ -87,7 +87,7 @@ export async function getFromGHArchive(date, progress) {
                             console.log(`Inserted parsed events into IndexedDB for ${date}`)
                             progress.style.display = 'none';
                             resolve(parsed);
-                        }).catch((err) => {console.log("error while saving in cache", err)});
+                        }).catch((err) => {debugger; console.log("error while saving in cache", err)});
             } else {
                 onError()
                 reject();
@@ -96,4 +96,8 @@ export async function getFromGHArchive(date, progress) {
         
         xhr.send(null);
     });
+}
+
+export function filterDataByEvent(data, eventType){
+    return data.filter((object) => object.type === eventType);
 }
