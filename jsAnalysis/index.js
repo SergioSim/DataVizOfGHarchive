@@ -118,7 +118,7 @@ function getAndDrawCommonWords(date){
             words.push(splitSpace);
         });
         words = [].concat.apply([], words)
-            .map((word) => word.trim())
+            .map((word) => word.trim().toLowerCase())
             .filter((word) => commonEnglishWords.indexOf(word) == -1)
             .filter((word) => word && word.length > 1)
             .sort();
@@ -138,8 +138,8 @@ function getAndDrawCommonWords(date){
         })
 
         const occurencesSorted = occurencesArr.sort((occA, occB) => occB.occurences - occA.occurences);
-
-        drawPie(occurencesSorted.splice(0, 20), date, "#pie_chartCommonWords", "word", "occurences");
-        console.log(occurencesSorted);
+        const firstTwentyWords = occurencesSorted.splice(0, 20);
+        drawPie(firstTwentyWords, date, "#pie_chartCommonWords", "word", "occurences");
+        console.log(firstTwentyWords);
     });
 }
