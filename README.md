@@ -30,3 +30,7 @@ $ npm install
 ```bash
 $ npm run dev
 ```
+
+## Licences
+
+Content based on www.gharchive.org used under the CC-BY-4.0 license.
