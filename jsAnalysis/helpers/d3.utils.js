@@ -4,7 +4,7 @@ const materialColors = require('./materialColors');
 /*
     Simple pie chart with D3
 */
-export function drawPie(data,date,idchart){
+export function drawPie(data,date,idchart, text, value){
     let width = window.innerWidth;
     if(width > 600){
         width = window.innerWidth / 2;
@@ -23,7 +23,7 @@ export function drawPie(data,date,idchart){
     const color = d3.scaleOrdinal().range(materialColors.default);
 
     const pie = d3.pie()
-        .value(d => d.count)
+        .value(d => d[value])
         .sort(null);
 
     const arc = d3.arc()
@@ -47,7 +47,7 @@ export function drawPie(data,date,idchart){
 
     g.append("text")
         .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-        .text(function(d) { return d.data.language ? d.data.language : 'Undefined';})
+        .text(function(d) { return d.data[text] ? d.data[text] : 'Undefined';})
         .style("fill", "black");
 
     svg.append("text")

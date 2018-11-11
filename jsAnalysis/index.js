@@ -77,7 +77,7 @@ function getAndDrawPRDistribution(date){
         // Sort languages in ascending order
         languages.sort((a,b) => a.count - b.count);
         // draw d3 pie
-        drawPie(languages,date,"#pie_chart");
+        drawPie(languages,date,"#pie_chart", "language", "count");
         dateField.style.border = "";
 
         // @tools debug
@@ -130,7 +130,7 @@ function getAndDrawCommonWords(date){
             if(!occurencesSet.has(word)){
                 const occurences = getOccurrence(words, word);
                 if(occurences > 1){
-                    debugger;
+                    // debugger;
                     occurencesArr.push({word, occurences});
                     occurencesSet.add(word)
                 }
@@ -139,6 +139,7 @@ function getAndDrawCommonWords(date){
 
         const occurencesSorted = occurencesArr.sort((occA, occB) => occB.occurences - occA.occurences);
 
+        drawPie(occurencesSorted.splice(0, 20), date, "#pie_chartCommonWords", "word", "occurences");
         console.log(occurencesSorted);
     });
 }
