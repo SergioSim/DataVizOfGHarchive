@@ -41,7 +41,7 @@ export function buildEvents(objects){
  * @param {HTMLElement} progressElement progress
  * @returns
  */
-export async function getFromGHArchive(date, downloadProgress) {
+export async function getFromGHArchive(date) {
     const cached = await get(date);
     if(cached){
         console.log('retrieved from cache');
@@ -50,7 +50,7 @@ export async function getFromGHArchive(date, downloadProgress) {
 
     return new Promise((resolve, reject) => {
         console.log("Starting download from GHArchive for date", date);
-        downloadProgress.style.display = 'block';
+        this.style.display = 'block';
 
         const ghArchiveURL = `https://cors-anywhere.herokuapp.com/http://data.gharchive.org/${date}.json.gz`;
         const xhr = new XMLHttpRequest();
@@ -58,8 +58,8 @@ export async function getFromGHArchive(date, downloadProgress) {
         xhr.responseType = 'arraybuffer';
         xhr.onprogress = (e) => {
             if (e.lengthComputable) {
-                downloadProgress.max = e.total;
-                downloadProgress.value = e.loaded;
+                this.max = e.total;
+                this.value = e.loaded;
             }
         }
         xhr.onload = (e) => {
