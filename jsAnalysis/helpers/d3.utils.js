@@ -5,11 +5,14 @@ const materialColors = require('./materialColors');
     Simple pie chart with D3
 */
 export function drawPie(data,date,idchart, text, value){
-    let width = window.innerWidth;
-    if(width > 600){
-        width = window.innerWidth / 2;
+    let width = 330;
+    const height = 430;
+
+    if(window.innerWidth < 330){
+        width = window.innerWidth;
+        height = width + 100
     }
-    const height = width;
+
     const marginTop = 100;
     const radius = Math.min(width, height) / 2;
 
