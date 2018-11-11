@@ -32,7 +32,7 @@ for(const accordion of acc){
 // D3 Related should be exported from that package
 const { drawPie } = require('./helpers/d3.utils');
 // GHArchive utils
-const { eventTypes, getFromGHArchive } = require('./helpers/ghArchive.utils');
+const { eventTypes, getFromGHArchive, filterDataByEvent } = require('./helpers/ghArchive.utils');
 // Just a simple @override in Java, but in JS it's just a one liner :D
 const download = (date) => getFromGHArchive(date, downloadProgress);
 
@@ -44,7 +44,7 @@ function getAndDrawPRDistribution(date){
 
     return download(date).then((parsedObjects) => {
         // Filtering every pullRequest
-        const pullRequests = parsedObjects.filter((object) => object.type === eventTypes.pullRequest);
+        const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
 
         // Instanciate a new languages object
         const languages = [];
@@ -87,6 +87,15 @@ getAndDrawCommonWords("2018-01-01-15");
 function getAndDrawCommonWords(date){
     console.log(commonWords.default);
     return download(date).then((events) => {
-        console.log(events);
+        const pushEvents = filterDataByEvent(events, eventTypes.push);
+        let commitMessageSet = new Set();
+        for(const push of pushEvents){
+            const commits = push.payload.commits;
+            for(const commit of commits){
+                const commitMessage = commit.message;
+                commitMessageSet.add(commitMessage);
+            }
+        }
+        console.log(commitMessageSet);
     });
 }

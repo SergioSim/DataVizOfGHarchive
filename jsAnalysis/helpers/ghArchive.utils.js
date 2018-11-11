@@ -97,3 +97,7 @@ export async function getFromGHArchive(date, progress) {
         xhr.send(null);
     });
 }
+
+export function filterDataByEvent(data, eventType){
+    return data.filter((object) => object.type === eventType);
+}
