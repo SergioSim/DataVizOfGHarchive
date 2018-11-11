@@ -111,20 +111,24 @@
           transition: opacity .4s ease-in-out;
       }
 
-      svg path {
+      .pie svg path {
         transition: transform .3s;
       }
 
-      svg path:hover {
+      .pie svg path:hover {
         transform: scale(1.1);
       }
 
-      svg path+text {
+      .pie svg path+text {
         font-size: 0.6em;
       }
 
-      svg path:hover+text {
+      .pie svg path:hover+text {
         font-size: 1.0em;
+      }
+
+      .pie svg {
+        margin: 0 5em;
       }
       
     </style>
