@@ -2,7 +2,8 @@ require("@babel/polyfill");
 const d3 = require('d3');
 const pako = require('pako');
 const {get, set} = require('idb-keyval');
-
+const materialColors = require('./materialColors');
+const downloadProgress = document.querySelector('#downloadProgress');
 document.querySelector('#startAnalysis').addEventListener('click', () => {
     getAndDrawPRDistribution(document.querySelector('#dateWanted').value);
 });
@@ -30,8 +31,9 @@ async function getFromGHArchive(date) {
         xhr.open('GET', ghArchiveURL, true);
         xhr.responseType = 'arraybuffer';
         xhr.onprogress = (e) => {
-            if (e.lengthComputable && (e.loaded / e.total) === 1) {
-                console.log("Downloaded from GHArchive for date", date);
+            if (e.lengthComputable) {
+                downloadProgress.max = e.total;
+                downloadProgress.value = e.loaded;
             }
         }
         xhr.onload = (e) => {
@@ -142,8 +144,7 @@ function drawPie(data){
             .append("g")
             .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    const color = d3.scaleOrdinal()
-	.range(["#2C93E8","#838690","#F56C4E", "#002FA7", "#FF0000"]);
+    const color = d3.scaleOrdinal().range(materialColors.default);
 
     const pie = d3.pie()
         .value(d => d.count)
