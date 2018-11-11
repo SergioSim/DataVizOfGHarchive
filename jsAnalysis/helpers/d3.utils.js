@@ -5,8 +5,9 @@ const materialColors = require('./materialColors');
     Simple pie chart with D3
 */
 export function drawPie(data){
-    const width = 540;
-    const height = 540;
+    const width = window.innerWidth / 2;
+    const height = width;
+
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select("#pie_chart")
