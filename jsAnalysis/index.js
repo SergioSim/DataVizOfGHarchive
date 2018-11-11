@@ -4,6 +4,7 @@ const pako = require('pako');
 const {get, set} = require('idb-keyval');
 const materialColors = require('./materialColors');
 const downloadProgress = document.querySelector('#downloadProgress');
+const debugZone = document.querySelector('#debug');
 document.querySelector('#startAnalysis').addEventListener('click', () => {
     getAndDrawPRDistribution(document.querySelector('#dateWanted').value);
 });
@@ -25,6 +26,7 @@ async function getFromGHArchive(date) {
 
     return new Promise((resolve, reject) => {
         console.log("Starting download from GHArchive for date", date);
+        downloadProgress.style.display = 'block';
 
         const ghArchiveURL = `https://cors-anywhere.herokuapp.com/http://data.gharchive.org/${date}.json.gz`;
         const xhr = new XMLHttpRequest();
@@ -54,6 +56,7 @@ async function getFromGHArchive(date) {
                 return set(date, parsed)
                         .then(() => {
                             console.log(`Inserted parsed events into IndexedDB for ${date}`)
+
                             resolve(parsed);
                         }).catch((err) => {console.log("error while saving in cache", err)});
             } else {
@@ -125,7 +128,8 @@ function getAndDrawPRDistribution(date){
         languages.sort((a,b) => (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0));
         drawPie(languages);
         console.log(`Languages distribution in pull requests :`, languages);
-        document.querySelector('#debug').innerHTML = JSON.stringify(languages, null, 2);
+        debug.style.display = "block";
+        debug.innerHTML = JSON.stringify(languages, null, 2);
     });
 }
 

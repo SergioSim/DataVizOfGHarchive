@@ -1,16 +1,32 @@
+<!DOCTYPE html>
 <html>
-<body>
-  <h2>Répartition des langages utilisés dans les Pull requests</h2>
-  <label for="dateWanted">Date voulue :</label>
-  <input type="text" id="dateWanted" placeholder="2018-01-01-15" />
-  <button id="startAnalysis">Analyser!</button>
-  <progress id="downloadProgress" value="0"></progress>
-  <div id="pie_chart">
+  <head>
+    <meta charset="utf-8">
+    <title>GHArchive Data visualisation</title>
+    <style>
+      .debug-zone {
+        display: none;
+        background-color: #333;
+        overflow: scroll;
+        height: 300px;
+        color: #f0f0f0;
+        padding: 1em;
+      }
 
-  </div>
-  <pre id="debug">
+      .progress {
+        display: none;
+      }
+    </style>
+  </head>
 
-  </pre>
-  <script src="./index.js"></script>
-</body>
+  <body>
+    <h2>Répartition des langages utilisés dans les Pull requests</h2>
+    <label for="dateWanted">Date :</label>
+    <input type="text" id="dateWanted" value="2018-01-01-15" />
+    <button id="startAnalysis">Analyser!</button>
+    <progress id="downloadProgress" value="0" class="progress"></progress>
+    <div id="pie_chart"></div>
+    <pre id="debug" class="debug-zone"></pre>
+    <script src="./index.js"></script>
+  </body>
 </html>
