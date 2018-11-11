@@ -4,6 +4,24 @@
     <meta charset="utf-8">
     <title>GHArchive Data visualisation</title>
     <style>
+      @font-face {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Poppins Regular'), local('Poppins-Regular'),
+            url('./fonts/poppins-v5-latin-regular.woff2') format('woff2'), 
+            url('./fonts/poppins-v5-latin-regular.woff') format('woff');
+      }
+      body {
+        font-family: "Poppins", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+
+      }
+
+      
+      h2 {
+        font-size: 1.3em;
+      }
       .debug-zone {
         display: none;
         background-color: #333;
@@ -16,16 +34,73 @@
       .progress {
         display: none;
       }
+
+      .nav {
+        display: flex;
+        flex-direction: row;
+        background-color: #333;
+      }
+
+      .nav a {
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+      }
+
+      .nav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+
+      .nav a.active {
+        background-color: #3f51b5;
+        color: white;
+      }
+
+      .nav .title {
+        padding: 1em;
+        color: white;
+      }
+
+      .analysis-container {
+        padding: 1em;
+      }
+
+      .date-label, .analysis-start {
+        padding: .4em;
+      }
+
+      .analysis-start {
+        padding: .4em;
+        background-color: #333;
+        color: #fff;
+        border-radius: 2px;
+      }
+
+      .pieN1 {
+        padding-top: 1em;
+      }
     </style>
   </head>
 
   <body>
-    <h2>Répartition des langages utilisés dans les Pull requests</h2>
-    <label for="dateWanted">Date :</label>
-    <input type="text" id="dateWanted" value="2018-01-01-15" />
-    <button id="startAnalysis">Analyser!</button>
-    <progress id="downloadProgress" value="0" class="progress"></progress>
-    <div id="pie_chart"></div>
+    <div class="nav">
+        <span class="title">Analyse GitHub via GHArchive</span>
+        <a href="#analysis1" class="active">Analyse 1</a>
+      </div>
+    <div class="analysis-container">
+      <div id="analysis1">
+          <h2>Répartition des langages utilisés dans les Pull requests</h2>
+          <label for="dateWanted">Date :</label>
+          <input type="text" class="date-label" id="dateWanted" value="2018-01-01-15" />
+          <button id="startAnalysis" class="analysis-start">Analyser!</button>
+          <progress id="downloadProgress" value="0" class="progress"></progress>
+          <div id="pie_chart" class="pieN1"></div>
+      </div>
+    </div>
+
     <pre id="debug" class="debug-zone"></pre>
     <script src="./index.js"></script>
   </body>

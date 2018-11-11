@@ -37,7 +37,7 @@ export function buildEvents(objects){
  * Uncompress gz with Pako (only lib who can ungz in Browser)
  * return a PROMISE (see usage below)
  *
- * @param {*} date (2015-01-01-15) (year-month-day-hour)
+ * @param {string} date (2015-01-01-15) (year-month-day-hour)
  * @param {HTMLElement} progress 
  * @returns promise who contains parsed data
  */

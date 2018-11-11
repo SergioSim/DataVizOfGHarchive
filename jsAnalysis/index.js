@@ -7,6 +7,7 @@ const debugZone = document.querySelector('#debug');
 const startButton = document.querySelector('#startAnalysis');
 const dateField = document.querySelector('#dateWanted');
 
+// UI Listeners
 startButton.addEventListener('click', () => {
     const dateWanted = document.querySelector('#dateWanted').value;
     getAndDrawPRDistribution(dateWanted);
