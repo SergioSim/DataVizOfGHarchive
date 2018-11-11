@@ -98,6 +98,13 @@ function getAndDrawCommonWords(date){
                 }
             }
         }
-        console.log(commitMessageSet);
+
+        const commitMessages = Array.from(commitMessageSet);
+        let words = [];
+        commitMessages.forEach((commitMessage) => {
+            words.push(commitMessage.split(' '));
+        });
+        words = [].concat.apply([], words);
+        console.log(words);
     });
 }
