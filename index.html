@@ -9,16 +9,15 @@
         font-style: normal;
         font-weight: 400;
         src: local('Poppins Regular'), local('Poppins-Regular'),
-            url('./fonts/poppins-v5-latin-regular.woff2') format('woff2'), 
-            url('./fonts/poppins-v5-latin-regular.woff') format('woff');
+            url('./assets/fonts/poppins-v5-latin-regular.woff2') format('woff2'), 
+            url('./assets/fonts/poppins-v5-latin-regular.woff') format('woff');
       }
+
       body {
         font-family: "Poppins", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
-
       }
 
-      
       h2 {
         font-size: 1.3em;
       }
@@ -37,21 +36,16 @@
 
       .nav {
         display: flex;
+        align-items: center;
         flex-direction: row;
+        justify-content: space-between;
         background-color: #333;
       }
 
       .nav a {
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
+        padding: .5em;
         text-decoration: none;
         font-size: 17px;
-      }
-
-      .nav a:hover {
-        background-color: #ddd;
-        color: black;
       }
 
       .nav a.active {
@@ -130,13 +124,21 @@
       .pie svg {
         margin: 0 5em;
       }
-      
+
+      .github {
+        display: flex;
+      }
+
+      .github img {
+        width: 22px;
+      }
     </style>
   </head>
 
   <body>
     <div class="nav">
         <span class="title">Analyse GitHub via GHArchive</span>
+        <span class="github"><a href="https://github.com/SergioSim/DataVizOfGHarchive" target="_blank" class="github-link"><img src="./assets/GitHub-Mark-Light-32px.png"></a></span>
       </div>
     <div class="analysis-container"></div>
     <pre id="debug" class="debug-zone"></pre>

@@ -1,6 +1,6 @@
 {
   "name": "gharchive-visualisator-app",
-  "version": "1.0.beta",
+  "version": "1.0.0-alpha",
   "description": "",
   "main": "index.js",
   "scripts": {
