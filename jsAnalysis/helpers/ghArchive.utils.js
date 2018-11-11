@@ -38,8 +38,7 @@ export function buildEvents(objects){
  * return a PROMISE (see usage below)
  *
  * @param {*} date (2015-01-01-15) (year-month-day-hour)
- * @param {HTMLElement} progressElement progress
- * @returns
+ * @returns promise who contains parsed data
  */
 export async function getFromGHArchive(date) {
     const cached = await get(date);
@@ -80,7 +79,7 @@ export async function getFromGHArchive(date) {
                 return set(date, parsed)
                         .then(() => {
                             console.log(`Inserted parsed events into IndexedDB for ${date}`)
-
+                            this.style.display = 'none';
                             resolve(parsed);
                         }).catch((err) => {console.log("error while saving in cache", err)});
             } else {
