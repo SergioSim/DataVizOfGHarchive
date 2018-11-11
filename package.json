@@ -1,23 +1,22 @@
 {
-  "name": "dataviz",
-  "version": "1.0.0",
+  "name": "gharchive-visualisator-app",
+  "version": "1.0.beta",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "parcel index.html",
-    "build": "parcel build index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "parcel build index.html"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "parcel-bundler": "^1.10.3"
-  },
+  "keywords": ["GHArchive", "JavaScript", "WebApp", "D3.js"],
+  "author": "Idryss Bourdier, Léonard Cherouvrier, Sergio Simonian, Émé Niteka",
+  "license": "WTFPL",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "d3": "^5.7.0",
     "idb-keyval": "^3.1.0",
     "pako": "^1.0.6"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.10.3"
   }
 }
