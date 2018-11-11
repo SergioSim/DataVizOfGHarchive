@@ -124,6 +124,8 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans l
         drawPie(firstTwentyWords, date, this.pie, "pair", "occurences");
         console.timeEnd();
         console.log(firstTwentyWords);
+        debugZone.style.display = "block";
+        debugZone.innerHTML = JSON.stringify(firstTwentyWords, null, 2);
     }
     catch (err) {
         this.input.style.border = "1px solid red";
