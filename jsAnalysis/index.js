@@ -140,9 +140,11 @@ function getAndDrawNRDistribution(date){
 getAndDrawCommonWords("2018-01-01-15");
 
 function getAndDrawCommonWords(date){
-    console.log(commonWords.default);
+    const commonEnglishWords = commonWords.default;
     return download(date).then((events) => {
+
         const pushEvents = filterDataByEvent(events, eventTypes.push);
+
         let commitMessageSet = new Set();
         for(const push of pushEvents){
             const commits = push.payload.commits;
@@ -155,11 +157,18 @@ function getAndDrawCommonWords(date){
         }
 
         const commitMessages = Array.from(commitMessageSet);
+
         let words = [];
         commitMessages.forEach((commitMessage) => {
-            words.push(commitMessage.split(' '));
+            const splitSpace = commitMessage.split(' ');
+            words.push(splitSpace);
         });
-        words = [].concat.apply([], words);
+        words = [].concat.apply([], words)
+            .map((word) => word.trim())
+            .filter((word) => commonEnglishWords.indexOf(word) == -1)
+            .filter((word) => word && word.length > 1)
+            .sort();
+
         console.log(words);
     });
 }
