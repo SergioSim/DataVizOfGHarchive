@@ -8,7 +8,26 @@
     "build": "parcel build index.html"
   },
   "keywords": ["GHArchive", "JavaScript", "WebApp", "D3.js"],
-  "author": "Idryss Bourdier, Léonard Cherouvrier, Sergio Simonian, Émé Niteka",
+  "contributors": [
+    { 
+      "name" : "Léonard Cherouvrier", 
+      "email" : "leonard.cherouvrier@etu.unice.fr",
+      "url" : "https://www.leonard.zone"
+    },
+    { 
+      "name" : "Sergio Simonian", 
+      "email" : "sergio.simonian@etu.unice.fr"
+    },
+    { 
+      "name" : "Idryss Bourdier", 
+      "email" : "idryss.bourdier@etu.unice.fr",
+      "url" : "https://www.idryssbourdier.fr/"
+    },
+    {
+      "name" : "Émé Niteka", 
+      "email" : "eme.niteka@etu.unice.fr"
+    }
+  ],
   "license": "WTFPL",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
