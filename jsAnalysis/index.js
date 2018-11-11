@@ -1,6 +1,8 @@
 // Used to make an ES2015+ ready environment on current browsers
 require("@babel/polyfill");
 
+const commonWords = require('./helpers/commonWords');
+
 // HTML Elements
 const downloadProgress = document.querySelector('#downloadProgress');
 const debugZone = document.querySelector('#debug');
@@ -77,5 +79,14 @@ function getAndDrawPRDistribution(date){
         debugZone.innerHTML = JSON.stringify(languages, null, 2);
     }).catch((err) => {
         dateField.style.border = "1px solid red";
+    });
+}
+
+getAndDrawCommonWords("2018-01-01-15");
+
+function getAndDrawCommonWords(date){
+    console.log(commonWords.default);
+    return download(date).then((events) => {
+        console.log(events);
     });
 }
