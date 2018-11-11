@@ -1,5 +1,7 @@
+require('babel-polyfill');
 const d3 = require('d3');
 const pako = require('pako');
+const {get, set} = require('idb-keyval');
 
 document.querySelector('#startAnalysis').addEventListener('click', () => {
     getAndDrawPRDistribution(document.querySelector('#dateWanted').value);
@@ -13,10 +15,16 @@ document.querySelector('#startAnalysis').addEventListener('click', () => {
  * @param {*} date (2015-01-01-15) (year-month-day-hour)
  * @returns
  */
-function getFromGHArchive(date) {
-    console.log("Starting download from GHArchive for date", date);
+async function getFromGHArchive(date) {
+    const cached = await get(date);
+    if(cached){
+        console.log('retrieved from cache');
+        return cached;
+    }
 
     return new Promise((resolve, reject) => {
+        console.log("Starting download from GHArchive for date", date);
+
         const ghArchiveURL = `https://cors-anywhere.herokuapp.com/http://data.gharchive.org/${date}.json.gz`;
         const xhr = new XMLHttpRequest();
         xhr.open('GET', ghArchiveURL, true);
@@ -39,7 +47,13 @@ function getFromGHArchive(date) {
                         // console.log('invalid object', err, githubEvent);
                     }
                 }
-                resolve(parsed);
+
+
+                return set(date, parsed)
+                        .then(() => {
+                            console.log(`Inserted parsed events into IndexedDB for ${date}`)
+                            resolve(parsed);
+                        }).catch((err) => {console.log("error while saving in cache", err)});
             } else {
                 reject();
             }
