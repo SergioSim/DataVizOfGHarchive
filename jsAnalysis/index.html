@@ -80,7 +80,11 @@
       }
 
       .pie {
-        padding-top: 1em;
+        padding: 1em;
+      }
+
+      svg {
+        overflow: visible;
       }
 
       .accordion {
@@ -105,14 +109,29 @@
           display: none;
           overflow: hidden;
       }
+
+      svg path {
+        transition: transform .3s;
+      }
+
+      svg path:hover {
+        transform: scale(1.1);
+      }
+
+      svg path+text {
+        font-size: 0.6em;
+      }
+
+      svg path:hover+text {
+        font-size: 1.0em;
+      }
+      
     </style>
   </head>
 
   <body>
     <div class="nav">
         <span class="title">Analyse GitHub via GHArchive</span>
-        <a href="#analysis1" class="active">Analyse 1</a>
-        <a href="#analysis2">Analyse 2</a>
       </div>
     <div class="analysis-container"></div>
     <pre id="debug" class="debug-zone"></pre>

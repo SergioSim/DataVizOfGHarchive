@@ -10,15 +10,15 @@ export function drawPie(data,date,idchart, text, value){
         width = window.innerWidth / 2;
     }
     const height = width;
-    const maginTop = 40;
+    const marginTop = 100;
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select(idchart)
             .append("svg")
             .attr("width", width)
-            .attr("height", height + maginTop)
+            .attr("height", height + marginTop)
             .append("g")
-            .attr("transform", `translate(${width / 2}, ${height / 2 + maginTop})`);
+            .attr("transform", `translate(${width / 2}, ${height / 2 + marginTop})`);
 
     const color = d3.scaleOrdinal().range(materialColors.default);
 
@@ -31,8 +31,8 @@ export function drawPie(data,date,idchart, text, value){
         .innerRadius(0);
     
     const labelArc = d3.arc()
-	.outerRadius(radius - 80)
-	.innerRadius(radius - 80);
+	.outerRadius(radius + 20)
+	.innerRadius(radius + 20);
 
     const g = svg.selectAll("path")
         .data(pie(data))
@@ -52,7 +52,7 @@ export function drawPie(data,date,idchart, text, value){
 
     svg.append("text")
         .attr("x", 0)             
-        .attr("y", - height/2 - maginTop/2)
+        .attr("y", - height/2 - marginTop/2)
         .attr("text-anchor", "middle")  
         .style("font-size", "16px") 
         .style("text-decoration", "underline")  

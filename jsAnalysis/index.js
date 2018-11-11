@@ -82,21 +82,26 @@ function(){
                 if(commitMessage && commitMessage.indexOf('Merge') == -1){
                     // Split words
                     const commitWords = commitMessage.split(' ');
+                    let i = 0;
                     for(const word of commitWords){
+                        const isTherePairOfWord = word !== undefined && commitWords[i+1] !== undefined;
+                        if(!isTherePairOfWord) continue;
                         // to lowercase to avoid "add", "Add"
-                        const lowerCased = word.toLowerCase();
-                        if(lowerCased === date.substring(0, date.length-3)) continue;
+                        const wordPair = word.toLowerCase() + " "+ commitWords[i+1].toLowerCase();
+                        if(wordPair === date.substring(0, date.length-3)) continue;
                         // filter english words
-                        if(commonWords.indexOf(lowerCased) !== -1) continue;
+                        if(commonWords.indexOf(wordPair) !== -1) continue;
                         // filter if length 0
-                        if(lowerCased.length === 0) continue;
+                        if(wordPair.length === 0) continue;
                         // Increment or append
-                        if(wordsMap[lowerCased]){
-                            wordsMap[lowerCased].occurences++;
+                        if(wordsMap[wordPair]){
+                            wordsMap[wordPair].occurences++;
                         } else {
-                            wordsMap[lowerCased] = { word: lowerCased, occurences: 1};
+                            wordsMap[wordPair] = { pair: wordPair, occurences: 1};
                         }
                     }
+                    
+                    i++;
                 }
             }
         }
@@ -106,7 +111,13 @@ function(){
         const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
         // Take only 20
         const firstTwentyWords = wordsSorted.splice(0,20);
-        drawPie(firstTwentyWords, date, this.pie, "word", "occurences");
+        console.log({
+            context: 'textClassification',
+            samples: words.length,
+            classes: 'commits words',
+            samplesPerClass: 2,
+        })
+        drawPie(firstTwentyWords, date, this.pie, "pair", "occurences");
         console.timeEnd();
         console.log(firstTwentyWords);
     }).catch((err) => {
