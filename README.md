@@ -1,5 +1,10 @@
 # GHArchive DataViz (using D3.js)
 
+[![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/winter-is-coming.svg)](https://forthebadge.com)
+
 View it like a "Postman" like webapp, but for the GHArchive, with D3 Graphs
 
 ## Demo :
