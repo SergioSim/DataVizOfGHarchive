@@ -3,15 +3,15 @@ require("@babel/polyfill");
 
 const commonWords = require('./helpers/commonWords').default;
 const UIUtils = require('./helpers/ui.utils').default;
+// Custom helpers 
+// D3 Related should be exported from that package
+const { drawPie } = require('./helpers/d3.utils');
+
 // HTML Elements
-const downloadProgress = document.querySelector('#downloadProgress');
 const debugZone = document.querySelector('#debug');
 
 UIUtils.bindAccordions();
 
-// Custom helpers 
-// D3 Related should be exported from that package
-const { drawPie } = require('./helpers/d3.utils');
 // GHArchive utils
 const { eventTypes, getFromGHArchive, filterDataByEvent } = require('./helpers/ghArchive.utils');
 // Analysis #1 Languages distributions in Pull requests for a given date

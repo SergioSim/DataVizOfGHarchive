@@ -1,4 +1,4 @@
-const makeAnalysisContainer = (id, title, onStart) => {
+export function makeAnalysisContainer (id, title, onStart) {
     const container = document.querySelector('.analysis-container');
     const div = document.createElement('div');
 
@@ -33,7 +33,7 @@ const makeAnalysisContainer = (id, title, onStart) => {
 
     return true;
 }
-const bindAccordions = () => {
+export function bindAccordions() {
     const acc = document.querySelectorAll(".accordion");
     for(const accordion of acc){
         accordion.addEventListener('click', () => {
