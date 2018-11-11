@@ -1,5 +1,7 @@
 # GHArchive DataViz (using D3.js)
 
+View it like a "Postman" like webapp, but for the GHArchive, with D3 Graphs
+
 ## Demo :
 [GHArchive Visualisation](https://gharchive.lemondeenchantier.com/)
 
@@ -23,4 +25,3 @@ $ npm install
 ```bash
 $ npm run dev
 ```
-
