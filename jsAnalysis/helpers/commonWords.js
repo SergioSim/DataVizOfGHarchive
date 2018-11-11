@@ -80,6 +80,7 @@ const words = [
     "support",
     "translated",
     "code",
+    "files","update",
     "updated", "updated:", "updates", "removed", "adding", "fixes", "make", "bug", "build", "files", "first", "initial", "changes", "function", "git", "data", "default"
 ];
 export default words;

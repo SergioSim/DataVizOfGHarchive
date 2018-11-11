@@ -63,6 +63,7 @@ function(){
 
 UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans les commits messages à une heure donnée", 
 function(){
+    // https://developers.google.com/machine-learning/guides/text-classification/step-2
     const date = this.input.value;
     if(!date){
         return;
@@ -114,8 +115,7 @@ function(){
         console.log({
             context: 'textClassification',
             samples: words.length,
-            classes: 'commits words',
-            samplesPerClass: 2,
+            classes: 'commits words'
         })
         drawPie(firstTwentyWords, date, this.pie, "pair", "occurences");
         console.timeEnd();
