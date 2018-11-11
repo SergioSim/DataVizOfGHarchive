@@ -1,3 +1,11 @@
+/**
+ * Append in page an accordion containing analysis
+ *
+ * @export
+ * @param {string} id
+ * @param {string} title
+ * @param {callback} onStart
+ */
 export function makeAnalysisContainer (id, title, onStart) {
     const container = document.querySelector('.analysis-container');
     const div = document.createElement('div');
@@ -30,9 +38,13 @@ export function makeAnalysisContainer (id, title, onStart) {
 
     onStart = onStart.bind(context);
     div.querySelector('.analysis-start').addEventListener('click', onStart);
-
-    return true;
 }
+
+/**
+ * Used to bind accordions after every analysis is on page
+ *
+ * @export
+ */
 export function bindAccordions() {
     const acc = document.querySelectorAll(".accordion");
     for(const accordion of acc){
