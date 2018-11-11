@@ -4,21 +4,21 @@ const materialColors = require('./materialColors');
 /*
     Simple pie chart with D3
 */
-export function drawPie(data){
+export function drawPie(data,date){
     let width = window.innerWidth;
     if(width > 600){
         width = window.innerWidth / 2;
     }
     const height = width;
-
+    const maginTop = 40;
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select("#pie_chart")
             .append("svg")
             .attr("width", width)
-            .attr("height", height)
+            .attr("height", height + maginTop)
             .append("g")
-            .attr("transform", `translate(${width / 2}, ${height / 2})`);
+            .attr("transform", `translate(${width / 2}, ${height / 2 + maginTop})`);
 
     const color = d3.scaleOrdinal().range(materialColors.default);
 
@@ -49,4 +49,12 @@ export function drawPie(data){
         .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
         .text(function(d) { return d.data.language ? d.data.language : 'Undefined';})
         .style("fill", "black");
+
+    svg.append("text")
+        .attr("x", 0)             
+        .attr("y", - height/2 - maginTop/2)
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(date);
 }
