@@ -70,7 +70,7 @@ function getAndDrawPRDistribution(date){
         // Sort languages in ascending order
         languages.sort((a,b) => a.count - b.count);
         // draw d3 pie
-        drawPie(languages);
+        drawPie(languages,date);
         dateField.style.border = "";
 
         // @tools debug
