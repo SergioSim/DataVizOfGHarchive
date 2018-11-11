@@ -125,12 +125,9 @@ function getAndDrawCommonWords(date){
         }
         const words = Object.keys(wordsMap).map(e => wordsMap[e]);
         const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences)
-                            .filter((word) => commonEnglishWords.indexOf(word) == -1);// filter english words
-        console.log(wordsSorted);
-        /* 
-        const occurencesSorted = occurencesArr.sort((occA, occB) => occB.occurences - occA.occurences);
-        const firstTwentyWords = occurencesSorted.splice(0, 20);
+                            .filter((word) => commonEnglishWords.indexOf(word.word) == -1);// filter english words
+        const firstTwentyWords = wordsSorted.splice(0,20);
         drawPie(firstTwentyWords, date, "#pie_chartCommonWords", "word", "occurences");
-        console.log(firstTwentyWords);*/
+        console.log(firstTwentyWords);
     });
 }
