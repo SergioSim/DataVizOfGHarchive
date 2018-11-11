@@ -10,8 +10,12 @@ startButton.addEventListener('click', () => {
     getAndDrawPRDistribution(dateWanted);
 });
 
+// Custom helpers 
+// D3 Related should be exported from that package
 const { drawPie } = require('./helpers/d3.utils');
+// GHArchive utils
 const { eventTypes, getFromGHArchive } = require('./helpers/ghArchive.utils');
+// Just a simple @override in Java, but in JS it's just a one liner :D
 const download = (date) => getFromGHArchive(date, downloadProgress);
 
 // Analysis #1 Languages distributions in Pull requests for a given date
