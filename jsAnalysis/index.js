@@ -113,6 +113,7 @@ function getAndDrawCommonWords(date){
                     const commitWords = commitMessage.split(' ');
                     for(const word of commitWords){
                         const lowerCased = word.toLowerCase();
+                        if(commonEnglishWords.indexOf(lowerCased) !== -1) continue;
                         if(lowerCased.length === 0) continue;
                         if(wordsMap[lowerCased]){
                             wordsMap[lowerCased].occurences++;
@@ -124,8 +125,7 @@ function getAndDrawCommonWords(date){
             }
         }
         const words = Object.keys(wordsMap).map(e => wordsMap[e]);
-        const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences)
-                            .filter((word) => commonEnglishWords.indexOf(word.word) == -1);// filter english words
+        const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
         const firstTwentyWords = wordsSorted.splice(0,20);
         drawPie(firstTwentyWords, date, "#pie_chartCommonWords", "word", "occurences");
         console.log(firstTwentyWords);
