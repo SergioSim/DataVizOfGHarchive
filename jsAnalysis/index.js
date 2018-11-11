@@ -6,7 +6,6 @@ const UIUtils = require('./helpers/ui.utils').default;
 // HTML Elements
 const downloadProgress = document.querySelector('#downloadProgress');
 const debugZone = document.querySelector('#debug');
-const dateField = document.querySelector('#dateWanted');
 
 UIUtils.bindAccordions();
 
@@ -15,16 +14,13 @@ UIUtils.bindAccordions();
 const { drawPie } = require('./helpers/d3.utils');
 // GHArchive utils
 const { eventTypes, getFromGHArchive, filterDataByEvent } = require('./helpers/ghArchive.utils');
-// Just a simple @override in Java, but in JS it's just a one liner :D
-const download = (date) => getFromGHArchive(date, downloadProgress);
-
 // Analysis #1 Languages distributions in Pull requests for a given date
 UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilisés dans les pull requests à une date donnée", 
 function(){
     const date = this.input.value;
     if(!date) return;
 
-    return download(date).then((parsedObjects) => {
+    return getFromGHArchive(date, this.progress).then((parsedObjects) => {
         // Filtering every pullRequest
         const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
 
@@ -60,8 +56,8 @@ function(){
         debugZone.style.display = "block";
         debugZone.innerHTML = JSON.stringify(languages, null, 2);
     }).catch((err) => {
-        debugger;
         this.input.style.border = "1px solid red";
+        throw err;
     });
 });
 
@@ -71,7 +67,7 @@ function(){
     if(!date){
         return;
     }
-    return download(this.input.value).then((events) => {
+    return getFromGHArchive(date, this.progress).then((events) => {
         const pushEvents = filterDataByEvent(events, eventTypes.push);
 
         const wordsMap = {};
@@ -113,6 +109,9 @@ function(){
         drawPie(firstTwentyWords, date, this.pie, "word", "occurences");
         console.timeEnd();
         console.log(firstTwentyWords);
+    }).catch((err) => {
+        this.input.style.border = "1px solid red";
+        throw err;
     });
 });
 

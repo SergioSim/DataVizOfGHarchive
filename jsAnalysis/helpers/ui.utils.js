@@ -6,6 +6,7 @@ const makeAnalysisContainer = (id, title, onStart) => {
     const panel = `
     <div class="panel">
           <input type="text" class="date-label" value="2018-01-01-15" />
+          <progress class="progress" value="0"></progress>
           <button class="analysis-start">Analyser!</button>
           <div id="pie-${id}" class="pie"></div>
         </div>
@@ -17,12 +18,14 @@ const makeAnalysisContainer = (id, title, onStart) => {
 
     const input = div.querySelector('.date-label');
     const pie = div.querySelector('.pie');
+    const progress = div.querySelector('.progress');
 
     const context = {
         id,
         title,
         pie,
-        input
+        input,
+        progress
     };
 
     onStart = onStart.bind(context);
