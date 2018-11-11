@@ -13,6 +13,19 @@ startButton.addEventListener('click', () => {
     getAndDrawPRDistribution(dateWanted);
 });
 
+const acc = document.querySelectorAll(".accordion");
+for(const accordion of acc){
+    accordion.addEventListener('click', () => {
+        accordion.classList.toggle('active');
+        const panel = accordion.nextElementSibling;
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+        } else {
+            panel.style.display = "block";
+        }
+    })
+}
+
 // Custom helpers 
 // D3 Related should be exported from that package
 const { drawPie } = require('./helpers/d3.utils');
@@ -29,9 +42,7 @@ function getAndDrawPRDistribution(date){
 
     return download(date).then((parsedObjects) => {
         // Filtering every pullRequest
-        const pullRequests = parsedObjects.filter((object) => {
-            return object.type === eventTypes.pullRequest
-        });
+        const pullRequests = parsedObjects.filter((object) => object.type === eventTypes.pullRequest);
 
         // Instanciate a new languages object
         const languages = [];
@@ -49,9 +60,7 @@ function getAndDrawPRDistribution(date){
                 languages.push({language: languageUsed, count: 1});
             } else {
                 // Find language in languages array
-                const lang = languages.find((langage) => {
-                    return langage.language === languageUsed;
-                })
+                const lang = languages.find((langage) =>  langage.language === languageUsed);
                 // increment
                 lang.count++;
             }

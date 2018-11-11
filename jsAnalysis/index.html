@@ -82,6 +82,29 @@
       .pieN1 {
         padding-top: 1em;
       }
+
+      .accordion {
+          background-color: #eee;
+          color: #444;
+          cursor: pointer;
+          padding: 18px;
+          width: 100%;
+          text-align: left;
+          border: none;
+          outline: none;
+          transition: 0.4s;
+      }
+
+      .active, .accordion:hover {
+          background-color: #ccc;
+      }
+
+      .panel {
+          padding: 0 18px;
+          background-color: white;
+          display: none;
+          overflow: hidden;
+      }
     </style>
   </head>
 
@@ -91,14 +114,20 @@
         <a href="#analysis1" class="active">Analyse 1</a>
       </div>
     <div class="analysis-container">
-      <div id="analysis1">
+        <button class="accordion" id="analysis1">Analyse 1</button>
+        <div class="panel">
           <h2>Répartition des langages utilisés dans les Pull requests</h2>
           <label for="dateWanted">Date :</label>
           <input type="text" class="date-label" id="dateWanted" value="2018-01-01-15" />
           <button id="startAnalysis" class="analysis-start">Analyser!</button>
           <progress id="downloadProgress" value="0" class="progress"></progress>
           <div id="pie_chart" class="pieN1"></div>
-      </div>
+        </div>
+        
+        <button class="accordion">Analyse 2</button>
+        <div class="panel">
+          <h2>Mots les plus utilisées dans les commits à une heure donnée</h2>
+        </div>
     </div>
 
     <pre id="debug" class="debug-zone"></pre>
