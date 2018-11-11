@@ -96,7 +96,6 @@
           text-align: left;
           border: none;
           outline: none;
-          transition: 0.4s;
       }
 
       .active, .accordion:hover {
@@ -106,8 +105,10 @@
       .panel {
           padding: 0 18px;
           background-color: white;
-          display: none;
+          opacity: 0;
+          height: 0;
           overflow: hidden;
+          transition: opacity .25s ease-in-out;
       }
 
       svg path {

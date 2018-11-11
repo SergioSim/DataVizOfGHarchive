@@ -51,10 +51,12 @@ export function bindAccordions() {
         accordion.addEventListener('click', () => {
             accordion.classList.toggle('active');
             const panel = accordion.nextElementSibling;
-            if (panel.style.display === "block") {
-                panel.style.display = "none";
+            if (panel.style.opacity === "1") {
+                panel.style.opacity = "0";
+                panel.style.height = "0";
             } else {
-                panel.style.display = "block";
+                panel.style.opacity = "1";
+                panel.style.height = "auto";
             }
         })
     }
