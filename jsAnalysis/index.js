@@ -124,7 +124,7 @@ function getAndDrawNRDistribution(date){
         // Sort languages in ascending order
         languages.sort((a,b) => a.count - b.count);
         // draw d3 pie
-        drawPie(languages, "#pie_chart3");
+        drawPie(languages,date,"#pie_chart3");
         dateField3.style.border = "";
 
         // @tools debug
