@@ -9,7 +9,6 @@ const debugZone = document.querySelector('#debug');
 // TODO XXX : Cleanup this mess (blurp)
 const startButton = document.querySelector('#startAnalysis');
 const startButton2 = document.querySelector('#startAnalysis2');
-const startButton3 = document.querySelector('#startAnalysis3');
 const dateField = document.querySelector('#dateWanted');
 
 // UI Listeners
@@ -21,11 +20,6 @@ startButton.addEventListener('click', () => {
 startButton2.addEventListener('click', () => {
     const dateWanted = document.querySelector('#dateWanted2').value;
     getAndDrawCommonWords(dateWanted);
-});
-
-startButton3.addEventListener('click', () => {
-    const dateWanted3 = document.querySelector('#dateWanted3').value;
-    getAndDrawNRDistribution(dateWanted3);
 });
 
 const acc = document.querySelectorAll(".accordion");
