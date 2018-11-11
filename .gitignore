@@ -1,2 +1,6 @@
 2015-01-01-0.json.gz
 .Rhistory
+node_modules
+.cache
+dist
+.DS_Store
