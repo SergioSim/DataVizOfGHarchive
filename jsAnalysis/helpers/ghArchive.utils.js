@@ -69,25 +69,10 @@ export async function getFromGHArchive(date, progress) {
         xhr.onerror = 
         xhr.onload = (e) => {
             if (xhr.status == 200) {
-                const data=pako.inflate(new Uint8Array(xhr.response),{to:'string'});
-                const objects = data.split('\n');
-                const parsed = [];
-                for(const githubEvent of objects){
-                    try {
-                        const json = JSON.parse(githubEvent);
-                        parsed.push(json);
-                    } catch(err){
-                        // console.log('invalid object', err, githubEvent);
-                    }
-                }
+                const parsed = parseGithubData(xhr);
 
-
-                return set(date, parsed)
-                        .then(() => {
-                            console.log(`Inserted parsed events into IndexedDB for ${date}`)
-                            progress.style.display = 'none';
-                            resolve(parsed);
-                        }).catch((err) => {debugger; console.log("error while saving in cache", err)});
+                return cacheData(date, parsed, progress, resolve)
+                                .catch((err) => {debugger; console.log("error while saving in cache", err)});
             } else {
                 onError()
                 reject();
@@ -96,6 +81,31 @@ export async function getFromGHArchive(date, progress) {
         
         xhr.send(null);
     });
+}
+
+function cacheData(date, parsed, progress, resolve) {
+    return set(date, parsed)
+        .then(() => {
+            console.log(`Inserted parsed events into IndexedDB for ${date}`);
+            progress.style.display = 'none';
+            resolve(parsed);
+        });
+}
+
+function parseGithubData(xhr) {
+    const data = pako.inflate(new Uint8Array(xhr.response), { to: 'string' });
+    const objects = data.split('\n');
+    const parsed = [];
+    for (const githubEvent of objects) {
+        try {
+            const json = JSON.parse(githubEvent);
+            parsed.push(json);
+        }
+        catch (err) {
+            // console.log('invalid object', err, githubEvent);
+        }
+    }
+    return parsed;
 }
 
 export function filterDataByEvent(data, eventType){
