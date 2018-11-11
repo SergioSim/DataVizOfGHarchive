@@ -38,9 +38,10 @@ export function buildEvents(objects){
  * return a PROMISE (see usage below)
  *
  * @param {*} date (2015-01-01-15) (year-month-day-hour)
+ * @param {HTMLElement} progress 
  * @returns promise who contains parsed data
  */
-export async function getFromGHArchive(date) {
+export async function getFromGHArchive(date, progress) {
     const cached = await get(date);
     if(cached){
         console.log('retrieved from cache');
@@ -49,7 +50,7 @@ export async function getFromGHArchive(date) {
 
     return new Promise((resolve, reject) => {
         console.log("Starting download from GHArchive for date", date);
-        this.style.display = 'block';
+        progress.style.display = 'block';
 
         const ghArchiveURL = `https://cors-anywhere.herokuapp.com/http://data.gharchive.org/${date}.json.gz`;
         const xhr = new XMLHttpRequest();
@@ -57,8 +58,8 @@ export async function getFromGHArchive(date) {
         xhr.responseType = 'arraybuffer';
         xhr.onprogress = (e) => {
             if (e.lengthComputable) {
-                this.max = e.total;
-                this.value = e.loaded;
+                progress.max = e.total;
+                progress.value = e.loaded;
             }
         }
         xhr.onload = (e) => {
@@ -79,7 +80,7 @@ export async function getFromGHArchive(date) {
                 return set(date, parsed)
                         .then(() => {
                             console.log(`Inserted parsed events into IndexedDB for ${date}`)
-                            this.style.display = 'none';
+                            progress.style.display = 'none';
                             resolve(parsed);
                         }).catch((err) => {console.log("error while saving in cache", err)});
             } else {

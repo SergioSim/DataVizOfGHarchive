@@ -12,7 +12,7 @@ startButton.addEventListener('click', () => {
 
 const { drawPie } = require('./helpers/d3.utils');
 const { eventTypes, getFromGHArchive } = require('./helpers/ghArchive.utils');
-const download = getFromGHArchive.bind(downloadProgress);
+const download = (date) => getFromGHArchive(date, downloadProgress);
 
 // Analysis #1 Languages distributions in Pull requests for a given date
 function getAndDrawPRDistribution(date){
