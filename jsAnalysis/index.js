@@ -109,6 +109,7 @@ function getAndDrawCommonWords(date){
                     for(const word of commitWords){
                         // to lowercase to avoid "add", "Add"
                         const lowerCased = word.toLowerCase();
+                        if(lowerCased === date.substring(0, date.length-3)) continue;
                         // filter english words
                         if(commonEnglishWords.indexOf(lowerCased) !== -1) continue;
                         // filter if length 0
