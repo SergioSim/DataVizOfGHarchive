@@ -1,4 +1,4 @@
-require('babel-polyfill');
+require("@babel/polyfill");
 const d3 = require('d3');
 const pako = require('pako');
 const {get, set} = require('idb-keyval');
