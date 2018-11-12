@@ -75,11 +75,21 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
         .text(date);
 }
 
-export function drawHorizontalBarGraph(anchor, series, label, value){ 
+export function drawHorizontalBarGraph(anchor, series, label, value, replace){ 
+    if(replace){
+        const node = document.querySelector('#'+anchor.id);
+        if(node.hasChildNodes()){
+            const isHere = node.classList.contains('pie')
+            if(isHere){
+                node.removeChild(node.childNodes[0]);
+            }
+        }
+    }
         const x = d3.scaleLinear()
           .domain([0, d3.max(series, function(d) { return d[value] })])
           .range([0, 100]);
-      
+          const color = d3.scaleOrdinal().range(materialColors);
+
         const segment = d3
           .select(anchor)
           .append("div").classed("horizontal-bar-graph", true)
@@ -96,7 +106,7 @@ export function drawHorizontalBarGraph(anchor, series, label, value){
         segment
           .append("div").classed("horizontal-bar-graph-value", true)
             .append("div").classed("horizontal-bar-graph-value-bar", true)
-              .style("background-color", function(d) { return d.color ? d.color : "#333" })
+              .style("background-color", function(d, i) { return d.color ? d.color : color(i) })
               .text(function(d) { return d[value] ? d[value] : "0" })
               .transition()
                 .duration(1000)

@@ -43,7 +43,7 @@ UIUtils.makeAnalysisContainer(
             // draw d3 pie
             // drawPie(languages, date, this.pie, "language", "count");
             languages.sort((langA, langB) => langB.count - langA.count);
-            drawHorizontalBarGraph(this.pie, languages, "language", "count");
+            drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
             this.input.style.border = "";
             // @tools debug
             console.log(`Languages distribution in pull requests :`, languages);
@@ -70,8 +70,7 @@ UIUtils.makeAnalysisContainer(
             context.isDesc = true;
         }
         const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
-        
-        drawPie(languages, date, this.pie, "language", "count", true, true);
+        drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
         debugProgress.total(pullRequests.length);
         debugProgress.endProcess();            
         debugZone.style.display = "block";
