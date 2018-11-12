@@ -148,5 +148,10 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans l
 });
 
 UIUtils.bindAccordions();
+/* 
+Period get sample :
 
-// getPeriodFromGH("2018-01", 1, 10, debugProgress);
+getPeriodFromGH("2018-01", 31, 1, debugElement).then((periods) => {
+    console.log(periods);
+});
+*/

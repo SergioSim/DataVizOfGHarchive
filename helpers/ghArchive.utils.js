@@ -95,8 +95,14 @@ export async function getFromGHArchive(date, progress) {
 export async function getPeriodFromGH(yearMonth, numberOfDays, numberOfHours, progress){
     const days = new Array(numberOfDays);
     const hours = new Array(numberOfHours);
+    
+    let confirmed = true;
+    if(numberOfDays > 30){
+        confirmed = window.confirm('Attention, êtes-vous sûr de vouloir lancer un traitement aussi lourd dans un navigateur ?');
+    }
+    if(!confirmed) return;
 
-    const fullData = [];
+    const fullData = {};
     for(let v = 1; v < days.length+1; v++){
         for(let i = 0; i < hours.length; i++){
             let currentDay = v;
@@ -104,12 +110,11 @@ export async function getPeriodFromGH(yearMonth, numberOfDays, numberOfHours, pr
                 currentDay = "0"+v;
             }
             const parsed = await getFromGHArchive(yearMonth + `-${currentDay}-${i}`, progress);
-            fullData.push(parsed);
+            fullData[`${yearMonth}-${currentDay}-${i}`] = {data: parsed}
         }
     }
 
-    // Flattening into one single big (and fat) array
-    return [].concat.apply([], fullData);
+    return fullData;
 }
 
 function cacheData(date, parsed, progress, resolve) {
