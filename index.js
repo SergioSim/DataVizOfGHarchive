@@ -16,8 +16,6 @@ const debugElement = document.querySelector('#debugProgress');
 const debugProgressTitle = document.querySelector('#debugProgressTitle');
 const debugProgress = new Progress(debugElement, debugProgressTitle);
 
-import * as d3 from 'd3';
-
 UIUtils.bindAccordions();
 debugProgress.hide()
 
