@@ -13,7 +13,8 @@ const { Progress } = require('./helpers/progress.utils');
 // HTML Elements
 const debugZone = document.querySelector('#debug');
 const debugElement = document.querySelector('#debugProgress');
-const debugProgress = new Progress(debugElement);
+const debugProgressTitle = document.querySelector('#debugProgressTitle');
+const debugProgress = new Progress(debugElement, debugProgressTitle);
 
 UIUtils.bindAccordions();
 debugProgress.hide()
@@ -55,7 +56,7 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis√
                     // increment
                     lang.count++;
                 }
-                debugProgress.value++;
+                debugProgress.add(1);
             });
             // Sort languages in ascending order
             languages.sort((a, b) => a.count - b.count);
@@ -121,6 +122,7 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilis√©s dans l
                             }
                         }
                         i++;
+                        debugProgress.add(1);
                     }
                 }
             }
