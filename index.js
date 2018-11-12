@@ -100,7 +100,7 @@ UIUtils.makeAnalysisContainer(
         const context = this;
         console.log('update', event, context);
         const part = await parseCommonWordsInCommits(this.input.value, event.target.value);
-        drawPie(part, context.input.value, context.pie, "pair", "occurences");
+        drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
     }
 });
 

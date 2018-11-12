@@ -63,8 +63,8 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
           return "translate(" + arc.centroid(d) + ")";
         })
         .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .attr("fill", "#fff")
+        .style("text-anchor", "middle").attr("startOffset", "50%")
+        .attr("fill", "#000")
           .text(function(d,i) { return (d.data[text] ? d.data[text] : 'Undefined') + ' : ' + d.data[value]})
 
     svg.append("text")

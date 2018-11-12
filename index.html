@@ -115,10 +115,13 @@
 
       .pie svg path+text {
         font-size: 0.6em;
+        pointer-events: none;
+        opacity: 0;
       }
 
-      .pie svg path:hover+text {
+      .pie svg path:hover+text, .pie svg path:hover+text:hover  {
         font-size: 1.0em;
+        opacity: 1;
       }
 
       .pie svg {
