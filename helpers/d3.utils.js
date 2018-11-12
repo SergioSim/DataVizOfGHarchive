@@ -51,7 +51,7 @@ export function drawPie(data,date,idchart, text, value, donut = true){
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .attr("fill", "#fff")
-          .text(function(d,i) { return d.data[text] ? d.data[text] : 'Undefined';})
+          .text(function(d,i) { return (d.data[text] ? d.data[text] : 'Undefined') + ':' + d.data[value]})
 
     svg.append("text")
         .attr("x", 0)             
