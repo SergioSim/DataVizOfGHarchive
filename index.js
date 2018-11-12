@@ -41,30 +41,7 @@ UIUtils.makeAnalysisContainer(
             debugProgress.total(pullRequests.length);
 
             // Instanciate a new languages object
-            const languages = [];
-            // Used to know if we should increment or decrement
-            const languageSet = new Set();
-            // foreach pr
-            pullRequests.forEach((pr) => {
-                // find language
-                const languageUsed = pr.payload.pull_request.base.repo.language;
-                // If our set doesn't contains language
-                if (!languageSet.has(languageUsed)) {
-                    // add language
-                    languageSet.add(languageUsed);
-                    // push this language
-                    languages.push({ language: languageUsed, count: 1 });
-                }
-                else {
-                    // Find language in languages array
-                    const lang = languages.find((langage) => langage.language === languageUsed);
-                    // increment
-                    lang.count++;
-                }
-                debugProgress.add(1);
-            });
-            // Sort languages in ascending order
-            languages.sort((a, b) => a.count - b.count);
+            const languages = parsePullRequestsLanguages(pullRequests);
             // draw d3 pie
             drawPie(languages, date, this.pie, "language", "count");
             this.input.style.border = "";
@@ -81,23 +58,19 @@ UIUtils.makeAnalysisContainer(
     component: 'button',
     title: 'Inverser',
     onUpdate: async function(event) {
+        const newCount = event.target.value;
         const context = this;
         console.log('update', event, context);
-        /* var container = d3.select("#charts-"+id+"-container");
-        debugger;*/
-
+        // TODO XXX: Implement
     }
 });
 
-const id = 'drawCommonWords';
 const numberOfWords = 20;
-
 UIUtils.makeAnalysisContainer(
-    id, 
-    "Mots les plus utilisés dans les commits messages à une heure donnée", 
+    'drawCommonWords', 
+    "Mots les plus utilisés dans les commits messages à une heure donnée",
     async function(){
         debugProgress.show();
-
         // https://developers.google.com/machine-learning/guides/text-classification/step-2
         const date = this.input.value;
         if(!date){
@@ -105,61 +78,8 @@ UIUtils.makeAnalysisContainer(
         }
 
         // TODO : Remove bots
-
         try {
-            const events = await getFromGHArchive(date, debugProgress);
-            const pushEvents = filterDataByEvent(events, eventTypes.push);
-            debugProgress.total(pushEvents.length);
-            const wordsMap = {};
-
-            console.time();
-            for (const push of pushEvents) {
-                const commits = push.payload.commits;
-                for (const commit of commits) {
-                    const commitMessage = commit.message;
-                    // Filter merge commits
-                    if (commitMessage && commitMessage.indexOf('Merge') == -1) {
-                        // Split words
-                        const commitWords = commitMessage.split(' ');
-                        let i = 0;
-                        for (const word of commitWords) {
-                            const isTherePairOfWord = word !== undefined && commitWords[i + 1] !== undefined;
-                            if (!isTherePairOfWord)
-                                continue;
-                            // to lowercase to avoid "add", "Add"
-                            const wordPair = word.toLowerCase() + " " + commitWords[i + 1].toLowerCase();
-                            if (wordPair === date.substring(0, date.length - 3))
-                                continue;
-                            // filter english words
-                            if (commonWords.indexOf(wordPair) !== -1)
-                                continue;
-                            // filter if length 0
-                            if (wordPair.length === 0)
-                                continue;
-                            // Increment or append
-                            if (wordsMap[wordPair]) {
-                                wordsMap[wordPair].occurences++;
-                            }
-                            else {
-                                wordsMap[wordPair] = { pair: wordPair, occurences: 1 };
-                            }
-                        }
-                        i++;
-                        debugProgress.add(1);
-                    }
-                }
-            }
-            // Map -> Array
-            const words = Object.keys(wordsMap).map(e => wordsMap[e]);
-            // Sort in descending order
-            const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
-            // Take only 20
-            const part = wordsSorted.splice(0, numberOfWords);
-            console.log({
-                context: 'textClassification',
-                samples: words.length,
-                classes: 'commits words'
-            });
+            const part = await parseCommonWordsInCommits(this.input.value, numberOfWords);
             drawPie(part, date, this.pie, "pair", "occurences");
             console.timeEnd();
             console.log(part);
@@ -173,16 +93,103 @@ UIUtils.makeAnalysisContainer(
 }, {
     component: 'range',
     title: 'Nombre de mots',
+    min: 1,
+    max: 500,
+    initialValue: numberOfWords,
     onUpdate: async function(event) {
         const context = this;
         console.log('update', event, context);
-        /* var container = d3.select("#charts-"+id+"-container");
-        debugger;*/
-
+        const part = await parseCommonWordsInCommits(this.input.value, event.target.value);
+        drawPie(part, context.input.value, context.pie, "pair", "occurences");
     }
 });
 
+async function parseCommonWordsInCommits(date, count){
+    const events = await getFromGHArchive(date, debugProgress);
+    const pushEvents = filterDataByEvent(events, eventTypes.push);
+    debugProgress.total(pushEvents.length);
+    const wordsMap = {};
+
+    console.time();
+    for (const push of pushEvents) {
+        const commits = push.payload.commits;
+        for (const commit of commits) {
+            const commitMessage = commit.message;
+            // Filter merge commits
+            if (commitMessage && commitMessage.indexOf('Merge') == -1) {
+                // Split words
+                const commitWords = commitMessage.split(' ');
+                let i = 0;
+                for (const word of commitWords) {
+                    const isTherePairOfWord = word !== undefined && commitWords[i + 1] !== undefined;
+                    if (!isTherePairOfWord)
+                        continue;
+                    // to lowercase to avoid "add", "Add"
+                    const wordPair = word.toLowerCase() + " " + commitWords[i + 1].toLowerCase();
+                    if (wordPair === date.substring(0, date.length - 3))
+                        continue;
+                    // filter english words
+                    if (commonWords.indexOf(wordPair) !== -1)
+                        continue;
+                    // filter if length 0
+                    if (wordPair.length === 0)
+                        continue;
+                    // Increment or append
+                    if (wordsMap[wordPair]) {
+                        wordsMap[wordPair].occurences++;
+                    }
+                    else {
+                        wordsMap[wordPair] = { pair: wordPair, occurences: 1 };
+                    }
+                }
+                i++;
+                debugProgress.add(1);
+            }
+        }
+    }
+    // Map -> Array
+    const words = Object.keys(wordsMap).map(e => wordsMap[e]);
+    // Sort in descending order
+    const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
+    // Take only count
+    const part = wordsSorted.splice(0, count);
+    console.log({
+        context: 'textClassification',
+        samples: words.length,
+        classes: 'commits words'
+    });
+    return part;
+}
+
 UIUtils.bindAccordions();
+
+function parsePullRequestsLanguages(pullRequests) {
+    const languages = [];
+    // Used to know if we should increment or decrement
+    const languageSet = new Set();
+    // foreach pr
+    pullRequests.forEach((pr) => {
+        // find language
+        const languageUsed = pr.payload.pull_request.base.repo.language;
+        // If our set doesn't contains language
+        if (!languageSet.has(languageUsed)) {
+            // add language
+            languageSet.add(languageUsed);
+            // push this language
+            languages.push({ language: languageUsed, count: 1 });
+        }
+        else {
+            // Find language in languages array
+            const lang = languages.find((langage) => langage.language === languageUsed);
+            // increment
+            lang.count++;
+        }
+        debugProgress.add(1);
+    });
+    // Sort languages in ascending order
+    languages.sort((a, b) => a.count - b.count);
+    return languages;
+}
 /* 
 Period get sample :
 */
