@@ -72,6 +72,9 @@ UIUtils.makeAnalysisContainer(
         const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
         drawPie(languages, date, this.pie, "language", "count", true, true);
         debugProgress.total(pullRequests.length);
+        debugProgress.endProcess();            
+        debugZone.style.display = "block";
+        debugZone.innerHTML = JSON.stringify(languages, null, 2);
         debugProgress.endProcess();
     }
 });
