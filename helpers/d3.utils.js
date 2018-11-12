@@ -31,7 +31,7 @@ export function drawPie(data,date,idchart, text, value, donut = true){
 
     const arc = d3.arc()
         .outerRadius(radius - 10)
-        .innerRadius((donut ? radius - 130 : 0));
+        .innerRadius((donut ? radius - 120 : 0));
     
     const g = svg.selectAll("path")
         .data(pie(data))
@@ -55,9 +55,9 @@ export function drawPie(data,date,idchart, text, value, donut = true){
 
     svg.append("text")
         .attr("x", 0)             
-        .attr("y", - height/2 - marginTop/2)
+        .attr("y", 0)
         .attr("text-anchor", "middle")  
-        .style("font-size", "16px") 
+        .style("font-size", "12px") 
         .style("text-decoration", "underline")  
         .text(date);
 }
