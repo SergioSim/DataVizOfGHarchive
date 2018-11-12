@@ -7,21 +7,21 @@ export class Progress {
     }
 
     show = () => { 
-        debugProgress.style.display = 'block'; 
-        debugProgress.value = 0; 
+        this._progressElement.style.display = 'block'; 
+        this._progressElement.value = 0; 
     };
 
     hide = () => { 
-        debugProgress.style.display = 'none'; 
+        this._progressElement.style.display = 'none'; 
     };
 
     endFiltering = (maxValue) => { 
-        debugProgress.max = maxValue+500; 
-        debugProgress.value+= 250; 
+        this._progressElement.max = maxValue+500; 
+        this._progressElement.value+= 250; 
     };
 
     endProcess = () => { 
-        debugProgress.value+=250;
+        this._progressElement.value+=250;
         this.hide();
     };
     
