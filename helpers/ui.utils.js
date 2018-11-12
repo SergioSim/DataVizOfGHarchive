@@ -5,8 +5,7 @@
  * @param {string} id
  * @param {string} title
  * @param {callback} onStart
- * @param {callback} onUpdate
- * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, clickHandler? (any)}} updateElement
+ * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, handler? (any)}} updateConfig
  */
 export function makeAnalysisContainer (id, title, onStart, update) {
     const selector = "#charts-"+id+"-container";
@@ -57,6 +56,17 @@ export function makeAnalysisContainer (id, title, onStart, update) {
     const inputNode = div.querySelector('.date-label');
     const pieNode = div.querySelector('.pie');
     const updateNode = div.querySelector('.update-handler');
+
+    const context = {
+        id,
+        title,
+        pie: pieNode,
+        input: inputNode,
+        update: updateNode
+    };
+
+    update.onUpdate = update.onUpdate.bind(context);
+
     switch(update.component){
         case 'range':
             updateNode.addEventListener('change', update.onUpdate);
@@ -66,13 +76,7 @@ export function makeAnalysisContainer (id, title, onStart, update) {
             updateNode.addEventListener('click', update.onUpdate);
     }
 
-    const context = {
-        id,
-        title,
-        pie: pieNode,
-        input: inputNode,
-        update: updateNode
-    };
+
 
     onStart = onStart.bind(context);
     div.querySelector('.analysis-start').addEventListener('click', onStart);

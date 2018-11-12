@@ -80,8 +80,12 @@ UIUtils.makeAnalysisContainer(
 }, {
     component: 'button',
     title: 'Inverser',
-    onUpdate: async(event) => {
-        console.log('update', event);
+    onUpdate: async function(event) {
+        const context = this;
+        console.log('update', event, context);
+        /* var container = d3.select("#charts-"+id+"-container");
+        debugger;*/
+
     }
 });
 
@@ -169,10 +173,11 @@ UIUtils.makeAnalysisContainer(
 }, {
     component: 'range',
     title: 'Nombre de mots',
-    onUpdate: async(event) => {
-        console.log('update', event);
-        var container = d3.select("#charts-"+id+"-container");
-        debugger;
+    onUpdate: async function(event) {
+        const context = this;
+        console.log('update', event, context);
+        /* var container = d3.select("#charts-"+id+"-container");
+        debugger;*/
 
     }
 });
