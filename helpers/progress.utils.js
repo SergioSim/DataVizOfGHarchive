@@ -25,7 +25,7 @@ export class Progress {
         this._progressElement.style.display = 'none'; 
     };
 
-    endFiltering = (maxValue) => { 
+    total = (maxValue) => { 
         this._progressElement.max = maxValue+500; 
         this._progressElement.value+= 250; 
     };

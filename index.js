@@ -33,7 +33,7 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis√
             const parsedObjects = await getFromGHArchive(date, debugProgress);
             // Filtering every pullRequest
             const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
-            debugProgress.endFiltering(pullRequests.length);
+            debugProgress.total(pullRequests.length);
 
             // Instanciate a new languages object
             const languages = [];
@@ -89,7 +89,7 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilis√©s dans l
         try {
             const events = await getFromGHArchive(date, debugProgress);
             const pushEvents = filterDataByEvent(events, eventTypes.push);
-            debugProgress.endFiltering(pushEvents.length);
+            debugProgress.total(pushEvents.length);
             const wordsMap = {};
 
             console.time();

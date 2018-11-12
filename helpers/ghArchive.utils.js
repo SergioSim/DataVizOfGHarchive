@@ -58,7 +58,7 @@ export async function getFromGHArchive(date, progress) {
         xhr.responseType = 'arraybuffer';
         xhr.onprogress = (e) => {
             if (e.lengthComputable) {
-                progress.endFiltering(e.total);
+                progress.total(e.total);
                 progress.add(e.loaded);
             }
         }
