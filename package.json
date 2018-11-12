@@ -38,7 +38,8 @@
     "@babel/polyfill": "^7.0.0",
     "d3": "^5.7.0",
     "idb-keyval": "^3.1.0",
-    "pako": "^1.0.6"
+    "pako": "^1.0.6",
+    "sass": "^1.14.3"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
