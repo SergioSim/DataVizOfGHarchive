@@ -7,17 +7,26 @@
  * @param {callback} onStart
  */
 export function makeAnalysisContainer (id, title, onStart) {
+    const selector = "#charts-"+id+"-container";
+    const graphSelector = selector.substring(1).replace('-container', '');
+
+    const here = document.querySelector(selector);
+    // handle hot module reloading
+    if(here){
+        here.parentNode.parentNode.removeChild(here.parentNode)
+    }
+
     const container = document.querySelector('.analysis-container');
     const div = document.createElement('div');
 
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
     const panel = `
-    <div class="panel">
+    <div class="panel" id="${selector.substring(1)}">
           <input type="text" class="date-label" value="2018-01-01-15" />
           <progress class="progress" value="0"></progress>
           <button class="analysis-start">Analyser!</button>
-          <div id="pie-${id}" class="pie"></div>
-        </div>
+          <div id="${graphSelector}" class="pie"></div>
+    </div>
     `;
     const analysis = accordionButton.concat(panel);
     div.innerHTML = analysis;
