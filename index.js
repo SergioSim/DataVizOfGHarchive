@@ -156,7 +156,8 @@ UIUtils.bindAccordions();
 /* 
 Period get sample :
 */
-
+/*
 getPeriodFromGH("2018-01", 2, 2, debugProgress).then((periods) => {
     console.log(periods);
 });
+*/
