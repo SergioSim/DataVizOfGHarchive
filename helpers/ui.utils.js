@@ -23,7 +23,6 @@ export function makeAnalysisContainer (id, title, onStart) {
     const panel = `
     <div class="panel" id="${selector.substring(1)}">
           <input type="text" class="date-label" value="2018-01-01-15" />
-          <progress class="progress" value="0"></progress>
           <button class="analysis-start">Analyser!</button>
           <div id="${graphSelector}" class="pie"></div>
     </div>
@@ -35,14 +34,12 @@ export function makeAnalysisContainer (id, title, onStart) {
 
     const input = div.querySelector('.date-label');
     const pie = div.querySelector('.pie');
-    const progress = div.querySelector('.progress');
 
     const context = {
         id,
         title,
         pie,
-        input,
-        progress
+        input
     };
 
     onStart = onStart.bind(context);

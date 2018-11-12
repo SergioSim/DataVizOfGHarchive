@@ -30,7 +30,7 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis√
         if(!date) return;
 
         try {
-            const parsedObjects = await getFromGHArchive(date, this.progress);
+            const parsedObjects = await getFromGHArchive(date, debugProgress);
             // Filtering every pullRequest
             const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
             debugProgress.endFiltering(pullRequests.length);
@@ -83,8 +83,11 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilis√©s dans l
         if(!date){
             return;
         }
+
+        // TODO : Remove bots
+
         try {
-            const events = await getFromGHArchive(date, this.progress);
+            const events = await getFromGHArchive(date, debugProgress);
             const pushEvents = filterDataByEvent(events, eventTypes.push);
             debugProgress.endFiltering(pushEvents.length);
             const wordsMap = {};

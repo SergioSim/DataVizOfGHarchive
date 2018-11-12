@@ -38,7 +38,7 @@ export function buildEvents(objects){
  * return a PROMISE (see usage below)
  *
  * @param {string} date (2015-01-01-15) (year-month-day-hour)
- * @param {HTMLElement} progress 
+ * @param {Progress} progress 
  * @returns promise who contains parsed data
  */
 export async function getFromGHArchive(date, progress) {
@@ -50,7 +50,7 @@ export async function getFromGHArchive(date, progress) {
 
     return new Promise((resolve, reject) => {
         console.log("Starting download from GHArchive for date", date);
-        progress.style.display = 'block';
+        progress.show();
 
         const ghArchiveURL = `https://cors-anywhere.herokuapp.com/http://data.gharchive.org/${date}.json.gz`;
         const xhr = new XMLHttpRequest();
@@ -58,12 +58,12 @@ export async function getFromGHArchive(date, progress) {
         xhr.responseType = 'arraybuffer';
         xhr.onprogress = (e) => {
             if (e.lengthComputable) {
-                progress.max = e.total;
-                progress.value = e.loaded;
+                progress.endFiltering(e.total);
+                progress.add(e.loaded);
             }
         }
         const onError = function () {
-            progress.style.display = 'none';
+            progress.hide();
             reject();
         };
         xhr.onerror = 
@@ -72,7 +72,10 @@ export async function getFromGHArchive(date, progress) {
                 const parsed = parseGithubData(xhr);
 
                 return cacheData(date, parsed, progress, resolve)
-                                .catch((err) => {debugger; console.log("error while saving in cache", err)});
+                                .catch((err) => {
+                                    debugger; 
+                                    console.log("error while saving in cache", err)
+                                });
             } else {
                 onError()
                 reject();
@@ -121,7 +124,7 @@ function cacheData(date, parsed, progress, resolve) {
     return set(date, parsed)
         .then(() => {
             console.log(`Inserted parsed events into IndexedDB for ${date}`);
-            progress.style.display = 'none';
+            progress.hide();
             resolve(parsed);
         });
 }
