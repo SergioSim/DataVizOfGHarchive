@@ -33,6 +33,7 @@ UIUtils.makeAnalysisContainer(
         if(!date) return;
 
         try {
+            const context = this;
             const parsedObjects = await getFromGHArchive(date, debugProgress);
             // Filtering every pullRequest
             const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
@@ -42,6 +43,7 @@ UIUtils.makeAnalysisContainer(
             const languages = parsePullRequestsLanguages(pullRequests);
             // draw d3 pie
             // drawPie(languages, date, this.pie, "language", "count");
+            context.isDesc = true;
             languages.sort((langA, langB) => langB.count - langA.count);
             drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
             this.input.style.border = "";
