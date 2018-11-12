@@ -22,7 +22,10 @@ debugProgress.hide()
 // GHArchive utils
 const { eventTypes, getFromGHArchive, filterDataByEvent, getPeriodFromGH } = require('./helpers/ghArchive.utils');
 // Analysis #1 Languages distributions in Pull requests for a given date
-UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilisés dans les pull requests à une date donnée", 
+UIUtils.makeAnalysisContainer(
+    'languageDistribution', 
+    "Langages les plus utilisés dans les pull requests à une date donnée", 
+
     async function(){
         debugProgress.show();
 
@@ -80,7 +83,9 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis�
     }
 });
 
-UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans les commits messages à une heure donnée", 
+UIUtils.makeAnalysisContainer(
+    'drawCommonWords', 
+    "Mots les plus utilisés dans les commits messages à une heure donnée", 
     async function(){
         debugProgress.show();
 
