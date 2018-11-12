@@ -16,6 +16,8 @@ const debugElement = document.querySelector('#debugProgress');
 const debugProgressTitle = document.querySelector('#debugProgressTitle');
 const debugProgress = new Progress(debugElement, debugProgressTitle);
 
+import * as d3 from 'd3';
+
 UIUtils.bindAccordions();
 debugProgress.hide()
 
@@ -83,8 +85,11 @@ UIUtils.makeAnalysisContainer(
     }
 });
 
+const id = 'drawCommonWords';
+const numberOfWords = 20;
+
 UIUtils.makeAnalysisContainer(
-    'drawCommonWords', 
+    id, 
     "Mots les plus utilisés dans les commits messages à une heure donnée", 
     async function(){
         debugProgress.show();
@@ -145,17 +150,17 @@ UIUtils.makeAnalysisContainer(
             // Sort in descending order
             const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
             // Take only 20
-            const firstTwentyWords = wordsSorted.splice(0, 20);
+            const part = wordsSorted.splice(0, numberOfWords);
             console.log({
                 context: 'textClassification',
                 samples: words.length,
                 classes: 'commits words'
             });
-            drawPie(firstTwentyWords, date, this.pie, "pair", "occurences");
+            drawPie(part, date, this.pie, "pair", "occurences");
             console.timeEnd();
-            console.log(firstTwentyWords);
+            console.log(part);
             debugZone.style.display = "block";
-            debugZone.innerHTML = JSON.stringify(firstTwentyWords, null, 2);
+            debugZone.innerHTML = JSON.stringify(part, null, 2);
             debugProgress.endProcess();
         } catch (err) {
             this.input.style.border = "1px solid red";
@@ -166,6 +171,9 @@ UIUtils.makeAnalysisContainer(
     title: 'Nombre de mots',
     onUpdate: async(event) => {
         console.log('update', event);
+        var container = d3.select("#charts-"+id+"-container");
+        debugger;
+
     }
 });
 

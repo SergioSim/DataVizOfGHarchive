@@ -4,7 +4,7 @@ const materialColors = require('./materialColors').default;
 /*
     Simple pie chart with D3
 */
-export function drawPie(data,date,idchart, text, value, donut = true){
+export function drawPie(data,date, idchart, text, value, donut = true, replace = false){
     let width = 330;
     const height = 430;
 
@@ -13,17 +13,29 @@ export function drawPie(data,date,idchart, text, value, donut = true){
         height = width + 100
     }
 
+    if(replace){
+        const node = document.querySelector('#'+idchart.id);
+        if(node.hasChildNodes()){
+            const isHere = node.classList.contains('pie')
+            if(isHere){
+                node.removeChild(node.childNodes[0]);
+            }
+        }
+    
+    }
+
     const marginTop = 100;
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select(idchart)
             .append("svg")
+            .attr("id", "pie"+idchart.id.replace('charts-'))
             .attr("width", width)
             .attr("height", height + marginTop)
             .append("g")
             .attr("transform", `translate(${width / 2}, ${height / 2 + marginTop})`);
 
-    const color = d3.scaleOrdinal().range(materialColors);
+            const color = d3.scaleOrdinal().range(materialColors);
 
     const pie = d3.pie()
         .value(d => d[value])
@@ -37,6 +49,8 @@ export function drawPie(data,date,idchart, text, value, donut = true){
         .data(pie(data))
         .enter().append("g")
         .attr("class", "arc")
+
+    svg.exit().remove();
         
     g.append("path")
         .attr("fill", (d, i) => color(i))
