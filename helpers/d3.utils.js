@@ -35,7 +35,7 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
             .append("g")
             .attr("transform", `translate(${width / 2}, ${height / 2 + marginTop})`);
 
-            const color = d3.scaleOrdinal().range(materialColors);
+    const color = d3.scaleOrdinal().range(materialColors);
 
     const pie = d3.pie()
         .value(d => d[value])
