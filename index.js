@@ -72,11 +72,12 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis�
             this.input.style.border = "1px solid red";
             throw err;
         }
-}, async() => {
-
 }, {
     component: 'button',
-    title: 'Inverser'
+    title: 'Inverser',
+    onUpdate: async(event) => {
+        console.log('update', event);
+    }
 });
 
 UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans les commits messages à une heure donnée", 
@@ -155,11 +156,12 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans l
             this.input.style.border = "1px solid red";
             throw err;
         }
-}, async() => {
-
 }, {
     component: 'range',
-    title: 'Nombre de mots'
+    title: 'Nombre de mots',
+    onUpdate: async(event) => {
+        console.log('update', event);
+    }
 });
 
 UIUtils.bindAccordions();

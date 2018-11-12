@@ -8,7 +8,7 @@
  * @param {callback} onUpdate
  * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, clickHandler? (any)}} updateElement
  */
-export function makeAnalysisContainer (id, title, onStart, onUpdate, updateComponentConfig) {
+export function makeAnalysisContainer (id, title, onStart, update) {
     const selector = "#charts-"+id+"-container";
     const graphSelector = selector.substring(1).replace('-container', '');
 
@@ -21,23 +21,22 @@ export function makeAnalysisContainer (id, title, onStart, onUpdate, updateCompo
     const container = document.querySelector('.analysis-container');
     const div = document.createElement('div');
 
-    let updateComponentString = null;
-
-    switch(updateComponentConfig.component){
+    let updateComponent = null;
+    switch(update.component){
         case 'range':
-            updateComponentString = `
-                    <label for='slider-${id}'>${updateComponentConfig.title}</label>
+            updateComponent = `
+                    <label for='slider-${id}'>${update.title}</label>
                     <input                         
                         class="update-handler" 
                         id="slider-${id}"
                         type="range" 
-                        min="${updateComponentConfig.min}" 
-                        max="${updateComponentConfig.max}" 
-                        value="${updateComponentConfig.initialValue}">`;
+                        min="${update.min}" 
+                        max="${update.max}" 
+                        value="${update.initialValue}">`;
             break;
         case 'button':
         default:
-            updateComponentString = `<button id="update-${id}" class="update-handler">${updateComponentConfig.title}</button>`;
+            updateComponent = `<button id="update-${id}" class="update-handler">${update.title}</button>`;
     }
 
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
@@ -46,7 +45,7 @@ export function makeAnalysisContainer (id, title, onStart, onUpdate, updateCompo
           <input type="text" class="date-label" value="2018-01-01-15" />
           <button class="analysis-start">Analyser!</button>
           <div id="${graphSelector}" class="pie"></div>
-          ${updateComponentString}
+          ${updateComponent}
     </div>
     `;
     
@@ -55,16 +54,24 @@ export function makeAnalysisContainer (id, title, onStart, onUpdate, updateCompo
 
     container.appendChild(div);
 
-    const input = div.querySelector('.date-label');
-    const pie = div.querySelector('.pie');
-    const update = div.querySelector('.update-handler');
-    update.addEventListener('change', onUpdate);
+    const inputNode = div.querySelector('.date-label');
+    const pieNode = div.querySelector('.pie');
+    const updateNode = div.querySelector('.update-handler');
+    switch(update.component){
+        case 'range':
+            updateNode.addEventListener('change', update.onUpdate);
+            break;
+        case 'button':
+        default:
+            updateNode.addEventListener('click', update.onUpdate);
+    }
 
     const context = {
         id,
         title,
-        pie,
-        input
+        pie: pieNode,
+        input: inputNode,
+        update: updateNode
     };
 
     onStart = onStart.bind(context);
