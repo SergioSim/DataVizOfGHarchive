@@ -7,25 +7,30 @@
     "dev": "parcel index.html",
     "build": "parcel build index.html"
   },
-  "keywords": ["GHArchive", "JavaScript", "WebApp", "D3.js"],
+  "keywords": [
+    "GHArchive",
+    "JavaScript",
+    "WebApp",
+    "D3.js"
+  ],
   "contributors": [
-    { 
-      "name" : "Léonard Cherouvrier", 
-      "email" : "leonard.cherouvrier@etu.unice.fr",
-      "url" : "https://www.leonard.zone"
-    },
-    { 
-      "name" : "Sergio Simonian", 
-      "email" : "sergio.simonian@etu.unice.fr"
-    },
-    { 
-      "name" : "Idryss Bourdier", 
-      "email" : "idryss.bourdier@etu.unice.fr",
-      "url" : "https://www.idryssbourdier.fr/"
+    {
+      "name": "Léonard Cherouvrier",
+      "email": "leonard.cherouvrier@etu.unice.fr",
+      "url": "https://www.leonard.zone"
     },
     {
-      "name" : "Aimé Niteka", 
-      "email" : "aime.niteka@etu.unice.fr"
+      "name": "Sergio Simonian",
+      "email": "sergio.simonian@etu.unice.fr"
+    },
+    {
+      "name": "Idryss Bourdier",
+      "email": "idryss.bourdier@etu.unice.fr",
+      "url": "https://www.idryssbourdier.fr/"
+    },
+    {
+      "name": "Aimé Niteka",
+      "email": "aime.niteka@etu.unice.fr"
     }
   ],
   "license": "WTFPL",
@@ -36,6 +41,8 @@
     "pako": "^1.0.6"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "parcel-bundler": "^1.10.3"
   }
 }

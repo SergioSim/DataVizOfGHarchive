@@ -7,23 +7,23 @@ const UIUtils = require('./helpers/ui.utils').default;
 // D3 Related should be exported from that package
 const { drawPie } = require('./helpers/d3.utils');
 
+// Progress handler
+const { Progress } = require('./helpers/progress.utils');
+
 // HTML Elements
 const debugZone = document.querySelector('#debug');
-const debugProgress = document.querySelector('#debugProgress');
-const hideProcessProgress = () => { debugProgress.style.display = 'none'; };
-const setupProcessProgress = () => { debugProgress.style.display = 'block'; debugProgress.value = 0; };
-const endFiltering = (maxValue) => { debugProgress.max = maxValue+500; debugProgress.value+= 250; };
-const endProcessProgress = () => { debugProgress.value+=250; hideProcessProgress();}
+const debugElement = document.querySelector('#debugProgress');
+const debugProgress = new Progress(debugElement);
 
 UIUtils.bindAccordions();
-hideProcessProgress();
+debugProgress.hide()
 
 // GHArchive utils
 const { eventTypes, getFromGHArchive, filterDataByEvent, getPeriodFromGH } = require('./helpers/ghArchive.utils');
 // Analysis #1 Languages distributions in Pull requests for a given date
 UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilisés dans les pull requests à une date donnée", 
     async function(){
-        setupProcessProgress();
+        debugProgress.show();
 
         const date = this.input.value;
         if(!date) return;
@@ -32,7 +32,7 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis�
             const parsedObjects = await getFromGHArchive(date, this.progress);
             // Filtering every pullRequest
             const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
-            endFiltering(pullRequests.length);
+            debugProgress.endFiltering(pullRequests.length);
 
             // Instanciate a new languages object
             const languages = [];
@@ -66,7 +66,7 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis�
             console.log(`Languages distribution in pull requests :`, languages);
             debugZone.style.display = "block";
             debugZone.innerHTML = JSON.stringify(languages, null, 2);
-            endProcessProgress();
+            debugProgress.endProcess();
         } catch (err) {
             this.input.style.border = "1px solid red";
             throw err;
@@ -75,7 +75,7 @@ UIUtils.makeAnalysisContainer('languageDistribution', "Langages les plus utilis�
 
 UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans les commits messages à une heure donnée", 
     async function(){
-        setupProcessProgress();
+        debugProgress.show();
 
         // https://developers.google.com/machine-learning/guides/text-classification/step-2
         const date = this.input.value;
@@ -85,7 +85,7 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans l
         try {
             const events = await getFromGHArchive(date, this.progress);
             const pushEvents = filterDataByEvent(events, eventTypes.push);
-            endFiltering(pushEvents.length);
+            debugProgress.endFiltering(pushEvents.length);
             const wordsMap = {};
 
             console.time();
@@ -140,7 +140,7 @@ UIUtils.makeAnalysisContainer('drawCommonWords', "Mots les plus utilisés dans l
             console.log(firstTwentyWords);
             debugZone.style.display = "block";
             debugZone.innerHTML = JSON.stringify(firstTwentyWords, null, 2);
-            endProcessProgress();
+            debugProgress.endProcess();
         } catch (err) {
             this.input.style.border = "1px solid red";
             throw err;
