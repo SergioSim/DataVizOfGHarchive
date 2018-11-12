@@ -21,13 +21,14 @@
       h2 {
         font-size: 1.3em;
       }
-      .debug-zone {
-        display: none;
+
+      .debug {
         background-color: #333;
         overflow: scroll;
-        height: 300px;
+        max-height: 300px;
         color: #f0f0f0;
         padding: 1em;
+        width: 100%;
       }
 
       .progress {
@@ -147,6 +148,49 @@
         right: 1em;
         transform: all .4s;
       }
+
+      .horizontal-bar-graph {
+        display: table;
+        width: 100%;
+      }
+
+      .horizontal-bar-graph-segment {
+        display: table-row;
+      }
+
+      .horizontal-bar-graph-label {
+        display: table-row;
+        border-right: 1px solid silver; 
+        text-align: right;
+        padding: 4px 10px 4px 0;
+        vertical-align: baseline;
+        white-space: nowrap;
+      }
+
+      .horizontal-bar-graph-value {
+        display: table-cell;
+        padding: 3px 0;
+        vertical-align: baseline;
+        width: 100%;
+      }
+
+      .horizontal-bar-graph-value-bar {
+        background: silver;
+        padding: 4px 4px 3px;
+        height: 1em;
+        color: white;
+        overflow: visible;
+        display: inline-block;
+        white-space: nowrap;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .horizontal-bar-graph-segment:first-child, .horizontal-bar-graph-label,.horizontal-bar-graph-value  {
+        padding-top: 12px; 
+      }
+      .horizontal-bar-graph-segment:last-child  {
+        padding-bottom: 12px; 
+      }
     </style>
   </head>
 
@@ -160,7 +204,7 @@
         <span class="github"><a href="https://github.com/SergioSim/DataVizOfGHarchive" target="_blank" class="github-link"><img src="./assets/GitHub-Mark-Light-32px.png"></a></span>
     </div>
     <div class="analysis-container"></div>
-    <pre id="debug" class="debug-zone"></pre>
+    <pre id="debug" class="debug"></pre>
     <svg id="donut-chart"></svg>
 
     <script src="./index.js"></script>

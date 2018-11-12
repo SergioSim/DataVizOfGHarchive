@@ -5,7 +5,7 @@ const commonWords = require('./helpers/commonWords').default;
 const UIUtils = require('./helpers/ui.utils').default;
 // Custom helpers 
 // D3 Related should be exported from that package
-const { drawPie } = require('./helpers/d3.utils');
+const { drawPie, drawHorizontalBarGraph } = require('./helpers/d3.utils');
 
 // Progress handler
 const { Progress } = require('./helpers/progress.utils');
@@ -41,7 +41,9 @@ UIUtils.makeAnalysisContainer(
             // Instanciate a new languages object
             const languages = parsePullRequestsLanguages(pullRequests);
             // draw d3 pie
-            drawPie(languages, date, this.pie, "language", "count");
+            // drawPie(languages, date, this.pie, "language", "count");
+            languages.sort((langA, langB) => langB.count - langA.count);
+            drawHorizontalBarGraph(this.pie, languages, "language", "count");
             this.input.style.border = "";
             // @tools debug
             console.log(`Languages distribution in pull requests :`, languages);
@@ -68,6 +70,7 @@ UIUtils.makeAnalysisContainer(
             context.isDesc = true;
         }
         const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
+        
         drawPie(languages, date, this.pie, "language", "count", true, true);
         debugProgress.total(pullRequests.length);
         debugProgress.endProcess();            

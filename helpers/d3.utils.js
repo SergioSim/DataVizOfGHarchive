@@ -21,7 +21,6 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
                 node.removeChild(node.childNodes[0]);
             }
         }
-    
     }
 
     const marginTop = 100;
@@ -29,7 +28,7 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
 
     const svg = d3.select(idchart)
             .append("svg")
-            .attr("id", "pie"+idchart.id.replace('charts-'))
+            .attr("id", "pie"+idchart.id.replace('charts-', ''))
             .attr("width", width)
             .attr("height", height + marginTop)
             .append("g")
@@ -74,4 +73,32 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
         .style("font-size", "12px") 
         .style("text-decoration", "underline")  
         .text(date);
+}
+
+export function drawHorizontalBarGraph(anchor, series, label, value){ 
+        const x = d3.scaleLinear()
+          .domain([0, d3.max(series, function(d) { return d[value] })])
+          .range([0, 100]);
+      
+        const segment = d3
+          .select(anchor)
+          .append("div").classed("horizontal-bar-graph", true)
+          .selectAll(".horizontal-bar-graph-segment")
+            .attr("id", "pie"+anchor.id.replace('charts-', ''))
+            .data(series)
+            .enter()
+            .append("div").classed("horizontal-bar-graph-label", true);
+      
+        segment
+          .append("div").classed("horizontal-bar-graph-label", true)
+            .text(function(d) { return d[label] ? d[label] : "Non défini"});
+      
+        segment
+          .append("div").classed("horizontal-bar-graph-value", true)
+            .append("div").classed("horizontal-bar-graph-value-bar", true)
+              .style("background-color", function(d) { return d.color ? d.color : "#333" })
+              .text(function(d) { return d[value] ? d[value] : "0" })
+              .transition()
+                .duration(1000)
+                .style("min-width", function(d) { return x(d[value]) + "%" });
 }
