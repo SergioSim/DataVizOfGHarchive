@@ -167,8 +167,6 @@ export function drawDonut(data, date, id, text, value){
         .text(function(d) { return 'is lots of fun!'; });
 }
 
-drawDonut();
-
 /* Line graph */
 export function drawLine(data,date,idchart, text, value){
     let width = window.innerWidth;
