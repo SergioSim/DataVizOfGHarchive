@@ -94,7 +94,9 @@ UIUtils.makeAnalysisContainer(
         // TODO : Remove bots
         try {
             const part = await parseCommonWordsInCommits(this.input.value, numberOfWords);
-            drawPie(part, date, this.pie, "pair", "occurences");
+            drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
+
+            // drawPie(part, date, this.pie, "pair", "occurences");
             console.timeEnd();
             console.log(part);
             debugZone.style.display = "block";
@@ -114,7 +116,8 @@ UIUtils.makeAnalysisContainer(
         const context = this;
         console.log('update', event, context);
         const part = await parseCommonWordsInCommits(this.input.value, event.target.value);
-        drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
+        drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
+        // drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
     }
 });
 
