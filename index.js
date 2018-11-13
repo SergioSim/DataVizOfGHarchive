@@ -3,10 +3,10 @@ require("@babel/polyfill");
 
 const commonWords = require('./helpers/commonWords').default;
 const UIUtils = require('./helpers/ui.utils').default;
+const moment = require('moment');
 // Custom helpers 
 // D3 Related should be exported from that package
-const { drawPie, drawHorizontalBarGraph } = require('./helpers/d3.utils');
-
+const { drawPie, drawHorizontalBarGraph, drawLine } = require('./helpers/d3.utils');
 // Progress handler
 const { Progress } = require('./helpers/progress.utils');
 
@@ -24,8 +24,7 @@ const { eventTypes, getFromGHArchive, filterDataByEvent, getPeriodFromGH } = req
 // Analysis #1 Languages distributions in Pull requests for a given date
 UIUtils.makeAnalysisContainer(
     'languageDistribution', 
-    "Langages les plus utilisés dans les pull requests à une date donnée", 
-
+    "Langages les plus utilisés dans les pull requests à une date donnée",
     async function(){
         debugProgress.show();
 
@@ -179,6 +178,67 @@ async function parseCommonWordsInCommits(date, count){
     });
     return part;
 }
+
+UIUtils.makeAnalysisContainer(
+    'timeToResolveIssues',
+    "Temps moyen pour résoudre une issues sur une période donnée", 
+    async function(){
+        debugProgress.show();
+        const date = this.input.value;
+        if(!date){
+            return;
+        }
+
+        let meanIssue = (values) => {
+            var total = 0, i;
+            for (i = 0; i < values.length; i += 1) {
+                total += values[i];
+            }
+            return total / values.length;
+        };
+
+        const periods = await getPeriodFromGH("2018-01", 2, 2, debugProgress)
+        const dataset = [];
+
+        Object.keys(periods).map((period)=>{
+            const issuesEvents = filterDataByEvent(periods[period].data, eventTypes.issues);
+            const middleTimeToResolve = issuesEvents
+            .filter((issue)=>{
+                return issue.payload.issue.created_at !== null && issue.payload.issue.closed_at !== null
+            })
+            .map((issue)=>{
+                return moment(issue.payload.issue.closed_at) - moment(issue.payload.issue.created_at)
+            });
+            let x = moment.duration(meanIssue(middleTimeToResolve))
+            dataset.push(
+                meanIssue(middleTimeToResolve)
+            )
+            console.log("For period : " + period + ", the mean time is : " + x.days() + "d " + x.hours() + "h " + x.minutes() + "m " + x.seconds() + "s")
+        });
+        console.log(dataset);
+        drawLine(dataset, date, this.pie, "issues", "mean time", false, true);
+    }, {
+        component: 'button',
+        title: 'Inverser',
+        onUpdate: async function(event) {
+            debugProgress.show();
+            const context = this;
+            const date = this.input.value;
+            console.log('update', event, context);
+            const parsedObjects = await getFromGHArchive(date, debugProgress);
+            const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
+            if(context.isDesc === true){
+                context.isDesc = false;
+            } else {
+                context.isDesc = true;
+            }
+            const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
+            drawPie(languages, date, this.pie, "language", "count", true, true);
+            debugProgress.total(pullRequests.length);
+            debugProgress.endProcess();
+        }
+    }
+);
 
 UIUtils.bindAccordions();
 

@@ -75,7 +75,7 @@ export function drawPie(data,date, idchart, text, value, donut = true, replace =
         .text(date);
 }
 
-export function drawHorizontalBarGraph(anchor, series, label, value, replace){ 
+export function drawHorizontalBarGraph(anchor, series, label, value, replace){
     if(replace){
         const node = document.querySelector('#'+anchor.id);
         if(node.hasChildNodes()){
@@ -85,30 +85,97 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
             }
         }
     }
-        const x = d3.scaleLinear()
-          .domain([0, d3.max(series, function(d) { return d[value] })])
-          .range([0, 100]);
-          const color = d3.scaleOrdinal().range(materialColors);
+    const x = d3.scaleLinear()
+        .domain([0, d3.max(series, function(d) { return d[value] })])
+        .range([0, 100]);
+        const color = d3.scaleOrdinal().range(materialColors);
 
-        const segment = d3
-          .select(anchor)
-          .append("div").classed("horizontal-bar-graph", true)
-          .selectAll(".horizontal-bar-graph-segment")
-            .attr("id", "pie"+anchor.id.replace('charts-', ''))
-            .data(series)
-            .enter()
-            .append("div").classed("horizontal-bar-graph-label", true);
-      
-        segment
-          .append("div").classed("horizontal-bar-graph-label", true)
-            .text(function(d) { return d[label] ? d[label] : "Non défini"});
-      
-        segment
-          .append("div").classed("horizontal-bar-graph-value", true)
-            .append("div").classed("horizontal-bar-graph-value-bar", true)
-              .style("background-color", function(d, i) { return d.color ? d.color : color(i) })
-              .text(function(d) { return d[value] ? d[value] : "0" })
-              .transition()
-                .duration(1000)
-                .style("min-width", function(d) { return x(d[value]) + "%" });
+    const segment = d3
+        .select(anchor)
+        .append("div").classed("horizontal-bar-graph", true)
+        .selectAll(".horizontal-bar-graph-segment")
+        .attr("id", "pie"+anchor.id.replace('charts-', ''))
+        .data(series)
+        .enter()
+        .append("div").classed("horizontal-bar-graph-label", true);
+    
+    segment
+        .append("div").classed("horizontal-bar-graph-label", true)
+        .text(function(d) { return d[label] ? d[label] : "Non défini"});
+    
+    segment
+        .append("div").classed("horizontal-bar-graph-value", true)
+        .append("div").classed("horizontal-bar-graph-value-bar", true)
+            .style("background-color", function(d, i) { return d.color ? d.color : color(i) })
+            .text(function(d) { return d[value] ? d[value] : "0" })
+            .transition()
+            .duration(1000)
+            .style("min-width", function(d) { return x(d[value]) + "%" });
+}
+
+/* Line graph */
+export function drawLine(data, date, idchart, text, value, donut = true, replace = false){
+    let width = window.innerWidth;
+    if(width > 600){
+        width = window.innerWidth / 2;
+    }
+    const height = width;
+    const marginTop = 100;
+    
+    var n = data.length;
+    
+    var xScale = d3.scaleLinear()
+    .domain([0, n-1]) // input
+    .range([0, width]); // output
+
+    //var xScale = d3.scaleTime().rangeRound([0, width]);
+    
+    var yScale = d3.scaleLinear()
+    .domain([0, Math.max.apply(Math, data.map(function(o) { return o; }))]) // input 
+    .range([height, 0]); // output
+
+    var line = d3.line()
+    //.x(function(d) { return xScale(d.date)})
+    .x(function(d) { return xScale(d.x); }) // set the x values for the line generator
+    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+    var dataset = d3.range(data.length).map(function(d) {
+        return {
+            "x": d,
+            "y": data[d]
+        }
+    })
+
+    const svg = d3.select(idchart)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height + marginTop)
+    .append("g");
+
+    svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+    svg.append("g")
+    .attr("class", "y axis")
+    .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+    svg.append("path")
+    .datum(dataset) // 10. Binds data to the line 
+    .attr("class", "line") // Assign a class for styling 
+    .attr("d", line); // 11. Calls the line generator
+
+    svg.selectAll(".dot")
+    .data(dataset)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", function(d) { return xScale(d.x) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 5)
+    .on("mouseover", function(a, b, c) {
+  		console.log(a)
+	})
+    .on("mouseout", function() {  })
 }
