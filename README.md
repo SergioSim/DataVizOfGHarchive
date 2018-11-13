@@ -34,3 +34,5 @@ $ npm run dev
 ## Licences
 
 Content based on www.gharchive.org used under the CC-BY-4.0 license.
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSergioSim%2FDataVizOfGHarchive.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FSergioSim%2FDataVizOfGHarchive?ref=badge_large)
