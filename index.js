@@ -244,19 +244,27 @@ UIUtils.makeAnalysisContainer(
         onUpdate: async function(event) {
             debugProgress.show();
             const context = this;
-            const date = this.input.value;
             console.log('update', event, context);
-            const parsedObjects = await getFromGHArchive(date, debugProgress);
-            const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
-            if(context.isDesc === true){
-                context.isDesc = false;
-            } else {
-                context.isDesc = true;
-            }
-            const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
+
+            /* 
+                Re-get 
+            */
+            // const parsedObjects = await getFromGHArchive(date, debugProgress);
+            // const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
+            /* To allow invert button we need a toggle */
+            // if(context.isDesc === true){
+            //    context.isDesc = false;
+            // } else {
+            //   context.isDesc = true;
+            // }
+
+            /* 
+                re-draw 
+            */
+            /* const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
             drawPie(languages, date, this.pie, "language", "count", true, true);
             debugProgress.total(pullRequests.length);
-            debugProgress.endProcess();
+            debugProgress.endProcess();*/
         }
     }
 );
