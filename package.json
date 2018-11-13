@@ -37,8 +37,8 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "d3": "^5.7.0",
+    "dayjs": "^1.7.7",
     "idb-keyval": "^3.1.0",
-    "moment": "^2.22.2",
     "pako": "^1.0.6"
   },
   "devDependencies": {

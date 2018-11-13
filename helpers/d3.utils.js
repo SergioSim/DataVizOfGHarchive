@@ -1,5 +1,5 @@
-const d3 = require('d3');
-const materialColors = require('./materialColors').default;
+import * as d3 from 'd3';
+import materialColors from './materialColors';
 
 /*
     Simple pie chart with D3
@@ -122,30 +122,30 @@ export function drawLine(data, date, idchart, text, value, donut = true, replace
     const height = width;
     const marginTop = 100;
     
-    var n = data.length;
+    const n = data.length;
     
-    var xScale = d3.scaleLinear()
-    .domain([0, n-1]) // input
-    .range([0, width]); // output
+    const xScale = d3.scaleLinear()
+                    .domain([0, n-1]) // input
+                    .range([0, width]); // output
 
     //var xScale = d3.scaleTime().rangeRound([0, width]);
     
-    var yScale = d3.scaleLinear()
-    .domain([0, Math.max.apply(Math, data.map(function(o) { return o; }))]) // input 
-    .range([height, 0]); // output
+    const yScale = d3.scaleLinear()
+                    .domain([0, Math.max.apply(Math, data.map(function(o) { return o; }))]) // input 
+                    .range([height, 0]); // output
 
-    var line = d3.line()
-    //.x(function(d) { return xScale(d.date)})
-    .x(function(d) { return xScale(d.x); }) // set the x values for the line generator
-    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
-    .curve(d3.curveMonotoneX) // apply smoothing to the line
+    const line = d3.line()
+                    //.x(function(d) { return xScale(d.date)})
+                    .x(function(d) { return xScale(d.x); }) // set the x values for the line generator
+                    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+                    .curve(d3.curveMonotoneX); // apply smoothing to the line
 
-    var dataset = d3.range(data.length).map(function(d) {
+    const dataset = d3.range(data.length).map(function(d) {
         return {
             "x": d,
             "y": data[d]
         }
-    })
+    });
 
     const svg = d3.select(idchart)
     .append("svg")
@@ -177,5 +177,5 @@ export function drawLine(data, date, idchart, text, value, donut = true, replace
     .on("mouseover", function(a, b, c) {
   		console.log(a)
 	})
-    .on("mouseout", function() {  })
+    .on("mouseout", function() {  });
 }

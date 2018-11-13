@@ -1,14 +1,15 @@
 // Used to make an ES2015+ ready environment on current browsers
-require("@babel/polyfill");
+import "@babel/polyfill"
 
-const commonWords = require('./helpers/commonWords').default;
-const UIUtils = require('./helpers/ui.utils').default;
-const moment = require('moment');
+import commonWords from './helpers/commonWords';
+import UIUtils from './helpers/ui.utils';
+import dayjs from 'dayjs'
+
 // Custom helpers 
 // D3 Related should be exported from that package
-const { drawPie, drawHorizontalBarGraph, drawLine } = require('./helpers/d3.utils');
+import {drawPie, drawHorizontalBarGraph, drawLine} from './helpers/d3.utils';
 // Progress handler
-const { Progress } = require('./helpers/progress.utils');
+import { Progress } from './helpers/progress.utils';
 
 // HTML Elements
 const debugZone = document.querySelector('#debug');
@@ -179,6 +180,25 @@ async function parseCommonWordsInCommits(date, count){
     return part;
 }
 
+function convertMS( milliseconds ) {
+    let day, hour, minute, seconds;
+
+    seconds = Math.floor(milliseconds / 1000);
+    minute = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    hour = Math.floor(minute / 60);
+    minute = minute % 60;
+    day = Math.floor(hour / 24);
+    hour = hour % 24;
+
+    return {
+        day: day,
+        hour: hour,
+        minute: minute,
+        seconds: seconds
+    };
+}
+
 UIUtils.makeAnalysisContainer(
     'timeToResolveIssues',
     "Temps moyen pour résoudre une issues sur une période donnée", 
@@ -207,13 +227,14 @@ UIUtils.makeAnalysisContainer(
                 return issue.payload.issue.created_at !== null && issue.payload.issue.closed_at !== null
             })
             .map((issue)=>{
-                return moment(issue.payload.issue.closed_at) - moment(issue.payload.issue.created_at)
+                return dayjs(issue.payload.issue.closed_at).diff(dayjs(issue.payload.issue.created_at));
             });
-            let x = moment.duration(meanIssue(middleTimeToResolve))
+
+            let x = convertMS(meanIssue(middleTimeToResolve));
             dataset.push(
                 meanIssue(middleTimeToResolve)
             )
-            console.log("For period : " + period + ", the mean time is : " + x.days() + "d " + x.hours() + "h " + x.minutes() + "m " + x.seconds() + "s")
+            console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
         });
         console.log(dataset);
         drawLine(dataset, date, this.pie, "issues", "mean time", false, true);

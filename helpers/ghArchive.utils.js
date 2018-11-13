@@ -1,8 +1,7 @@
 // Used to ungz
-const pako = require('pako');
+import pako from 'pako';
 // Used for easy caching in IndexedDB
-const { get, set } = require('idb-keyval');
-
+import { get, set } from 'idb-keyval';
 /* 
     EventTypes doc : https://developer.github.com/v3/activity/events/types/ 
 */
