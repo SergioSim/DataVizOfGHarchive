@@ -38,6 +38,7 @@ debugProgress.hide()
 UIUtils.makeAnalysisContainer(
     'languageDistribution', 
     "Langages les plus utilisés dans les pull requests à une date donnée",
+    "2018-01-01-12",
     async function(){
         debugProgress.show();
 
@@ -97,6 +98,7 @@ const numberOfWords = 20;
 UIUtils.makeAnalysisContainer(
     'drawCommonWords', 
     "Mots les plus utilisés dans les commits messages à une heure donnée",
+    "2018-01-01-12",
     async function(){
         debugProgress.show();
         // https://developers.google.com/machine-learning/guides/text-classification/step-2
@@ -214,6 +216,7 @@ function convertMS( milliseconds ) {
 UIUtils.makeAnalysisContainer(
     'timeToResolveIssues',
     "Temps moyen pour résoudre une issues sur une période donnée", 
+    "2019-01",
     async function(){
         debugProgress.show();
         const date = this.input.value;
@@ -229,7 +232,7 @@ UIUtils.makeAnalysisContainer(
             return total / values.length;
         };
 
-        const periods = await getPeriodFromGH("2018-01", 2, 2, debugProgress)
+        const periods = await getPeriodFromGH(date, 2, 2, debugProgress)
         const dataset = [];
 
         Object.keys(periods).map((period)=>{

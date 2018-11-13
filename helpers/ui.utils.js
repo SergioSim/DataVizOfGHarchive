@@ -7,7 +7,7 @@
  * @param {callback} onStart
  * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, handler? (any)}} updateConfig
  */
-export function makeAnalysisContainer (id, title, onStart, update) {
+export function makeAnalysisContainer (id, title, inputValue, onStart, update) {
     const selector = "#charts-"+id+"-container";
     const graphSelector = selector.substring(1).replace('-container', '');
 
@@ -43,7 +43,7 @@ export function makeAnalysisContainer (id, title, onStart, update) {
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
     const panel = `
     <div class="panel" id="${selector.substring(1)}">
-          <input type="text" class="date-label" value="2018-01-01-15" />
+          <input type="text" class="date-label" value="${inputValue}" />
           <button class="analysis-start">Analyser!</button>
           <div id="${graphSelector}" class="pie"></div>
           ${updateComponent}
