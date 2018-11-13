@@ -266,18 +266,22 @@ function parsePullRequestsLanguages(pullRequests) {
     pullRequests.forEach((pr) => {
         // find language
         const languageUsed = pr.payload.pull_request.base.repo.language;
+        const repoTitle = pr.payload.pull_request.base.repo.name;
+        const repoSize = pr.payload.pull_request.base.repo.size;
         // If our set doesn't contains language
         if (!languageSet.has(languageUsed)) {
             // add language
             languageSet.add(languageUsed);
             // push this language
-            languages.push({ language: languageUsed, count: 1 });
+            languages.push({ language: languageUsed, count: 1, repoTitles: [repoTitle], repoSizes: [repoSize] });
         }
         else {
             // Find language in languages array
             const lang = languages.find((langage) => langage.language === languageUsed);
             // increment
             lang.count++;
+            lang.repoSizes.push(repoSize);
+            lang.repoTitles.push(repoTitle);
         }
         debugProgress.add(1);
     });
