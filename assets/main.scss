@@ -80,6 +80,17 @@
     padding: 1em;
   }
 
+  .line {
+    fill: none;
+    stroke: black;
+    stroke-width: 3;
+  }
+  
+  .overlay {
+    fill: none;
+    pointer-events: all;
+  }
+
   .accordion {
       background-color: #eee;
       color: #444;
