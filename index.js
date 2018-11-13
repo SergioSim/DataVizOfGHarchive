@@ -1,15 +1,28 @@
 // Used to make an ES2015+ ready environment on current browsers
 import "@babel/polyfill"
-
-import commonWords from './helpers/commonWords';
-import UIUtils from './helpers/ui.utils';
 import dayjs from 'dayjs'
+
+// Common english words (to be continued..)
+import commonWords from './helpers/commonWords';
+// UIUtils (to make analysis containers)
+import UIUtils from './helpers/ui.utils';
 
 // Custom helpers 
 // D3 Related should be exported from that package
-import {drawPie, drawHorizontalBarGraph, drawLine} from './helpers/d3.utils';
+import {
+    // drawPie, 
+    drawHorizontalBarGraph, 
+    drawLine
+} from './helpers/d3.utils';
 // Progress handler
 import { Progress } from './helpers/progress.utils';
+import { 
+    eventTypes, 
+    getFromGHArchive, 
+    filterDataByEvent, 
+    getPeriodFromGH 
+} from './helpers/ghArchive.utils';
+
 
 // HTML Elements
 const debugZone = document.querySelector('#debug');
@@ -21,7 +34,6 @@ UIUtils.bindAccordions();
 debugProgress.hide()
 
 // GHArchive utils
-const { eventTypes, getFromGHArchive, filterDataByEvent, getPeriodFromGH } = require('./helpers/ghArchive.utils');
 // Analysis #1 Languages distributions in Pull requests for a given date
 UIUtils.makeAnalysisContainer(
     'languageDistribution', 
