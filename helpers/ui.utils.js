@@ -20,22 +20,24 @@ export function makeAnalysisContainer (id, title, onStart, update) {
     const container = document.querySelector('.analysis-container');
     const div = document.createElement('div');
 
-    let updateComponent = null;
-    switch(update.component){
-        case 'range':
-            updateComponent = `
-                    <label for='slider-${id}'>${update.title}</label>
-                    <input                         
-                        class="update-handler" 
-                        id="slider-${id}"
-                        type="range" 
-                        min="${update.min}" 
-                        max="${update.max}" 
-                        value="${update.initialValue}">`;
-            break;
-        case 'button':
-        default:
-            updateComponent = `<button id="update-${id}" class="update-handler">${update.title}</button>`;
+    let updateComponent = '';
+    if(update){
+        switch(update.component){
+            case 'range':
+                updateComponent = `
+                        <label for='slider-${id}'>${update.title}</label>
+                        <input                         
+                            class="update-handler" 
+                            id="slider-${id}"
+                            type="range" 
+                            min="${update.min}" 
+                            max="${update.max}" 
+                            value="${update.initialValue}">`;
+                break;
+            case 'button':
+            default:
+                updateComponent = `<button id="update-${id}" class="update-handler">${update.title}</button>`;
+        }
     }
 
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
@@ -65,18 +67,17 @@ export function makeAnalysisContainer (id, title, onStart, update) {
         update: updateNode
     };
 
-    update.onUpdate = update.onUpdate.bind(context);
-
-    switch(update.component){
-        case 'range':
-            updateNode.addEventListener('change', update.onUpdate);
-            break;
-        case 'button':
-        default:
-            updateNode.addEventListener('click', update.onUpdate);
-    }
-
-
+    if(update){
+        update.onUpdate = update.onUpdate.bind(context);
+        switch(update.component){
+            case 'range':
+                updateNode.addEventListener('change', update.onUpdate);
+                break;
+            case 'button':
+            default:
+                updateNode.addEventListener('click', update.onUpdate);
+        }
+    } 
 
     onStart = onStart.bind(context);
     div.querySelector('.analysis-start').addEventListener('click', onStart);
