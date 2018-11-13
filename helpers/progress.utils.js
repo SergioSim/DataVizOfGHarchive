@@ -16,7 +16,7 @@ export class Progress {
     };
 
     add = (value) => {
-        this._progressElement.value+=value;
+        this._progressElement.value += value;
     }
 
     hide = () => { 
@@ -26,12 +26,10 @@ export class Progress {
     };
 
     total = (maxValue) => { 
-        this._progressElement.max = maxValue + 500; 
-        this._progressElement.value += 250; 
+        this._progressElement.max = maxValue; 
     };
 
     endProcess = () => { 
-        this._progressElement.value += 250;
         this.hide();
     };
     
