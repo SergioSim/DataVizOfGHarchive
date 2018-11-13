@@ -33,7 +33,7 @@
       "email": "aime.niteka@etu.unice.fr"
     }
   ],
-  "license": "WTFPL",
+  "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "d3": "^5.7.0",
