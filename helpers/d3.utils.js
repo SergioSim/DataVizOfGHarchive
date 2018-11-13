@@ -89,7 +89,6 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
         .domain([0, d3.max(series, function(d) { return d[value] })])
         .range([0, 100]);
         const color = d3.scaleOrdinal().range(materialColors);
-
     const segment = d3
         .select(anchor)
         .append("div").classed("horizontal-bar-graph", true)
@@ -105,7 +104,9 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
     
     segment
         .append("div").classed("horizontal-bar-graph-value", true)
-        .append("div").classed("horizontal-bar-graph-value-bar", true)
+        .append("div")
+            .on("click",function(d) { zoomIn(d,anchor)})
+            .classed("horizontal-bar-graph-value-bar", true)
             .style("background-color", function(d, i) { return d.color ? d.color : color(i) })
             .text(function(d) { return d[value] ? d[value] : "0" })
             .transition()
@@ -178,4 +179,78 @@ export function drawLine(data, date, idchart, text, value, donut = true, replace
   		console.log(a)
 	})
     .on("mouseout", function() {  });
+}
+
+function zoomIn(datum,anchor){
+    const color = d3.scaleOrdinal().range(materialColors);
+    const node = document.querySelector('#'+anchor.id);
+    if(node.hasChildNodes()){
+        node.removeChild(node.childNodes[0]);
+    }
+    //put this elsewere 
+    let index = 0
+    const titles = [];
+    const dataSet = new Set();
+    datum.repoTitles.forEach((title) => {
+        // If our set doesn't contains title
+        if (!dataSet.has(title)) {
+            // add title
+            dataSet.add(title);
+            // push this title
+            titles.push({ title: title, size: datum.repoSizes[index], count: 1});
+        }else{
+            // Find title in titles set
+            const lang = titles.find((t) => t.title === title);
+            // add
+            lang.size += datum.repoSizes[index];
+            lang.count++;
+        }
+        index++;
+    });
+    // -----------------------
+    let width = window.innerWidth;
+    if(width > 600){
+        width = window.innerWidth / 2;
+    }
+    const height = width;
+    const marginTop = 100;
+    const marginBottom = 30;
+    var packLayout = d3.pack();
+    var datos = {
+        "name": "Titles",
+        "children": titles
+    }
+    const root = d3.hierarchy(datos);
+    var packLayout = d3.pack();
+    packLayout.size([width,height + marginTop + marginBottom]);
+    packLayout.padding(10);
+    root.sum(d => {
+        return d.count * 10
+    });
+    packLayout(root);
+    console.log(root);
+
+    var packNodes = d3.select("#" + anchor.id)
+        .append("svg")
+        .style("width", "100%")
+        .style("height", height + marginTop + marginBottom + "px")
+        .attr("font-size", 10)
+        .attr("font-family", "sans-serif")
+        .attr("text-anchor", "middle")
+        .selectAll('g')
+        .data(root.descendants())
+        .enter()
+        .append('g').attr('class', 'node')
+        .attr('transform', d => 'translate('+[d.x, d.y]+')');
+
+    packNodes
+        .append('circle')
+        .classed('the-node', true)
+        .attr('r', d => d.r)
+        .attr("fill-opacity", 0.7)
+        .attr("fill", d => color(d.data.size));
+
+    packNodes
+        .append("text")
+        .text(d => d.data.title);
 }

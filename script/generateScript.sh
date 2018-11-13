@@ -21,7 +21,8 @@ done
 
 echo "mkdir ghArchive17" >> aspire.sh
 echo "cd ghArchive17" >> aspire.sh
-for day in ${monthDays2016[@]}; do
+month=1
+for day in ${monthDays2017[@]}; do
 	echo "mkdir ghArchive17-$month"  >> aspire.sh
 	echo "cd ghArchive17-$month"  >> aspire.sh
 
