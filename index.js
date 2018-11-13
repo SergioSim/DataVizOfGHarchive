@@ -210,7 +210,7 @@ UIUtils.makeAnalysisContainer(
         }
 
         let meanIssue = (values) => {
-            var total = 0, i;
+            let total = 0, i;
             for (i = 0; i < values.length; i += 1) {
                 total += values[i];
             }

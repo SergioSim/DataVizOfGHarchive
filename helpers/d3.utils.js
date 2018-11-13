@@ -128,7 +128,7 @@ export function drawLine(data, date, idchart, text, value, donut = true, replace
                     .domain([0, n-1]) // input
                     .range([0, width]); // output
 
-    //var xScale = d3.scaleTime().rangeRound([0, width]);
+    //const xScale = d3.scaleTime().rangeRound([0, width]);
     
     const yScale = d3.scaleLinear()
                     .domain([0, Math.max.apply(Math, data.map(function(o) { return o; }))]) // input 
