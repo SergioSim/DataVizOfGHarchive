@@ -183,18 +183,29 @@ function makeUI(){
                     const commitWords = commitMessage.split(' ');
                     let i = 0;
                     for (const word of commitWords) {
-                        const isTherePairOfWord = word !== undefined && commitWords[i + 1] !== undefined;
+                        if(!commitWords[i+1]){
+                            break;
+                        }
+                        const cleanRegex = /[^A-Za-z]+/g;
+                        const wordA = word.toLowerCase().trim().replace(cleanRegex, "");;
+                        const wordB = commitWords[i + 1].toLowerCase().trim().replace(cleanRegex, "");;
+                        const isTherePairOfWord = 
+                            wordA !== undefined 
+                            && wordB !== undefined;
+
+                        if(wordA.length < 3){
+                            continue;
+                        }
+                        if(commonWords.indexOf(wordA) !== -1) {
+                            // debugger;
+                            continue;
+                        } 
                         if (!isTherePairOfWord)
                             continue;
                         // to lowercase to avoid "add", "Add"
-                        const wordPair = word.toLowerCase() + " " + commitWords[i + 1].toLowerCase();
-                        if (wordPair === date.substring(0, date.length - 3))
-                            continue;
-                        // filter english words
-                        if (commonWords.indexOf(wordPair) !== -1)
-                            continue;
-                        // filter if length 0
-                        if (wordPair.length === 0)
+                        const wordPair = wordA + " " + wordB;
+                        // filter if length 0 for one of word
+                        if (wordPair.split(' ').length === 1)
                             continue;
                         // Increment or append
                         if (wordsMap[wordPair]) {

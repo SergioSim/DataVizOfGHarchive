@@ -182,6 +182,10 @@ export function drawLine(data, date, idchart, text, value, donut = true, replace
 }
 
 function zoomIn(datum,anchor){
+    if(!datum || !datum.repoTitles){
+        return;
+    }
+    
     const color = d3.scaleOrdinal().range(materialColors);
     const node = document.querySelector('#'+anchor.id);
     if(node.hasChildNodes()){

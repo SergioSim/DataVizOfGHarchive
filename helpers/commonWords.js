@@ -80,6 +80,12 @@ const words = [
     "support",
     "translated",
     "code",
+    "licence",
+    "file",
+    "files",
+    "localization",
+    "backed",
+    "readmemd",
     "files","update",
     "updated", "updated:", "updates", "removed", "adding", "fixes", "make", "bug", "build", "files", "first", "initial", "changes", "function", "git", "data", "default"
 ];
