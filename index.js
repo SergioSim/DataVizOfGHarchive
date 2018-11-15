@@ -30,6 +30,8 @@ const i18n = i18next.init({
     lng: 'en',
     debug: true,
     resources: languageResource
+}, () => {
+    UIUtils.bindAccordions();
 });
 
 const flags = document.querySelectorAll('.flags span');
@@ -44,7 +46,7 @@ i18n.on('languageChanged', (_lang) => {
     makeUI();
 });
 
-i18n.changeLanguage('en');
+makeUI();
 
 // HTML Elements
 const debugZone = document.querySelector('#debug');
@@ -52,11 +54,9 @@ const debugElement = document.querySelector('#debugProgress');
 const debugProgressTitle = document.querySelector('#debugProgressTitle');
 const debugProgress = new Progress(debugElement, debugProgressTitle);
 
-UIUtils.bindAccordions();
 debugProgress.hide();
 
 function makeUI(){
-
     const currentLang = i18n.languages[0];
     const siteTitle = i18n.t('siteTitle');
     document.querySelector('html').lang = currentLang;
