@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{i18nLang}}">
   <head>
     <meta charset="utf-8">
-    <title>GHArchive Data visualisation</title>
+    <title>{{siteTitle}}</title>
     <link rel="stylesheet" href="./assets/main.scss" />
   </head>
   <body>
@@ -11,8 +11,14 @@
       <progress id="debugProgress"></progress>
     </div>
     <div class="nav">
-        <span class="title">Analyse GitHub via GHArchive</span>
-        <span class="github"><a href="https://github.com/SergioSim/DataVizOfGHarchive" target="_blank" class="github-link"><img src="./assets/GitHub-Mark-Light-32px.png"></a></span>
+      <div class="mid">
+          <span class="title">{{siteTitle}}</span>
+          <span class="github"><a href="https://github.com/SergioSim/DataVizOfGHarchive" target="_blank" class="github-link"><img src="./assets/GitHub-Mark-Light-32px.png"></a></span>
+      </div>
+      <div class="flags">
+        <span class="en"><img src="https://lipis.github.io/flag-icon-css/flags/4x3/gb.svg" alt="english" /></span>
+        <span class="fr"><img src="https://lipis.github.io/flag-icon-css/flags/4x3/fr.svg" alt="french" /></span>
+      </div>
     </div>
     <div class="analysis-container"></div>
     <pre id="debug" class="debug"></pre>

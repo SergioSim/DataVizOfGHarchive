@@ -43,6 +43,13 @@
       padding: 1em;
       color: white;
     }
+    .mid, .github {
+      display: flex;
+      align-items: center;
+    }
+    .github img {
+        width: 22px;
+    }
   }
 
   .debug {
@@ -135,13 +142,6 @@
     }
   }
 
-  .github {
-    display: flex;
-    img {
-      width: 22px;
-    }
-  }
-
   .contextProgressZone {
     position: fixed;
     top: 5em;
@@ -197,3 +197,8 @@
       -webkit-font-smoothing: antialiased;
     }
   }
+
+.flags span img {
+  width: 30px;
+  padding: .1em;
+}

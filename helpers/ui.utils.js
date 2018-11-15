@@ -7,7 +7,7 @@
  * @param {callback} onStart
  * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, handler? (any)}} updateConfig
  */
-export function makeAnalysisContainer (id, title, inputValue, onStart, update) {
+export function makeAnalysisContainer (id, title, inputValue, onStart, update, i18n) {
     const selector = "#charts-"+id+"-container";
     const graphSelector = selector.substring(1).replace('-container', '');
 
@@ -44,7 +44,7 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update) {
     const panel = `
     <div class="panel" id="${selector.substring(1)}">
           <input type="text" class="date-label" value="${inputValue}" />
-          <button class="analysis-start">Analyser!</button>
+          <button class="analysis-start">${i18n.t('startAnalysis')}</button>
           <div id="${graphSelector}" class="pie"></div>
           ${updateComponent}
     </div>

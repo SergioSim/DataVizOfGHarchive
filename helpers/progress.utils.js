@@ -28,9 +28,4 @@ export class Progress {
     total = (maxValue) => { 
         this._progressElement.max = maxValue; 
     };
-
-    endProcess = () => { 
-        this.hide();
-    };
-    
 }

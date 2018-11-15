@@ -100,7 +100,7 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
     
     segment
         .append("div").classed("horizontal-bar-graph-label", true)
-        .text(function(d) { return d[label] ? d[label] : "Non défini"});
+        .text(function(d) { return d[label] ? d[label] : "?"});
     
     segment
         .append("div").classed("horizontal-bar-graph-value", true)
