@@ -2,6 +2,7 @@
 import pako from 'pako';
 // Used for easy caching in IndexedDB
 import { get, set } from 'idb-keyval';
+import dayjs from 'dayjs';
 /* 
     EventTypes doc : https://developer.github.com/v3/activity/events/types/ 
 */
@@ -91,21 +92,48 @@ export async function getFromGHArchive(date, progress) {
  *
  *
  * @export
- * @param {string} yearMonth 2018-01
- * @param {number} numberOfDays 1-3 (don't be mad)
- * @param {number} numberOfHours 10
- * @param {Element} progress 
+ * @param {*} startDate
+ * @param {*} endDate
+ * @param {*} progress
+ * @returns
  */
-export async function getPeriodFromGH(yearMonth, numberOfDays, numberOfHours, progress){
-    const days = new Array(numberOfDays);
+export async function getPeriodFromGH(startDate, endDate, progress){
+    // Split date
+    const splittedDate = startDate.split('-');
+    // Get number of hours
+    const numberOfHours = parseInt(splittedDate[splittedDate.length-1], 10);
+    // Compute "year-month"
+    const yearMonth = splittedDate[0] + '-' + splittedDate[1];
+
+    // Define a new array of a length who equals numberOfHours (to iterate easily)
     const hours = new Array(numberOfHours);
     
-    let confirmed = true;
-    if(numberOfDays > 30){
-        confirmed = window.confirm('Attention, êtes-vous sûr de vouloir lancer un traitement aussi lourd dans un navigateur ?');
-    }
-    if(!confirmed) return;
+    // Compute user-provided dates using dayjs
+    startDate = dayjs(startDate);
+    endDate = dayjs(endDate);
 
+    const diff = endDate.diff(startDate, 'day', true);
+
+    /* Don't want to be too much complex for that kind of tasks */
+    if(diff % 1 !== 0){
+        window.alert('Please keep the same start hours for start and end dates');
+        return;
+    }
+
+    /*
+    * We use IndexedDB to cache ungzified files from GHArchive
+    * As a result, we need to forbid a too big download from the user (to prevent him from himself), 
+    * also avoid a browser crash (due to memory issue)
+    */
+    if(diff >= 31){
+        // TODO XXX : Refer to loaded data by Sergio?
+        window.alert('You don\'t want to launch this kind of request in a browser');
+        return;
+    }
+
+    const days = new Array(diff);
+
+    debugger;
     const fullData = {};
     for(let v = 1; v < days.length+1; v++){
         for(let i = 0; i < hours.length; i++){

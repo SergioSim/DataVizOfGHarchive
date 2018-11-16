@@ -176,7 +176,7 @@ function makeUI(){
                     return;
                 }
     
-                const periods = await getPeriodFromGH(date, 2, 2, debugProgress)
+                const periods = await getPeriodFromGH('2018-01-01-10', '2018-01-02-10', debugProgress)
                 const dataset = [];
     
                 Object.keys(periods).map((period)=>{
@@ -239,3 +239,5 @@ function makeUI(){
     UIUtils.bindAccordions();
 }
 
+
+// getPeriodFromGH('2018-01-01-10', '2018-02-01-10', debugProgress);
