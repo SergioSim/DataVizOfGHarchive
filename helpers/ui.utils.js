@@ -21,7 +21,7 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update, i
     const div = document.createElement('div');
 
     let updateComponent = '';
-    if(update){
+    if(update && update.component){
         switch(update.component){
             case 'range':
                 updateComponent = `
@@ -71,14 +71,21 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update, i
     };
 
     if(update){
-        update.onUpdate = update.onUpdate.bind(context);
+        if(update.onUpdate)
+            update.onUpdate = update.onUpdate.bind(context);
+        if(update.onMount){
+            update.onMount = update.onMount.bind(context);
+            update.onMount();
+        }
         switch(update.component){
             case 'range':
                 updateNode.addEventListener('change', update.onUpdate);
                 break;
             case 'button':
-            default:
                 updateNode.addEventListener('click', update.onUpdate);
+                break;
+            default:
+                // do nothing
         }
     } 
 

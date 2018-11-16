@@ -333,8 +333,7 @@ function makeUI(){
     }
 
     UIUtils.makeAnalysisContainer('topicBasedAnalysis', i18n.t('topicBasedAnalysis'), null, function() {
-        const context = this;
-        console.log(context);
+        // OnStart callback
         /* 
             will use : callGitHubForTopic("https://github.com/Ghostfly/portfolio", debugProgress);
             and getPeriodFromGH
@@ -348,7 +347,10 @@ function makeUI(){
             Period choice from : to:
             bar graph of occurences in commit messages for period
         */
-    }, null, i18n);
+    }, {onMount: function() {
+        const context = this;
+        console.log(context);
+    }}, i18n);
 
     UIUtils.bindAccordions();
 }
