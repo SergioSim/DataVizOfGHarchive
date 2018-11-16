@@ -8,7 +8,8 @@ export const languageResource = {
             "startAnalysis": "Lancer l'analyse",
             "invert": "Inverser",
             "numberOfWords": "Nombre de mots",
-            "analysisInProgress": "Analyse en cours"
+            "analysisInProgress": "Analyse en cours",
+            "topicBasedAnalysis": "Analyse par topics sur une période donnée"
         }
     },
     en: {
@@ -20,7 +21,8 @@ export const languageResource = {
             "startAnalysis": "Start process",
             "invert": "Invert",
             "numberOfWords": "Number of words",
-            "analysisInProgress": "Analysis in progress"
+            "analysisInProgress": "Analysis in progress",
+            "topicBasedAnalysis": "Topic based analysis on Period"
         }
     }
 }

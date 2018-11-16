@@ -41,9 +41,10 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update, i
     }
 
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
-    const panel = `
+    const input = inputValue ? `<input type="text" class="date-label" value="${inputValue}" />` : "";
+    let panel = `
     <div class="panel" id="${selector.substring(1)}">
-          <input type="text" class="date-label" value="${inputValue}" />
+          ${input}
           <button class="analysis-start">${i18n.t('startAnalysis')}</button>
           <div id="${graphSelector}" class="pie"></div>
           ${updateComponent}
@@ -58,10 +59,12 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update, i
     const inputNode = div.querySelector('.date-label');
     const pieNode = div.querySelector('.pie');
     const updateNode = div.querySelector('.update-handler');
+    panel = div.querySelector('.panel');
 
     const context = {
         id,
         title,
+        panel,
         pie: pieNode,
         input: inputNode,
         update: updateNode

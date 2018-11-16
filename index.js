@@ -300,8 +300,6 @@ function makeUI(){
         i18n
     );
 
-    UIUtils.bindAccordions();
-
     function parsePullRequestsLanguages(pullRequests) {
         const languages = [];
         // Used to know if we should increment or decrement
@@ -333,8 +331,25 @@ function makeUI(){
         languages.sort((a, b) => a.count - b.count);
         return languages;
     }
+
+    UIUtils.makeAnalysisContainer('topicBasedAnalysis', i18n.t('topicBasedAnalysis'), null, function() {
+        const context = this;
+        console.log(context);
+        /* 
+            will use : callGitHubForTopic("https://github.com/Ghostfly/portfolio", debugProgress);
+            and getPeriodFromGH
+
+            Draw an analysis container 
+            Topic adder to train classifier with repository url
+            React : reactRepoURL
+            + button to append
+            On "Train click" -> Train foreach topics
+
+            Period choice from : to:
+            bar graph of occurences in commit messages for period
+        */
+    }, null, i18n);
+
+    UIUtils.bindAccordions();
 }
 
-/* 
-callGitHubForTopic("https://github.com/Ghostfly/portfolio", debugProgress);
-*/
