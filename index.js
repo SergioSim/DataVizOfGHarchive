@@ -191,12 +191,13 @@ function makeUI(){
                     });
                     let x = convertMS(meanIssue(middleTimeToResolve));
                     dataset.push(
-                        meanIssue(middleTimeToResolve)
+                        x.day
                     )
                     console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
                 });
-                console.log(dataset);
-                drawLine(dataset, date, this.pie, "issues", "mean time", false, true);
+                drawLine(dataset, date, this.pie, "issues", "mean time", false, true, function(a, b, c) {
+                    console.warn('todo?', a, b, c);
+                });
                 debugProgress.hide();
             },
             onUpdate: function(){

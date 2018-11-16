@@ -115,7 +115,7 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
 }
 
 /* Line graph */
-export function drawLine(data, date, idchart, text, value, donut = true, replace = false){
+export function drawLine(data, date, idchart, text, value, donut = true, replace = false, onMouseOver){
     let width = window.innerWidth;
     if(width > 600){
         width = window.innerWidth / 2;
@@ -176,7 +176,7 @@ export function drawLine(data, date, idchart, text, value, donut = true, replace
     .attr("cy", function(d) { return yScale(d.y) })
     .attr("r", 5)
     .on("mouseover", function(a, b, c) {
-  		console.log(a)
+        onMouseOver(a, b, c);
 	})
     .on("mouseout", function() {  });
 }
