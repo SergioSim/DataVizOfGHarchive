@@ -75,8 +75,9 @@ export async function getFromGHArchive(date, progress) {
 
                 return cacheData(date, parsed, progress, resolve)
                                 .catch((err) => {
-                                    debugger; 
-                                    console.log("error while saving in cache", err)
+                                    console.warn("error while saving in cache", err);
+
+                                    onError();
                                 });
             } else {
                 onError()
@@ -140,8 +141,13 @@ export async function getPeriodFromGH(startDate, endDate, progress){
             if(v < 9){
                 currentDay = "0"+v;
             }
-            const parsed = await getFromGHArchive(yearMonth + `-${currentDay}-${i}`, progress);
-            fullData[`${yearMonth}-${currentDay}-${i}`] = {data: parsed}
+            try {
+                const parsed = await getFromGHArchive(yearMonth + `-${currentDay}-${i}`, progress);
+                fullData[`${yearMonth}-${currentDay}-${i}`] = {data: parsed}
+            } catch(err){
+                console.warn('Error while downloading, file not found?', yearMonth, currentDay, i);
+                continue;
+            }
         }
     }
 

@@ -8,7 +8,7 @@ export class Progress {
         this._progressElement = progressElement;
     }
 
-    show = (title = "Analyse en cours") => {
+    show = (title = "") => {
         this._progressTitle.innerText = title;
         this._progressTitle.style.display = 'block'; 
         this._progressElement.style.display = 'block'; 
