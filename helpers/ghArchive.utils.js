@@ -133,7 +133,6 @@ export async function getPeriodFromGH(startDate, endDate, progress){
 
     const days = new Array(diff);
 
-    debugger;
     const fullData = {};
     for(let v = 1; v < days.length+1; v++){
         for(let i = 0; i < hours.length; i++){
