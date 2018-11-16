@@ -70,58 +70,59 @@ function makeUI(){
         'languageDistribution', 
         i18n.t('analysis1'),
         "2018-01-01-12",
-        async function(){
-            debugProgress.show(i18n.t('analysisInProgress'));
+        {
+            component: 'button',
+            title: i18n.t('invert'),
+            onStart: async function(){
+                debugProgress.show(i18n.t('analysisInProgress'));
 
-            const date = this.input.value;
-            if(!date) return;
+                const date = this.input.value;
+                if(!date) return;
 
-            try {
+                try {
+                    const context = this;
+                    const parsedObjects = await getFromGHArchive(date, debugProgress);
+                    // Filtering every pullRequest
+                    const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
+                    debugProgress.total(pullRequests.length);
+
+                    // Instanciate a new languages object
+                    const languages = parsePullRequestsLanguages(pullRequests);
+                    // draw d3 pie
+                    // drawPie(languages, date, this.pie, "language", "count");
+                    context.isDesc = true;
+                    languages.sort((langA, langB) => langB.count - langA.count);
+                    drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
+                    this.input.style.border = "";
+                    // @tools debug
+                    console.log(`Languages distribution in pull requests :`, languages);
+                    debugZone.style.display = "block";
+                    debugZone.innerHTML = JSON.stringify(languages, null, 2);
+                    debugProgress.hide();            
+                } catch (err) {
+                    this.input.style.border = "1px solid red";
+                    throw err;
+                }
+            },
+            onUpdate: async function(event) {
+                debugProgress.show(i18n.t('analysisInProgress'));
                 const context = this;
+                const date = this.input.value;
+                console.log('update', event, context);
                 const parsedObjects = await getFromGHArchive(date, debugProgress);
-                // Filtering every pullRequest
                 const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
-                debugProgress.total(pullRequests.length);
-
-                // Instanciate a new languages object
-                const languages = parsePullRequestsLanguages(pullRequests);
-                // draw d3 pie
-                // drawPie(languages, date, this.pie, "language", "count");
-                context.isDesc = true;
-                languages.sort((langA, langB) => langB.count - langA.count);
+                if(context.isDesc === true){
+                    context.isDesc = false;
+                } else {
+                    context.isDesc = true;
+                }
+                const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
                 drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
-                this.input.style.border = "";
-                // @tools debug
-                console.log(`Languages distribution in pull requests :`, languages);
+                debugProgress.total(pullRequests.length);
+                debugProgress.hide();            
                 debugZone.style.display = "block";
                 debugZone.innerHTML = JSON.stringify(languages, null, 2);
-                debugProgress.hide();            
-            } catch (err) {
-                this.input.style.border = "1px solid red";
-                throw err;
             }
-    }, {
-        component: 'button',
-        title: i18n.t('invert'),
-        onUpdate: async function(event) {
-            debugProgress.show(i18n.t('analysisInProgress'));
-            const context = this;
-            const date = this.input.value;
-            console.log('update', event, context);
-            const parsedObjects = await getFromGHArchive(date, debugProgress);
-            const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
-            if(context.isDesc === true){
-                context.isDesc = false;
-            } else {
-                context.isDesc = true;
-            }
-            const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
-            drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
-            debugProgress.total(pullRequests.length);
-            debugProgress.hide();            
-            debugZone.style.display = "block";
-            debugZone.innerHTML = JSON.stringify(languages, null, 2);
-        }
     }, i18n);
 
     const numberOfWords = 20;
@@ -129,42 +130,43 @@ function makeUI(){
         'drawCommonWords', 
         i18n.t('analysis2'),
         "2018-01-01-12",
-        async function(){
-            debugProgress.show(i18n.t('analysisInProgress'));
-            // https://developers.google.com/machine-learning/guides/text-classification/step-2
-            const date = this.input.value;
-            if(!date){
-                return;
-            }
+        {
+            onStart: async function(){
+                debugProgress.show(i18n.t('analysisInProgress'));
+                // https://developers.google.com/machine-learning/guides/text-classification/step-2
+                const date = this.input.value;
+                if(!date){
+                    return;
+                }
 
-            // TODO : Remove bots
-            try {
-                const part = await parseCommonWordsInCommits(this.input.value, numberOfWords);
+                // TODO : Remove bots
+                try {
+                    const part = await parseCommonWordsInCommits(this.input.value, numberOfWords);
+                    drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
+
+                    // drawPie(part, date, this.pie, "pair", "occurences");
+                    console.timeEnd();
+                    console.log(part);
+                    debugZone.style.display = "block";
+                    debugZone.innerHTML = JSON.stringify(part, null, 2);
+                    debugProgress.hide();            
+                } catch (err) {
+                    this.input.style.border = "1px solid red";
+                    throw err;
+                }
+            },
+            component: 'range',
+            title: i18n.t('numberOfWords'),
+            min: 1,
+            max: 500,
+            initialValue: numberOfWords,
+            onUpdate: async function(event) {
+                const context = this;
+                console.log('update', event, context);
+                const part = await parseCommonWordsInCommits(this.input.value, event.target.value);
                 drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
-
-                // drawPie(part, date, this.pie, "pair", "occurences");
-                console.timeEnd();
-                console.log(part);
-                debugZone.style.display = "block";
-                debugZone.innerHTML = JSON.stringify(part, null, 2);
-                debugProgress.hide();            
-            } catch (err) {
-                this.input.style.border = "1px solid red";
-                throw err;
+                // drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
             }
-    }, {
-        component: 'range',
-        title: i18n.t('numberOfWords'),
-        min: 1,
-        max: 500,
-        initialValue: numberOfWords,
-        onUpdate: async function(event) {
-            const context = this;
-            console.log('update', event, context);
-            const part = await parseCommonWordsInCommits(this.input.value, event.target.value);
-            drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
-            // drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
-        }
     }, i18n);
 
     async function parseCommonWordsInCommits(date, count){
@@ -258,45 +260,49 @@ function makeUI(){
         'timeToResolveIssues',
         i18n.t('analysis3'), 
         "2018-01",
-        async function(){
-            debugProgress.show(i18n.t('analysisInProgress'));
-            const date = this.input.value;
-            if(!date){
-                return;
-            }
-
-            let meanIssue = (values) => {
-                let total = 0, i;
-                for (i = 0; i < values.length; i += 1) {
-                    total += values[i];
+        {
+            onStart: async function(){
+                debugProgress.show(i18n.t('analysisInProgress'));
+                const date = this.input.value;
+                if(!date){
+                    return;
                 }
-                return total / values.length;
-            };
-
-            const periods = await getPeriodFromGH(date, 2, 2, debugProgress)
-            const dataset = [];
-
-            Object.keys(periods).map((period)=>{
-                const issuesEvents = filterDataByEvent(periods[period].data, eventTypes.issues);
-                const middleTimeToResolve = issuesEvents
-                .filter((issue)=>{
-                    return issue.payload.issue.created_at !== null && issue.payload.issue.closed_at !== null
-                })
-                .map((issue)=>{
-                    return dayjs(issue.payload.issue.closed_at).diff(dayjs(issue.payload.issue.created_at));
+    
+                let meanIssue = (values) => {
+                    let total = 0, i;
+                    for (i = 0; i < values.length; i += 1) {
+                        total += values[i];
+                    }
+                    return total / values.length;
+                };
+    
+                const periods = await getPeriodFromGH(date, 2, 2, debugProgress)
+                const dataset = [];
+    
+                Object.keys(periods).map((period)=>{
+                    const issuesEvents = filterDataByEvent(periods[period].data, eventTypes.issues);
+                    const middleTimeToResolve = issuesEvents
+                    .filter((issue)=>{
+                        return issue.payload.issue.created_at !== null && issue.payload.issue.closed_at !== null
+                    })
+                    .map((issue)=>{
+                        return dayjs(issue.payload.issue.closed_at).diff(dayjs(issue.payload.issue.created_at));
+                    });
+    
+                    let x = convertMS(meanIssue(middleTimeToResolve));
+                    dataset.push(
+                        meanIssue(middleTimeToResolve)
+                    )
+                    console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
                 });
-
-                let x = convertMS(meanIssue(middleTimeToResolve));
-                dataset.push(
-                    meanIssue(middleTimeToResolve)
-                )
-                console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
-            });
-            console.log(dataset);
-            drawLine(dataset, date, this.pie, "issues", "mean time", false, true);
-            debugProgress.hide();
+                console.log(dataset);
+                drawLine(dataset, date, this.pie, "issues", "mean time", false, true);
+                debugProgress.hide();
+            },
+            onUpdate: function(){
+                // Todo?
+            }
         }, 
-        null, // Todo?
         i18n
     );
 
@@ -332,25 +338,19 @@ function makeUI(){
         return languages;
     }
 
-    UIUtils.makeAnalysisContainer('topicBasedAnalysis', i18n.t('topicBasedAnalysis'), null, function() {
-        // OnStart callback
-        /* 
-            will use : callGitHubForTopic("https://github.com/Ghostfly/portfolio", debugProgress);
-            and getPeriodFromGH
-
-            Draw an analysis container 
-            Topic adder to train classifier with repository url
-            React : reactRepoURL
-            + button to append
-            On "Train click" -> Train foreach topics
-
-            Period choice from : to:
-            bar graph of occurences in commit messages for period
-        */
-    }, {onMount: function() {
-        const context = this;
-        console.log(context);
-    }}, i18n);
+    UIUtils.makeAnalysisContainer(
+        'topicBasedAnalysis', 
+        i18n.t('topicBasedAnalysis'), 
+        null, 
+        {
+            onMount: function() {
+                const context = this;
+                console.log(context);
+            },
+            onStart: function(){
+                console.log('started topic based analysis');
+            }
+    }, i18n);
 
     UIUtils.bindAccordions();
 }

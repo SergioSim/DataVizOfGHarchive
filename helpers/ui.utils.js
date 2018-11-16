@@ -7,7 +7,7 @@
  * @param {callback} onStart
  * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, handler? (any)}} updateConfig
  */
-export function makeAnalysisContainer (id, title, inputValue, onStart, update, i18n) {
+export function makeAnalysisContainer (id, title, inputValue, config, i18n) {
     const selector = "#charts-"+id+"-container";
     const graphSelector = selector.substring(1).replace('-container', '');
 
@@ -21,22 +21,22 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update, i
     const div = document.createElement('div');
 
     let updateComponent = '';
-    if(update && update.component){
-        switch(update.component){
+    if(config && config.component){
+        switch(config.component){
             case 'range':
                 updateComponent = `
-                        <label for='slider-${id}'>${update.title}</label>
+                        <label for='slider-${id}'>${config.title}</label>
                         <input                         
                             class="update-handler" 
                             id="slider-${id}"
                             type="range" 
-                            min="${update.min}" 
-                            max="${update.max}" 
-                            value="${update.initialValue}">`;
+                            min="${config.min}" 
+                            max="${config.max}" 
+                            value="${config.initialValue}">`;
                 break;
             case 'button':
             default:
-                updateComponent = `<button id="update-${id}" class="update-handler">${update.title}</button>`;
+                updateComponent = `<button id="update-${id}" class="update-handler">${config.title}</button>`;
         }
     }
 
@@ -70,27 +70,31 @@ export function makeAnalysisContainer (id, title, inputValue, onStart, update, i
         update: updateNode
     };
 
-    if(update){
-        if(update.onUpdate)
-            update.onUpdate = update.onUpdate.bind(context);
-        if(update.onMount){
-            update.onMount = update.onMount.bind(context);
-            update.onMount();
+    if(config){
+        if(config.onUpdate)
+            config.onUpdate = config.onUpdate.bind(context);
+        if(config.onMount){
+            config.onMount = config.onMount.bind(context);
+            config.onMount();
         }
-        switch(update.component){
+        switch(config.component){
             case 'range':
-                updateNode.addEventListener('change', update.onUpdate);
+                updateNode.addEventListener('change', config.onUpdate);
                 break;
             case 'button':
-                updateNode.addEventListener('click', update.onUpdate);
+                updateNode.addEventListener('click', config.onUpdate);
                 break;
             default:
                 // do nothing
         }
-    } 
+    }
 
-    onStart = onStart.bind(context);
-    div.querySelector('.analysis-start').addEventListener('click', onStart);
+    if(config.onStart){
+        config.onStart = config.onStart.bind(context);
+        div.querySelector('.analysis-start').addEventListener('click', config.onStart);
+    } else {
+        console.warn('Start callback not defined, is it intentional ?');
+    }
 }
 
 /**
