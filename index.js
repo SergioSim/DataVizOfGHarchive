@@ -217,9 +217,26 @@ function makeUI(){
             onMount: function() {
                 const context = this;
                 console.log(context);
+                /* 
+                    Append a topic add list, [TopicName, TopicInput] + AddButton
+                    Append a "period choicer"
+                */
             },
             onStart: function(){
-                console.log('started topic based analysis');
+                console.warn('WIP : Implement topic based analysis');
+                /* 
+                    will use : callGitHubForTopic("https://github.com/:owner/:repo", debugProgress);
+                    and getPeriodFromGH
+
+                    Draw an analysis container 
+                    Topic adder to train classifier with repository url
+                    React : reactRepoURL
+                    + button to append
+                    On "Train click" -> Train foreach topics
+
+                    Period choice from : to:
+                    bar graph of occurences in commit messages for period
+                */
             }
     }, i18n);
 
