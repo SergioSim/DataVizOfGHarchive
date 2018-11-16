@@ -64,8 +64,8 @@ function makeUI(){
     UIUtils.makeAnalysisContainer(
         'languageDistribution', 
         i18n.t('analysis1'),
-        "2018-01-01-12",
         {
+            inputValue: "2018-01-01-12",
             component: 'button',
             title: i18n.t('invert'),
             onStart: async function(){
@@ -124,8 +124,8 @@ function makeUI(){
     UIUtils.makeAnalysisContainer(
         'drawCommonWords', 
         i18n.t('analysis2'),
-        "2018-01-01-12",
         {
+            inputValue: "2018-01-01-12",
             onStart: async function(){
                 debugProgress.show(i18n.t('analysisInProgress'));
                 // https://developers.google.com/machine-learning/guides/text-classification/step-2
@@ -167,8 +167,8 @@ function makeUI(){
     UIUtils.makeAnalysisContainer(
         'timeToResolveIssues',
         i18n.t('analysis3'), 
-        "2018-01",
         {
+            inputValue: "2018-01",
             onStart: async function(){
                 debugProgress.show(i18n.t('analysisInProgress'));
                 const date = this.input.value;
@@ -208,8 +208,7 @@ function makeUI(){
     
     UIUtils.makeAnalysisContainer(
         'topicBasedAnalysis', 
-        i18n.t('topicBasedAnalysis'), 
-        null, 
+        i18n.t('topicBasedAnalysis'),  
         {
             onMount: function() {
                 const context = this;
