@@ -37,9 +37,6 @@ i18n.on('languageChanged', (_lang) => {
     makeUI();
 });
 
-makeUI();
-UIUtils.bindLangFlags();
-
 // HTML Elements
 const debugZone = document.querySelector('#debug');
 const debugElement = document.querySelector('#debugProgress');
@@ -47,6 +44,9 @@ const debugProgressTitle = document.querySelector('#debugProgressTitle');
 const debugProgress = new Progress(debugElement, debugProgressTitle);
 
 debugProgress.hide();
+
+makeUI();
+UIUtils.bindLangFlags(i18n);
 
 /**
  * Paint entire "web-app" ui

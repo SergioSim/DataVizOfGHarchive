@@ -119,7 +119,7 @@ function bindAccordions() {
     }
 }
 
-function bindLangFlags(){
+function bindLangFlags(i18n){
     const flags = document.querySelectorAll('.flags span');
     for(const flag of flags){
         flag.addEventListener('click', () => {
