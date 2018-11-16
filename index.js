@@ -179,6 +179,8 @@ function makeUI(){
                 // TODO XXX : Cleanup after next analysis done (we will have a period choicer)
                 const periods = await getPeriodFromGH(`${date}-01-10`, `${date}-04-10`, debugProgress)
                 const dataset = [];
+
+                // WARN : I think it's a wrong analysis (dead-end)
     
                 // TODO XXX : Fix this loop, we need to "concat days" as we have data for each hours
                 // Todo we just calc the "meanTime" for an hour, not so useful
