@@ -177,7 +177,7 @@ function makeUI(){
                 }
     
                 // TODO XXX : Cleanup after next analysis done (we will have a period choicer)
-                const periods = await getPeriodFromGH(`${inputValue}-01-10`, `${inputValue}-02-10`, debugProgress)
+                const periods = await getPeriodFromGH(`${date}-01-10`, `${date}-02-10`, debugProgress)
                 const dataset = [];
     
                 Object.keys(periods).map((period)=>{
