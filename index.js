@@ -211,7 +211,13 @@ function makeUI(){
         i18n
     );
 
+    // TODO XXX : 
+    // Use commit messages to classify by tasks, will be more useful as we are in hours/days
+    // Make a dictionary of words related to specific programmer tasks :
+    // UI, fix, .....
+    // Classify every commit message found in a category
     
+    // If we have time to do it...
     UIUtils.makeAnalysisContainer(
         'topicBasedAnalysis', 
         i18n.t('topicBasedAnalysis'),  
