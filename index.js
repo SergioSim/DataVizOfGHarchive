@@ -2,8 +2,6 @@
 import "@babel/polyfill"
 import dayjs from 'dayjs'
 
-// Common english words (to be continued..)
-import commonWords from './helpers/commonWords';
 // UIUtils (to make analysis containers)
 import UIUtils from './helpers/ui.utils';
 
@@ -26,6 +24,7 @@ import {
 import i18next from 'i18next';
 import { languageResource } from "./helpers/i18n.utils";
 import { callGitHubForTopic } from "./helpers/githubApi.utils";
+import { parsePullRequestsLanguages, parseCommonWordsInCommits, convertMS, meanIssue } from "./helpers/analysis.utils";
 
 const i18n = i18next.init({
     lng: 'en',
@@ -87,7 +86,7 @@ function makeUI(){
                     debugProgress.total(pullRequests.length);
 
                     // Instanciate a new languages object
-                    const languages = parsePullRequestsLanguages(pullRequests);
+                    const languages = parsePullRequestsLanguages(pullRequests, debugProgress);
                     // draw d3 pie
                     // drawPie(languages, date, this.pie, "language", "count");
                     context.isDesc = true;
@@ -141,7 +140,7 @@ function makeUI(){
 
                 // TODO : Remove bots
                 try {
-                    const part = await parseCommonWordsInCommits(this.input.value, numberOfWords);
+                    const part = await parseCommonWordsInCommits(this.input.value, numberOfWords, debugProgress);
                     drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
 
                     // drawPie(part, date, this.pie, "pair", "occurences");
@@ -163,98 +162,11 @@ function makeUI(){
             onUpdate: async function(event) {
                 const context = this;
                 console.log('update', event, context);
-                const part = await parseCommonWordsInCommits(this.input.value, event.target.value);
+                const part = await parseCommonWordsInCommits(this.input.value, event.target.value, debugProgress);
                 drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
                 // drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
             }
     }, i18n);
-
-    async function parseCommonWordsInCommits(date, count){
-        const events = await getFromGHArchive(date, debugProgress);
-        const pushEvents = filterDataByEvent(events, eventTypes.push);
-        debugProgress.total(pushEvents.length);
-        const wordsMap = {};
-
-        console.time();
-        for (const push of pushEvents) {
-            const commits = push.payload.commits;
-            for (const commit of commits) {
-                const commitMessage = commit.message;
-                // Filter merge commits
-                if (commitMessage && commitMessage.indexOf('Merge') == -1) {
-                    // Split words
-                    const commitWords = commitMessage.split(' ');
-                    let i = 0;
-                    for (const word of commitWords) {
-                        if(!commitWords[i+1]){
-                            break;
-                        }
-                        const cleanRegex = /[^A-Za-z]+/g;
-                        const wordA = word.toLowerCase().trim().replace(cleanRegex, "");;
-                        const wordB = commitWords[i + 1].toLowerCase().trim().replace(cleanRegex, "");;
-                        const isTherePairOfWord = 
-                            wordA !== undefined 
-                            && wordB !== undefined;
-
-                        if(wordA.length < 3){
-                            continue;
-                        }
-                        if(commonWords.indexOf(wordA) !== -1) {
-                            // debugger;
-                            continue;
-                        } 
-                        if (!isTherePairOfWord)
-                            continue;
-                        // to lowercase to avoid "add", "Add"
-                        const wordPair = wordA + " " + wordB;
-                        // filter if length 0 for one of word
-                        if (wordPair.split(' ').length === 1)
-                            continue;
-                        // Increment or append
-                        if (wordsMap[wordPair]) {
-                            wordsMap[wordPair].occurences++;
-                        }
-                        else {
-                            wordsMap[wordPair] = { pair: wordPair, occurences: 1 };
-                        }
-                    }
-                    i++;
-                    debugProgress.add(1);
-                }
-            }
-        }
-        // Map -> Array
-        const words = Object.keys(wordsMap).map(e => wordsMap[e]);
-        // Sort in descending order
-        const wordsSorted = words.sort((wordA, wordB) => wordB.occurences - wordA.occurences);
-        // Take only count
-        const part = wordsSorted.splice(0, count);
-        console.log({
-            context: 'textClassification',
-            samples: words.length,
-            classes: 'commits words'
-        });
-        return part;
-    }
-
-    function convertMS( milliseconds ) {
-        let day, hour, minute, seconds;
-
-        seconds = Math.floor(milliseconds / 1000);
-        minute = Math.floor(seconds / 60);
-        seconds = seconds % 60;
-        hour = Math.floor(minute / 60);
-        minute = minute % 60;
-        day = Math.floor(hour / 24);
-        hour = hour % 24;
-
-        return {
-            day: day,
-            hour: hour,
-            minute: minute,
-            seconds: seconds
-        };
-    }
 
     UIUtils.makeAnalysisContainer(
         'timeToResolveIssues',
@@ -268,14 +180,6 @@ function makeUI(){
                     return;
                 }
     
-                let meanIssue = (values) => {
-                    let total = 0, i;
-                    for (i = 0; i < values.length; i += 1) {
-                        total += values[i];
-                    }
-                    return total / values.length;
-                };
-    
                 const periods = await getPeriodFromGH(date, 2, 2, debugProgress)
                 const dataset = [];
     
@@ -288,7 +192,6 @@ function makeUI(){
                     .map((issue)=>{
                         return dayjs(issue.payload.issue.closed_at).diff(dayjs(issue.payload.issue.created_at));
                     });
-    
                     let x = convertMS(meanIssue(middleTimeToResolve));
                     dataset.push(
                         meanIssue(middleTimeToResolve)
@@ -305,38 +208,6 @@ function makeUI(){
         }, 
         i18n
     );
-
-    function parsePullRequestsLanguages(pullRequests) {
-        const languages = [];
-        // Used to know if we should increment or decrement
-        const languageSet = new Set();
-        // foreach pr
-        pullRequests.forEach((pr) => {
-            // find language
-            const languageUsed = pr.payload.pull_request.base.repo.language;
-            const repoTitle = pr.payload.pull_request.base.repo.name;
-            const repoSize = pr.payload.pull_request.base.repo.size;
-            // If our set doesn't contains language
-            if (!languageSet.has(languageUsed)) {
-                // add language
-                languageSet.add(languageUsed);
-                // push this language
-                languages.push({ language: languageUsed, count: 1, repoTitles: [repoTitle], repoSizes: [repoSize] });
-            }
-            else {
-                // Find language in languages array
-                const lang = languages.find((langage) => langage.language === languageUsed);
-                // increment
-                lang.count++;
-                lang.repoSizes.push(repoSize);
-                lang.repoTitles.push(repoTitle);
-            }
-            debugProgress.add(1);
-        });
-        // Sort languages in ascending order
-        languages.sort((a, b) => a.count - b.count);
-        return languages;
-    }
 
     UIUtils.makeAnalysisContainer(
         'topicBasedAnalysis', 
