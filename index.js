@@ -1,5 +1,6 @@
 // Used to make an ES2015+ ready environment on current browsers
 import "@babel/polyfill"
+import i18next from 'i18next';
 import dayjs from 'dayjs'
 
 // UIUtils (to make analysis containers)
@@ -21,25 +22,15 @@ import {
     getPeriodFromGH 
 } from './helpers/ghArchive.utils';
 
-import i18next from 'i18next';
 import { languageResource } from "./helpers/i18n.utils";
-import { callGitHubForTopic } from "./helpers/githubApi.utils";
+// import { callGitHubForTopic } from "./helpers/githubApi.utils";
 import { parsePullRequestsLanguages, parseCommonWordsInCommits, convertMS, meanIssue } from "./helpers/analysis.utils";
 
 const i18n = i18next.init({
     lng: 'en',
     debug: true,
     resources: languageResource
-}, () => {
-    UIUtils.bindAccordions();
 });
-
-const flags = document.querySelectorAll('.flags span');
-for(const flag of flags){
-    flag.addEventListener('click', () => {
-        i18n.changeLanguage(flag.className);
-    });
-}
 
 i18n.on('languageChanged', (_lang) => {
     console.log('recreating UI for', _lang);
@@ -47,6 +38,7 @@ i18n.on('languageChanged', (_lang) => {
 });
 
 makeUI();
+UIUtils.bindLangFlags();
 
 // HTML Elements
 const debugZone = document.querySelector('#debug');
@@ -56,6 +48,10 @@ const debugProgress = new Progress(debugElement, debugProgressTitle);
 
 debugProgress.hide();
 
+/**
+ * Paint entire "web-app" ui
+ * (called on page load / lang change)
+ */
 function makeUI(){
     const currentLang = i18n.languages[0];
     const siteTitle = i18n.t('siteTitle');
@@ -209,6 +205,7 @@ function makeUI(){
         i18n
     );
 
+    
     UIUtils.makeAnalysisContainer(
         'topicBasedAnalysis', 
         i18n.t('topicBasedAnalysis'), 

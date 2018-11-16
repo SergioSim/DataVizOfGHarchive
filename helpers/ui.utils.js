@@ -7,7 +7,7 @@
  * @param {callback} onStart
  * @param {{component: 'range' | 'button', title: string, min?: number, max?: number, initialValue?:number, handler? (any)}} updateConfig
  */
-export function makeAnalysisContainer (id, title, inputValue, config, i18n) {
+function makeAnalysisContainer (id, title, inputValue, config, i18n) {
     const selector = "#charts-"+id+"-container";
     const graphSelector = selector.substring(1).replace('-container', '');
 
@@ -102,7 +102,7 @@ export function makeAnalysisContainer (id, title, inputValue, config, i18n) {
  *
  * @export
  */
-export function bindAccordions() {
+function bindAccordions() {
     const acc = document.querySelectorAll(".accordion");
     for(const accordion of acc){
         accordion.addEventListener('click', () => {
@@ -118,4 +118,14 @@ export function bindAccordions() {
         })
     }
 }
-export default {makeAnalysisContainer, bindAccordions};
+
+function bindLangFlags(){
+    const flags = document.querySelectorAll('.flags span');
+    for(const flag of flags){
+        flag.addEventListener('click', () => {
+            i18n.changeLanguage(flag.className);
+        });
+    }
+}
+
+export default {makeAnalysisContainer, bindAccordions, bindLangFlags};
