@@ -65,7 +65,9 @@ export async function getFromGHArchive(date, progress) {
             progress.hide();
             reject();
         };
-        xhr.onerror = 
+        
+        xhr.onerror = onError;
+
         xhr.onload = (e) => {
             if (xhr.status == 200) {
                 const parsed = parseGithubData(xhr);

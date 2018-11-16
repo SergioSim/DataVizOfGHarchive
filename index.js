@@ -25,6 +25,7 @@ import {
 
 import i18next from 'i18next';
 import { languageResource } from "./helpers/i18n.utils";
+import { callGitHubForTopic } from "./helpers/githubApi.utils";
 
 const i18n = i18next.init({
     lng: 'en',
@@ -334,3 +335,6 @@ function makeUI(){
     }
 }
 
+/* 
+callGitHubForTopic("https://github.com/Ghostfly/portfolio", debugProgress);
+*/
