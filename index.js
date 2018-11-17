@@ -172,16 +172,18 @@ function makeUI(){
             inputValue: "2018-01",
             onStart: async function(){
                 debugProgress.show(i18n.t('analysisInProgress'));
-                const date = this.input.value;
-                if(!date){
+                const startDate = this.input.value;
+                const endDate = document.querySelector("#endDateInput").value;
+                if(!startDate && !endDate){
                     return;
                 }
     
                 // TODO XXX : Cleanup after next analysis done (we will have a period choicer)
-                const periods = await getPeriodFromGH(`${date}-01-10`, `${date}-04-10`, debugProgress)
+                const periods = await getPeriodFromGH(`${startDate}-01-10`, `${endDate}-02-10`, debugProgress)
                 const dataset = [];
 
                 // WARN : I think it's a wrong analysis (dead-end)
+                // INFO : No, it could be an interesting KPI to display
     
                 // TODO XXX : Fix this loop, we need to "concat days" as we have data for each hours
                 // Todo we just calc the "meanTime" for an hour, not so useful
@@ -200,10 +202,27 @@ function makeUI(){
                     )
                     console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
                 });
-                drawLine(dataset, date, this.pie, "issues", "mean time", false, true, function(a, b, c) {
+                drawLine(dataset, this.pie, "issues", "mean time", false, true, function(a, b, c) {
                     console.warn('todo?', a, b, c);
                 });
                 debugProgress.hide();
+            },
+            onMount: function() {
+                // This function create an input to enable choosing an end date
+                // for the timeToResolveIssues analysis
+                const endDateInputValue = "2018-01";
+                let panel = this.panel
+                let endDateInput = document.createElement("input");
+                let toText = document.createElement("span");
+
+                endDateInput.classList.add("date-label");
+                endDateInput.id = "endDateInput";
+                endDateInput.type = "text";
+                endDateInput.value = endDateInputValue;
+                panel.insertBefore(endDateInput, this.input.nextSibling);
+
+                toText.innerHTML = i18n.t('to');
+                panel.insertBefore(toText, endDateInput);
             },
             onUpdate: function(){
                 // Todo?
