@@ -10,7 +10,8 @@ export const languageResource = {
             "numberOfWords": "Nombre de mots",
             "analysisInProgress": "Analyse en cours",
             "topicBasedAnalysis": "Analyse par topics sur une période donnée",
-            "Tendance2016": "Languages utilises en 2016 dans les pull requests"
+            "Tendance2016": "Languages utilises en 2016 dans les pull requests",
+            "to": "&agrave;"
         }
     },
     en: {
@@ -24,7 +25,8 @@ export const languageResource = {
             "numberOfWords": "Number of words",
             "analysisInProgress": "Analysis in progress",
             "topicBasedAnalysis": "Topic based analysis on Period",
-            "Tendance2016": "Language use in 2016 pull requests"
+            "Tendance2016": "Language use in 2016 pull requests",
+            "to": "to"
         }
     }
 }
