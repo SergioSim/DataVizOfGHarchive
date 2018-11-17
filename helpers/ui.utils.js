@@ -42,10 +42,12 @@ function makeAnalysisContainer (id, title, config, i18n) {
 
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
     const input = config.inputValue ? `<input type="text" class="date-label" value="${config.inputValue}" />` : "";
+    let button = `<button class="analysis-start">${i18n.t('startAnalysis')}</button>`;
+    if(!config.onStart) button = '';
     let panel = `
     <div class="panel" id="${selector.substring(1)}">
           ${input}
-          <button class="analysis-start">${i18n.t('startAnalysis')}</button>
+          ${button}
           <div id="${graphSelector}" class="pie"></div>
           ${updateComponent}
     </div>
@@ -92,8 +94,6 @@ function makeAnalysisContainer (id, title, config, i18n) {
     if(config.onStart){
         config.onStart = config.onStart.bind(context);
         div.querySelector('.analysis-start').addEventListener('click', config.onStart);
-    } else {
-        console.warn('Start callback not defined, is it intentional ?');
     }
 }
 
