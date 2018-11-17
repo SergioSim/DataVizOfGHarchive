@@ -27,7 +27,8 @@ plot(1:length(Clang),Clang, "l")
 
 ldf <- lapply(filenames, paste)
 
-
+j <- fromJSON(readLines(file("/home/katzenmaul/Desktop/mbds/R/prepared-data/tendance2016.json.gz" , "r")))
+plot(1:length(j$C),j$C, "l")
 
 getLangues <- function(fileName){
   theFile <- file(fileName,"r") 

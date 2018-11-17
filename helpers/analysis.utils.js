@@ -132,3 +132,19 @@ export function convertMS( milliseconds ) {
         seconds: seconds
     };
 }
+
+Date.prototype.addDays = function(hours) {
+    var date = new Date(this.valueOf());
+    date.setTime(this.getTime() + (hours*60*60*1000)); 
+    return date;
+}
+
+export function getDates(startDate, stopDate) {
+    var dateArray = new Array();
+    var currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateArray.push(new Date (currentDate));
+        currentDate = currentDate.addDays(1);
+    }
+    return dateArray;
+}

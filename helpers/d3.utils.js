@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import materialColors from './materialColors';
+import { getDates } from './analysis.utils';
 
 /*
     Simple pie chart with D3
@@ -179,6 +180,77 @@ export function drawLine(data, idchart, text, value, donut = true, replace = fal
         onMouseOver(a, b, c);
 	})
     .on("mouseout", function() {  });
+}
+
+
+export function drawTendanceGraph(anchor, idata, date){
+    console.log(Object.keys(idata));
+    // 2. Use the margin convention
+    var margin = {top: 50, right: 50, bottom: 50, left: 50}
+    let width = window.innerWidth;
+    if(width > 600){
+        width = window.innerWidth / 2;
+    }
+    const height = width;
+
+    const theDates = getDates(new Date(2016, 0, 1, 1),new Date(2017, 0, 1, 0));
+    console.log(theDates[5]);
+    
+    var xScale = d3.scaleTime()
+        .domain([new Date(2016, 0, 1, 0), new Date(2017, 0, 1, 0)]) // input
+        .range([0, width]); // output
+
+    var	yScale = d3.scaleLinear()
+        .domain([0, Math.max(...idata.C[0])]) // input
+        .range([height, 0]); // output
+
+    var line = d3.line()
+        .x(function(d,i) { return xScale(theDates[i]); }) // set the x values for the line generator
+        .y(function(d,i) { return yScale(d); }) // set the y values for the line generator 
+
+    // Adding the SVG to the page
+    var svg = d3.select("#" + anchor.id).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Calling the x axis in a group tag
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+    // Calling the y axis in a group tag
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+    // Appending the path, bind the data, and call the line generator 
+    svg.append("path")
+        .datum(idata.C[0]) // Binds data to the line 
+        .attr("class", "thinline") // Assign a class for styling 
+        .attr("style", "transform: none;")
+        .attr("d", line) // Calls the line generator 
+        .on("mouseover", function() {});
+
+    // Add the blue line title
+    svg.append("text")
+        .attr("x", 0)             
+        .attr("y", height + margin.top + 10)    
+        .attr("class", "legend")
+        .style("fill", "steelblue")         
+        .on("click", function(){
+            // Determine if current line is visible
+            var active   = blueLine.active ? false : true,
+                newOpacity = active ? 0 : 1;
+            // Hide or show the elements
+            d3.select("#blueLine").style("opacity", newOpacity);
+            d3.select("#blueAxis").style("opacity", newOpacity);
+            // Update whether or not the elements are active
+            blueLine.active = active;
+        })
+        .text("Blue Line");
 }
 
 function zoomIn(datum,anchor){

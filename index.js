@@ -11,7 +11,8 @@ import UIUtils from './helpers/ui.utils';
 import {
     // drawPie, 
     drawHorizontalBarGraph, 
-    drawLine
+    drawLine,
+    drawTendanceGraph
 } from './helpers/d3.utils';
 // Progress handler
 import { Progress } from './helpers/progress.utils';
@@ -276,18 +277,14 @@ function makeUI(){
                 const context = this;
                 console.log(context);
                 try {
-                        
                     const parsedObjects = await getPreparedData("2016", debugProgress);
-                    console.log(parsedObjects);
+                    const theObject = parsedObjects[0];
+                    drawTendanceGraph(this.pie, theObject,"2016");
                 } catch (err) {
                     console.log("somethink went wrong...");
                     throw err;
                 }
             },
-            onStart: function(){
-                console.warn('WIP : I may not need this button ...');
-
-            }
     }, i18n);
 
     UIUtils.bindAccordions();
