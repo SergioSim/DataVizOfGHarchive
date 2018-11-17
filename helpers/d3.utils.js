@@ -115,7 +115,7 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
 }
 
 /* Line graph */
-export function drawLine(data, date, idchart, text, value, donut = true, replace = false, onMouseOver){
+export function drawLine(data, idchart, text, value, donut = true, replace = false, onMouseOver){
     let width = window.innerWidth;
     if(width > 600){
         width = window.innerWidth / 2;
