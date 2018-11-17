@@ -182,3 +182,43 @@ function parseGithubData(xhr) {
 export function filterDataByEvent(data, eventType){
     return data.filter((object) => object.type === eventType);
 }
+
+/**
+ * Retrieve data from Our Server
+ * Uncompress gz with Pako (only lib who can ungz in Browser)
+ * return a PROMISE (see usage below)
+ *
+ * @param {string} date (2016) (year) or in future year-month-day
+ * @param {Progress} progress 
+ * @returns promise who contains parsed data
+ */
+export async function getPreparedData(date, progress) {
+    return new Promise((resolve, reject) => {
+        // TODO add date handling for 2015:2017
+        console.log("Starting download from our Server for date ", date);
+        const serverURL = `https://cors-anywhere.herokuapp.com/http://82.255.166.104/tendance2016.json.gz`;
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', serverURL, true);
+        xhr.responseType = 'arraybuffer';
+        const onError = function () {
+            reject();
+        };
+        xhr.onerror = onError;
+        xhr.onload = (e) => {
+            if (xhr.status == 200) {
+                const parsed = parseGithubData(xhr);
+
+                return cacheData(date, parsed, progress, resolve)
+                                .catch((err) => {
+                                    console.warn("error while saving in cache", err);
+
+                                    onError();
+                                });
+            } else {
+                onError()
+                reject();
+            }
+        };
+        xhr.send(null);
+    });
+}

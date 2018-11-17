@@ -19,7 +19,8 @@ import {
     eventTypes, 
     getFromGHArchive, 
     filterDataByEvent, 
-    getPeriodFromGH 
+    getPeriodFromGH,
+    getPreparedData
 } from './helpers/ghArchive.utils';
 
 import { languageResource } from "./helpers/i18n.utils";
@@ -245,6 +246,28 @@ function makeUI(){
                     Period choice from : to:
                     bar graph of occurences in commit messages for period
                 */
+            }
+    }, i18n);
+
+    UIUtils.makeAnalysisContainer(
+        'Tendance2016', 
+        i18n.t('Tendance2016'),  
+        {
+            onMount: async function(){
+                const context = this;
+                console.log(context);
+                try {
+                        
+                    const parsedObjects = await getPreparedData("2016", debugProgress);
+                    console.log(parsedObjects);
+                } catch (err) {
+                    console.log("somethink went wrong...");
+                    throw err;
+                }
+            },
+            onStart: function(){
+                console.warn('WIP : I may not need this button ...');
+
             }
     }, i18n);
 

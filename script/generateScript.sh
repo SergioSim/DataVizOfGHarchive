@@ -1,10 +1,28 @@
 #!/bin/bash
 monthDays2016=(31 29 31 30 31 30 31 31 30 31 30 31)
 monthDays2017=(31 28 31 30 31 30 31 31 30 31 30 31)
-month=1
 echo "" > aspire.sh
+
+echo "mkdir ghArchive15" >> aspire.sh
+echo "cd ghArchive15" >> aspire.sh
+month=1
+for day in ${monthDays2017[@]}; do
+	echo "mkdir ghArchive15-$month"  >> aspire.sh
+	echo "cd ghArchive15-$month"  >> aspire.sh
+
+	if [ $month -gt 9 ]; then
+		echo "wget http://data.gharchive.org/2015-$month-{01..$day}-{0..23}.json.gz" >> aspire.sh
+	else
+		echo "wget http://data.gharchive.org/2015-0$month-{01..$day}-{0..23}.json.gz" >> aspire.sh
+	fi  
+
+	month=$(($month + 1))  &&
+	echo "cd ../" >> aspire.sh
+done 
+
 echo "mkdir ghArchive16" >> aspire.sh
 echo "cd ghArchive16" >> aspire.sh
+month=1
 for day in ${monthDays2016[@]}; do
 	echo "mkdir ghArchive16-$month"  >> aspire.sh
 	echo "cd ghArchive16-$month"  >> aspire.sh

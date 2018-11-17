@@ -1,5 +1,50 @@
-### Sorry for dublication ...
 library(jsonlite)
+Clang <- list()
+filenames <- list.files("/media/katzenmaul/385201B452017840/ghArchive/output", pattern="O*", full.names=TRUE)
+for(afile in filenames[0:10]){
+  theFile <- file(afile , "r")
+  theName = tail(strsplit(afile,"/")[[1]], n=1)
+  theName = substr(theName, 2, nchar(theName) - 5)
+  theJson <- fromJSON(readLines(theFile))
+  Clang <- append(Clang, list(append(c("date" = theName), theJson)))
+}
+
+theNames <- names(table(unlist(lapply(Clang, names))))
+allNames <- sapply(theNames, function(n) list(c()))
+
+for(theData in Clang){
+  for(aName in theNames){
+    if(!is.null(theData[[aName]])){
+      print(theData[[aName]])
+      allNames[[aName]] = c(allNames[[aName]], theData[[aName]])
+    }else{
+      allNames[[aName]] = c(allNames[[aName]], 0)
+    }
+  }
+}
+
+plot(1:length(Clang),Clang, "l")
+
+ldf <- lapply(filenames, paste)
+
+
+
+getLangues <- function(fileName){
+  theFile <- file(fileName,"r") 
+  theLine <- readLines(theFile)
+  close(theFile)
+  languages <- c()
+  for(line in theLines){
+    line = fromJSON(line)
+    if(line$type == "PullRequestEvent"){
+      langue <- line$payload$pull_request$base$repo$language
+      if(!is.null(langue)){
+        languages <- c(languages,langue)
+      }
+    }
+  }
+  return(table(languages))
+}
 
 print(getwd()) # the Data will be extracted here
 setwd("~/Desktop/mbds/R") # to change the place were data will be extracted
@@ -39,22 +84,6 @@ for(year in 2015:2017){
   }
 }
 
-getLangues <- function(fileName){
-  theFile <- file(fileName,"r") 
-  theLines <- readLines(theFile)
-  close(theFile)
-  languages <- c()
-  for(line in theLines){
-    line = fromJSON(line)
-    if(line$type == "PullRequestEvent"){
-      langue <- line$payload$pull_request$base$repo$language
-      if(!is.null(langue)){
-        languages <- c(languages,langue)
-      }
-    }
-  }
-  return(table(languages))
-}
 getLangues("2015 - 01 - 01 - 1 .json.gz")
 
 #from 2015 . 01 . 1 - 8 

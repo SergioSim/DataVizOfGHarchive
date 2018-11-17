@@ -9,7 +9,8 @@ export const languageResource = {
             "invert": "Inverser",
             "numberOfWords": "Nombre de mots",
             "analysisInProgress": "Analyse en cours",
-            "topicBasedAnalysis": "Analyse par topics sur une période donnée"
+            "topicBasedAnalysis": "Analyse par topics sur une période donnée",
+            "Tendance2016": "Languages utilises en 2016 dans les pull requests"
         }
     },
     en: {
@@ -22,7 +23,8 @@ export const languageResource = {
             "invert": "Invert",
             "numberOfWords": "Number of words",
             "analysisInProgress": "Analysis in progress",
-            "topicBasedAnalysis": "Topic based analysis on Period"
+            "topicBasedAnalysis": "Topic based analysis on Period",
+            "Tendance2016": "Language use in 2016 pull requests"
         }
     }
 }
