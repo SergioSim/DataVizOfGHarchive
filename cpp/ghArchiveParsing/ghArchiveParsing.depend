@@ -1,13 +1,17 @@
 # depslib dependency file v1.0
-1542058186 source:/home/katzenmaul/Desktop/projects/cpp/ghArchiveParsing/main.cpp
+1542413996 source:/home/katzenmaul/Desktop/projects/cpp/ghArchiveParsing/main.cpp
 	<iostream>
-	"../rapidjson-master/include/rapidjson/document.h"
 	<fstream>
 	<string>
 	<vector>
 	<unordered_map>
+	<algorithm>
+	"../rapidjson-master/include/rapidjson/document.h"
 	"../rapidjson-master/include/rapidjson/stringbuffer.h"
 	"../rapidjson-master/include/rapidjson/writer.h"
+	<boost/iostreams/device/file.hpp>
+	<boost/iostreams/filtering_stream.hpp>
+	<boost/iostreams/filter/gzip.hpp>
 
 1539015635 /home/katzenmaul/Desktop/projects/cpp/rapidjson-master/include/rapidjson/document.h
 	"reader.h"
@@ -144,4 +148,22 @@
 
 1539015635 /home/katzenmaul/Desktop/projects/cpp/rapidjson-master/include/rapidjson/internal/itoa.h
 	"../rapidjson.h"
+
+1484501380 /home/katzenmaul/Desktop/projects/cpp/zlib-1.2.11/zlib.h
+	"zconf.h"
+
+1483256230 /home/katzenmaul/Desktop/projects/cpp/zlib-1.2.11/zconf.h
+	<stddef.h>
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stdarg.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
+
+1542403016 source:/home/katzenmaul/Desktop/projects/cpp/ghArchiveParsing/zlibMadness.cpp
+	<iostream>
+	<string>
+	<zlib.h>
 
