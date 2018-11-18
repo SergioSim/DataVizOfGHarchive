@@ -125,27 +125,35 @@ export function drawLine(data, idchart, text, value, donut = true, replace = fal
     const marginTop = 100;
     
     const n = data.length;
-    
-    const xScale = d3.scaleLinear()
-                    .domain([0, n-1]) // input
-                    .range([0, width]); // output
+    const max = Math.max(...data.map((d)=>{
+        return d["y"].day;
+    }));
 
-    //const xScale = d3.scaleTime().rangeRound([0, width]);
+    const parsedStartDate = data[0]["x"].split("-");
+    const parsedEndDate = data[n-1]["x"].split("-");
+
+    const startDate = new Date(parsedStartDate[0],parsedStartDate[1]-1,parsedStartDate[2],parsedStartDate[3]);
+    const endDate = new Date(parsedEndDate[0],parsedEndDate[1]-1,parsedEndDate[2],parsedEndDate[3]);
+
+    const dateRange = getDates(startDate,endDate);
+    
+    const xScale = d3.scaleTime()
+    .domain([startDate,endDate]) // input
+    .range([0, width]); // output
     
     const yScale = d3.scaleLinear()
-                    .domain([0, Math.max.apply(Math, data.map(function(o) { return o; }))]) // input 
-                    .range([height, 0]); // output
+    .domain([0, max]) // input 
+    .range([height, 0]); // output
 
     const line = d3.line()
-                    //.x(function(d) { return xScale(d.date)})
-                    .x(function(d) { return xScale(d.x); }) // set the x values for the line generator
-                    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
-                    .curve(d3.curveMonotoneX); // apply smoothing to the line
+    .x(function(d,i) { return xScale(dateRange[i]); }) // set the x values for the line generator
+    .y(function(d) { console.log(yScale(d["y"].day));return yScale(d["y"].day); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX); // apply smoothing to the line
 
     const dataset = d3.range(data.length).map(function(d) {
         return {
-            "x": d,
-            "y": data[d]
+            "x": data[d]["x"],
+            "y": data[d]["y"]
         }
     });
 
@@ -173,8 +181,8 @@ export function drawLine(data, idchart, text, value, donut = true, replace = fal
     .data(dataset)
     .enter().append("circle") // Uses the enter().append() method
     .attr("class", "dot") // Assign a class for styling
-    .attr("cx", function(d) { return xScale(d.x) })
-    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("cx", function(d,i) { return xScale(dateRange[i]) })
+    .attr("cy", function(d) { return yScale(d["y"].day) })
     .attr("r", 5)
     .on("mouseover", function(a, b, c) {
         onMouseOver(a, b, c);
