@@ -208,6 +208,16 @@ export function drawTendanceGraph(anchor, idata, date){
         .x(function(d,i) { return xScale(theDates[i]); }) // set the x values for the line generator
         .y(function(d,i) { return yScale(d); }) // set the y values for the line generator 
 
+    var namesBox = d3.select("#" + anchor.id).append("div")
+        .attr("class", "names-list-container left-side");
+    
+    var namesList = namesBox.append("ul")
+        .attr("class" , ".names-list");
+
+    Object.keys(idata).forEach(function(lan) {
+        namesList.append("li")
+            .html(lan);
+    });
     // Adding the SVG to the page
     var svg = d3.select("#" + anchor.id).append("svg")
         .attr("width", width + margin.left + margin.right)

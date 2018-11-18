@@ -52,6 +52,46 @@
     }
   }
 
+  .left-side {
+    max-width: 500px;
+    min-width: 300px;
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .right-side {
+    flex: 1;
+  }
+
+  .names-list-container{
+    flex: 1;
+    overflow: scroll;
+    margin-top: 10px;
+  }
+
+  ul .names-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  ul li {
+    cursor: pointer;
+    padding: 3px;
+    line-height: 0.9;
+    display: inline-flex;
+    align-items: center;
+    &.selected {
+      line-height: 1;
+      color: white;
+    }
+  }
+
   .debug {
     background-color: #333;
     overflow: scroll;
