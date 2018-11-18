@@ -56,13 +56,12 @@
     max-width: 500px;
     min-width: 300px;
     width: 33%;
-    display: flex;
-    flex-direction: column;
+    float: left;
     margin-bottom: 10px;
   }
   
   .right-side {
-    flex: 1;
+    float: left;
   }
 
   .names-list-container{
@@ -71,7 +70,7 @@
     margin-top: 10px;
   }
 
-  ul .names-list {
+  .names-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -80,7 +79,7 @@
     justify-content: space-between;
   }
 
-  ul li {
+  .names-list li {
     cursor: pointer;
     padding: 3px;
     line-height: 0.9;

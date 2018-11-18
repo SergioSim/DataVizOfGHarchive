@@ -207,19 +207,26 @@ export function drawTendanceGraph(anchor, idata, date){
     var line = d3.line()
         .x(function(d,i) { return xScale(theDates[i]); }) // set the x values for the line generator
         .y(function(d,i) { return yScale(d); }) // set the y values for the line generator 
+    
+    var leftBox = d3.select("#" + anchor.id).append("div")
+    .attr("class", "left-side");
 
-    var namesBox = d3.select("#" + anchor.id).append("div")
-        .attr("class", "names-list-container left-side");
+    var namesBox = leftBox.append("div")
+        .attr("class", "names-list-container");
     
     var namesList = namesBox.append("ul")
-        .attr("class" , ".names-list");
+        .attr("class" , "names-list");
 
     Object.keys(idata).forEach(function(lan) {
         namesList.append("li")
             .html(lan);
     });
+
+    var rightBox = d3.select("#" + anchor.id).append("div")
+    .attr("class", "right-side");
+
     // Adding the SVG to the page
-    var svg = d3.select("#" + anchor.id).append("svg")
+    var svg = rightBox.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -243,24 +250,6 @@ export function drawTendanceGraph(anchor, idata, date){
         .attr("style", "transform: none;")
         .attr("d", line) // Calls the line generator 
         .on("mouseover", function() {});
-
-    // Add the blue line title
-    svg.append("text")
-        .attr("x", 0)             
-        .attr("y", height + margin.top + 10)    
-        .attr("class", "legend")
-        .style("fill", "steelblue")         
-        .on("click", function(){
-            // Determine if current line is visible
-            var active   = blueLine.active ? false : true,
-                newOpacity = active ? 0 : 1;
-            // Hide or show the elements
-            d3.select("#blueLine").style("opacity", newOpacity);
-            d3.select("#blueAxis").style("opacity", newOpacity);
-            // Update whether or not the elements are active
-            blueLine.active = active;
-        })
-        .text("Blue Line");
 }
 
 function zoomIn(datum,anchor){
