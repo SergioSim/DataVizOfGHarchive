@@ -3,6 +3,7 @@ import pako from 'pako';
 // Used for easy caching in IndexedDB
 import { get, set } from 'idb-keyval';
 import dayjs from 'dayjs';
+import { start } from 'repl';
 /* 
     EventTypes doc : https://developer.github.com/v3/activity/events/types/ 
 */
@@ -101,25 +102,17 @@ export async function getFromGHArchive(date, progress) {
 export async function getPeriodFromGH(startDate, endDate, progress){
     // Split date
     const splittedDate = startDate.split('-');
-    // Get number of hours
-    const numberOfHours = parseInt(splittedDate[splittedDate.length-1], 10);
     // Compute "year-month"
     const yearMonth = splittedDate[0] + '-' + splittedDate[1];
 
     // Define a new array of a length who equals numberOfHours (to iterate easily)
-    const hours = new Array(numberOfHours);
+    const hours = new Array(23);
     
     // Compute user-provided dates using dayjs
     startDate = dayjs(startDate);
     endDate = dayjs(endDate);
 
-    const diff = endDate.diff(startDate, 'day', true);
-
-    /* Don't want to be too much complex for that kind of tasks */
-    if(diff % 1 !== 0){
-        window.alert('Please keep the same start hours for start and end dates');
-        return;
-    }
+    const diff = Math.floor(endDate.diff(startDate, 'day', true));
 
     /*
     * We use IndexedDB to cache ungzified files from GHArchive
