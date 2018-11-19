@@ -247,6 +247,7 @@ export function drawTendanceGraph(anchor, idata, date){
 }
 
 function drawLangBox(anchor, idata){
+    const color = d3.scaleOrdinal().range(materialColors);
     var leftBox = d3.select("#" + anchor.id).append("div")
     .attr("class", "left-side");
 
@@ -258,11 +259,18 @@ function drawLangBox(anchor, idata){
 
     Object.keys(idata).forEach(function(lan) {
         namesList.append("li")
-            .on("click", function(event){
+            .attr("id", "lang"+lan.replace(/\s/g,''))
+            .on("click", function(){
                 if (!langNames.has(lan)) {
                     langNames.add(lan);
+                    d3.select("#lang"+lan.replace(/\s/g,''))
+                        .attr("class", "selected")
+                        .style("background-color", color(lan));
                 }else{
                     langNames.delete(lan);
+                    d3.select("#lang"+lan.replace(/\s/g,''))
+                        .attr("class", "")
+                        .style("background-color", "white");
                 }
                 console.log(langNames);
             })
