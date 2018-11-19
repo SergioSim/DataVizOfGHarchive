@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import materialColors from './materialColors';
 import { getDates } from './analysis.utils';
-
+const langNames = new Set();
 /*
     Simple pie chart with D3
 */
@@ -192,6 +192,7 @@ export function drawLine(data, idchart, text, value, donut = true, replace = fal
 
 
 export function drawTendanceGraph(anchor, idata, date){
+    drawLangBox(anchor, idata);
     console.log(Object.keys(idata));
     // 2. Use the margin convention
     var margin = {top: 50, right: 50, bottom: 50, left: 50}
@@ -202,7 +203,6 @@ export function drawTendanceGraph(anchor, idata, date){
     const height = width;
 
     const theDates = getDates(new Date(2016, 0, 1, 1),new Date(2017, 0, 1, 0));
-    console.log(theDates[5]);
     
     var xScale = d3.scaleTime()
         .domain([new Date(2016, 0, 1, 0), new Date(2017, 0, 1, 0)]) // input
@@ -214,21 +214,7 @@ export function drawTendanceGraph(anchor, idata, date){
 
     var line = d3.line()
         .x(function(d,i) { return xScale(theDates[i]); }) // set the x values for the line generator
-        .y(function(d,i) { return yScale(d); }) // set the y values for the line generator 
-    
-    var leftBox = d3.select("#" + anchor.id).append("div")
-    .attr("class", "left-side");
-
-    var namesBox = leftBox.append("div")
-        .attr("class", "names-list-container");
-    
-    var namesList = namesBox.append("ul")
-        .attr("class" , "names-list");
-
-    Object.keys(idata).forEach(function(lan) {
-        namesList.append("li")
-            .html(lan);
-    });
+        .y(function(d,i) { return yScale(d); }); // set the y values for the line generator 
 
     var rightBox = d3.select("#" + anchor.id).append("div")
     .attr("class", "right-side");
@@ -258,6 +244,30 @@ export function drawTendanceGraph(anchor, idata, date){
         .attr("style", "transform: none;")
         .attr("d", line) // Calls the line generator 
         .on("mouseover", function() {});
+}
+
+function drawLangBox(anchor, idata){
+    var leftBox = d3.select("#" + anchor.id).append("div")
+    .attr("class", "left-side");
+
+    var namesBox = leftBox.append("div")
+        .attr("class", "names-list-container");
+    
+    var namesList = namesBox.append("ul")
+        .attr("class" , "names-list");
+
+    Object.keys(idata).forEach(function(lan) {
+        namesList.append("li")
+            .on("click", function(event){
+                if (!langNames.has(lan)) {
+                    langNames.add(lan);
+                }else{
+                    langNames.delete(lan);
+                }
+                console.log(langNames);
+            })
+            .html(lan);
+    });
 }
 
 function zoomIn(datum,anchor){

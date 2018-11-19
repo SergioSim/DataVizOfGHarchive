@@ -25,6 +25,9 @@ for(theData in Clang){
 
 plot(1:length(allNames$JavaScript),allNames$JavaScript, "l")
 
+exportJson <- toJSON(split(unname(allNames),names(allNames)))
+write(exportJson, "test.json",append = TRUE)
+
 ldf <- lapply(filenames, paste)
 
 j <- fromJSON(readLines(file("/home/katzenmaul/Desktop/mbds/R/prepared-data/tendance2016.json.gz" , "r")))
