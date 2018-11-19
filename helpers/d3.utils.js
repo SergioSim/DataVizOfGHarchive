@@ -223,6 +223,21 @@ export function drawTendanceGraph(anchor, idata, date){
     var svg = rightBox.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .on("mouseover", function() {
+            svg.selectAll('.circles > g')
+                .attr('visibility', '')
+        })
+        .on("mouseout", function(){
+            svg
+            .selectAll('.circles > g')
+            .attr('visibility', 'hidden')
+        })
+        .on("mousemove",function(){
+            const pos = d3.mouse(svg.node());
+            if(pos[0] > 0 && pos[0] < width){
+                console.log(theDates[parseInt(theDates.length*pos[0]/width, 10)]);
+            }
+        })
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -242,8 +257,7 @@ export function drawTendanceGraph(anchor, idata, date){
         .datum(idata.C[0]) // Binds data to the line 
         .attr("class", "thinline") // Assign a class for styling 
         .attr("style", "transform: none;")
-        .attr("d", line) // Calls the line generator 
-        .on("mouseover", function() {});
+        .attr("d", line); // Calls the line generator         
 }
 
 function drawLangBox(anchor, idata){
