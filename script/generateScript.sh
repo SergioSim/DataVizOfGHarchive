@@ -54,3 +54,16 @@ for day in ${monthDays2017[@]}; do
 	echo "cd ../" >> aspire.sh
 done 
 chmod 776 aspire.sh
+
+
+echo "" > move.sh
+month=1
+echo "mkdir output17" >> move.sh
+echo "cd ghArchive17" >> move.sh
+for day in ${monthDays2017[@]}; do
+	echo "cd ghArchive17-$month"  >> move.sh
+    echo "mv O* ../../output17/" >> move.sh
+	month=$(($month + 1))  &&
+	echo "cd ../" >> move.sh
+done 
+chmod 776 move.sh

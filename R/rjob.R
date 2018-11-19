@@ -1,7 +1,7 @@
 library(jsonlite)
 Clang <- list()
-filenames <- list.files("/media/katzenmaul/385201B452017840/ghArchive/output", pattern="O*", full.names=TRUE)
-for(afile in filenames[0:10]){
+filenames <- list.files("/media/katzenmaul/385201B452017840/ghArchive/output17", pattern="O*", full.names=TRUE)
+for(afile in filenames){
   theFile <- file(afile , "r")
   theName = tail(strsplit(afile,"/")[[1]], n=1)
   theName = substr(theName, 2, nchar(theName) - 5)
@@ -23,7 +23,7 @@ for(theData in Clang){
   }
 }
 
-plot(1:length(Clang),Clang, "l")
+plot(1:length(allNames$JavaScript),allNames$JavaScript, "l")
 
 ldf <- lapply(filenames, paste)
 
