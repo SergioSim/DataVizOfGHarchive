@@ -170,7 +170,7 @@ function makeUI(){
         'timeToResolveIssues',
         i18n.t('analysis3'), 
         {
-            inputValue: "2018-01",
+            inputValue: "2018-01-01",
             onStart: async function(){
                 debugProgress.show(i18n.t('analysisInProgress'));
                 const startDate = this.input.value;
@@ -180,7 +180,7 @@ function makeUI(){
                 }
     
                 // TODO XXX : Cleanup after next analysis done (we will have a period choicer)
-                const periods = await getPeriodFromGH(`${startDate}-01-10`, `${endDate}-02-10`, debugProgress)
+                const periods = await getPeriodFromGH(`${startDate}`, `${endDate}`, debugProgress)
                 const dataset = [];
 
                 // WARN : I think it's a wrong analysis (dead-end)
@@ -207,14 +207,14 @@ function makeUI(){
                     //console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
                 });
                 drawLine(dataset, this.pie, "issues", "mean time", false, true, function(a, b, c) {
-                    console.warn('todo?', a, b, c);
+                    console.warn('For period : ', a.x, ' the middle time in day is ', a.y.day);
                 });
                 debugProgress.hide();
             },
             onMount: function() {
                 // This function create an input to enable choosing an end date
                 // for the timeToResolveIssues analysis
-                const endDateInputValue = "2018-01";
+                const endDateInputValue = "2018-01-02";
                 let panel = this.panel
                 let endDateInput = document.createElement("input");
                 let toText = document.createElement("span");

@@ -147,7 +147,7 @@ export function drawLine(data, idchart, text, value, donut = true, replace = fal
 
     const line = d3.line()
     .x(function(d,i) { return xScale(dateRange[i]); }) // set the x values for the line generator
-    .y(function(d) { console.log(yScale(d["y"].day));return yScale(d["y"].day); }) // set the y values for the line generator 
+    .y(function(d) { return yScale(d["y"].day); }) // set the y values for the line generator 
     .curve(d3.curveMonotoneX); // apply smoothing to the line
 
     const dataset = d3.range(data.length).map(function(d) {
