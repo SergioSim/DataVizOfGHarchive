@@ -291,15 +291,16 @@ export function drawTendanceGraph(anchor, idata, date){
                     svg.selectAll('.thinline').call(lines => lines.attr('d', line));
                     svg.select(".y.axis").call(d3.axisLeft(yScale)); 
                     svg.append("path")
-                    .datum(idata[lan][0]) // Binds data to the line 
-                    .attr("id", "path"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p"))
-                    .attr("class", "thinline") // Assign a class for styling 
-                    .attr("style", "transform: none;")
-                    .attr('stroke', function(d) { 
-                        console.log(langColors[Object.keys(idata).indexOf(lan)]);
-                        return langColors[Object.keys(idata).indexOf(lan)];
-                    })
-                    .attr("d", line);
+                        .datum(idata[lan][0]) // Binds data to the line 
+                        .attr("id", "path"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p"))
+                        .attr("class", "thinline") // Assign a class for styling 
+                        .attr("style", "transform: none;")
+                        .attr('stroke-width', 2)
+                        .attr('stroke', function(d) { 
+                            console.log(langColors[Object.keys(idata).indexOf(lan)]);
+                            return langColors[Object.keys(idata).indexOf(lan)];
+                            })
+                        .attr("d", line);
                 }else{
                     langNames.delete(lan);
                     d3.select("#lang"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p"))
