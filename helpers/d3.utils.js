@@ -116,7 +116,7 @@ export function drawHorizontalBarGraph(anchor, series, label, value, replace){
 }
 
 /* Line graph */
-export function drawLine(data, idchart, text, value, donut = true, replace = false, onMouseOver){
+export function drawLine(data, idchart, textX, textY, donut = true, replace = false, onMouseOver){
     let width = window.innerWidth;
     if(width > 600){
         width = window.innerWidth / 2;
@@ -188,6 +188,16 @@ export function drawLine(data, idchart, text, value, donut = true, replace = fal
         onMouseOver(a, b, c);
 	})
     .on("mouseout", function() {  });
+
+    svg.append("text")
+    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+    .attr("transform", "translate("+ (-marginTop/2) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+    .text(textY);
+
+    svg.append("text")
+    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+    .attr("transform", "translate("+ (width/2) +","+(height+(marginTop/2))+")")  // centre below axis
+    .text(textX);
 }
 
 

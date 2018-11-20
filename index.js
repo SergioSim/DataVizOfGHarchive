@@ -206,7 +206,7 @@ function makeUI(){
                     )
                     //console.log("For period : " + period + ", the mean time is : " + x.day + "d " + x.hour + "h " + x.minute + "m " + x.seconds + "s")
                 });
-                drawLine(dataset, this.pie, "issues", "mean time", false, true, function(a, b, c) {
+                drawLine(dataset, this.pie, i18n.t('date'), i18n.t('meanTimeInDays'), false, true, function(a, b, c) {
                     console.warn('For period : ', a.x, ' the middle time in day is ', a.y.day);
                 });
                 debugProgress.hide();
