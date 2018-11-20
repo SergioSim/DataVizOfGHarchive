@@ -2,6 +2,7 @@
 import "@babel/polyfill"
 import i18next from 'i18next';
 import dayjs from 'dayjs'
+import '@vaadin/vaadin-date-picker/vaadin-date-picker.js';
 
 // UIUtils (to make analysis containers)
 import UIUtils from './helpers/ui.utils';
