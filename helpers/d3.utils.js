@@ -202,8 +202,6 @@ export function drawLine(data, idchart, textX, textY, donut = true, replace = fa
 
 
 export function drawTendanceGraph(anchor, idata, date){
-    drawLangBox(anchor, idata);
-    console.log(Object.keys(idata));
     // 2. Use the margin convention
     var margin = {top: 50, right: 50, bottom: 50, left: 50}
     let width = window.innerWidth;
@@ -211,7 +209,6 @@ export function drawTendanceGraph(anchor, idata, date){
         width = window.innerWidth / 2;
     }
     const height = width;
-
     const theDates = getDates(new Date(2016, 0, 1, 1),new Date(2017, 0, 1, 0));
     
     var xScale = d3.scaleTime()
@@ -219,12 +216,27 @@ export function drawTendanceGraph(anchor, idata, date){
         .range([0, width]); // output
 
     var	yScale = d3.scaleLinear()
-        .domain([0, Math.max(...idata.C[0])]) // input
+        .domain([0, getHeight(idata)]) // input
         .range([height, 0]); // output
 
     var line = d3.line()
         .x(function(d,i) { return xScale(theDates[i]); }) // set the x values for the line generator
         .y(function(d,i) { return yScale(d); }); // set the y values for the line generator 
+    
+    const color = d3.scaleOrdinal().range(materialColors);
+    const langColors = [];
+    Object.keys(idata).forEach(function(lang){
+        langColors.push(color(lang));
+    });
+
+    var leftBox = d3.select("#" + anchor.id).append("div")
+    .attr("class", "left-side");
+
+    var namesBox = leftBox.append("div")
+        .attr("class", "names-list-container");
+    
+    var namesList = namesBox.append("ul")
+        .attr("class" , "names-list");
 
     var rightBox = d3.select("#" + anchor.id).append("div")
     .attr("class", "right-side");
@@ -262,44 +274,57 @@ export function drawTendanceGraph(anchor, idata, date){
         .attr("class", "y axis")
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
 
-    // Appending the path, bind the data, and call the line generator 
-    svg.append("path")
-        .datum(idata.C[0]) // Binds data to the line 
-        .attr("class", "thinline") // Assign a class for styling 
-        .attr("style", "transform: none;")
-        .attr("d", line); // Calls the line generator         
-}
-
-function drawLangBox(anchor, idata){
-    const color = d3.scaleOrdinal().range(materialColors);
-    var leftBox = d3.select("#" + anchor.id).append("div")
-    .attr("class", "left-side");
-
-    var namesBox = leftBox.append("div")
-        .attr("class", "names-list-container");
-    
-    var namesList = namesBox.append("ul")
-        .attr("class" , "names-list");
-
     Object.keys(idata).forEach(function(lan) {
         namesList.append("li")
-            .attr("id", "lang"+lan.replace(/\s/g,''))
+            .attr("id", "lang"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+" ,"p").replace("+" ,"p"))
             .on("click", function(){
                 if (!langNames.has(lan)) {
                     langNames.add(lan);
-                    d3.select("#lang"+lan.replace(/\s/g,''))
+                    yScale.domain([0, getHeight(idata)]);
+                    line = d3.line()
+                        .x(function(d,i) { return xScale(theDates[i]); }) // set the x values for the line generator
+                        .y(function(d,i) { return yScale(d); }); // set the y values for the line generator 
+                    d3.select("#lang"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p"))
                         .attr("class", "selected")
-                        .style("background-color", color(lan));
+                        .style("background-color", langColors[Object.keys(idata).indexOf(lan)]);
+
+                    svg.selectAll('.thinline').call(lines => lines.attr('d', line));
+                    svg.select(".y.axis").call(d3.axisLeft(yScale)); 
+                    svg.append("path")
+                    .datum(idata[lan][0]) // Binds data to the line 
+                    .attr("id", "path"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p"))
+                    .attr("class", "thinline") // Assign a class for styling 
+                    .attr("style", "transform: none;")
+                    .attr('stroke', function(d) { 
+                        console.log(langColors[Object.keys(idata).indexOf(lan)]);
+                        return langColors[Object.keys(idata).indexOf(lan)];
+                    })
+                    .attr("d", line);
                 }else{
                     langNames.delete(lan);
-                    d3.select("#lang"+lan.replace(/\s/g,''))
+                    d3.select("#lang"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p"))
                         .attr("class", "")
                         .style("background-color", "white");
+                    d3.select("#path"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p")).remove();
+                    d3.select(".right-side").select("svg").select("g").selectAll('.thinline').call(lines => lines.attr('d', line));
                 }
                 console.log(langNames);
             })
             .html(lan);
-    });
+    });  
+}
+
+function getHeight(idata){
+    if(langNames.size == 0){
+        return 400;
+    }else{
+        var maxValues = [];
+        langNames.forEach(function(langName){
+            maxValues.push(Math.max(...idata[langName][0]))
+        });
+        console.log(Math.max(...maxValues));
+        return Math.max(...maxValues);
+    }
 }
 
 function zoomIn(datum,anchor){
