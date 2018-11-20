@@ -41,7 +41,7 @@ function makeAnalysisContainer (id, title, config, i18n) {
     }
 
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
-    const input = config.inputValue ? `<input type="text" class="date-label" value="${config.inputValue}" />` : "";
+    const input = config.inputValue ? `<vaadin-date-picker value="${config.inputValue}"></vaadin-date-picker>` : "";
     let button = `<button class="analysis-start">${i18n.t('startAnalysis')}</button>`;
     if(!config.onStart) button = '';
     let panel = `
@@ -58,7 +58,7 @@ function makeAnalysisContainer (id, title, config, i18n) {
 
     container.appendChild(div);
 
-    const inputNode = div.querySelector('.date-label');
+    const inputNode = div.querySelector('vaadin-date-picker');
     const pieNode = div.querySelector('.pie');
     const updateNode = div.querySelector('.update-handler');
     panel = div.querySelector('.panel');

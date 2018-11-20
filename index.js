@@ -217,16 +217,14 @@ function makeUI(){
                 // for the timeToResolveIssues analysis
                 const endDateInputValue = "2018-01-02";
                 let panel = this.panel
-                let endDateInput = document.createElement("input");
+                let endDateInput = document.createElement("vaadin-date-picker");
                 let toText = document.createElement("span");
 
-                endDateInput.classList.add("date-label");
                 endDateInput.id = "endDateInput";
-                endDateInput.type = "text";
                 endDateInput.value = endDateInputValue;
                 panel.insertBefore(endDateInput, this.input.nextSibling);
 
-                toText.innerHTML = i18n.t('to');
+                toText.innerHTML = i18n.t('\t\tto\t\t');
                 panel.insertBefore(toText, endDateInput);
             },
             onUpdate: function(){
