@@ -68,18 +68,19 @@ function makeUI(){
         'languageDistribution', 
         i18n.t('analysis1'),
         {
-            inputValue: "2018-01-01-12",
+            inputValue: "2018-01-01",
+            inputValueHour: 12,
             component: 'button',
             title: i18n.t('invert'),
             onStart: async function(){
                 debugProgress.show(i18n.t('analysisInProgress'));
 
                 const date = this.input.value;
-                if(!date) return;
+                if(!date || this.hourInput.value > 23 || this.hourInput.value < 0) return;
 
                 try {
                     const context = this;
-                    const parsedObjects = await getFromGHArchive(date, debugProgress);
+                    const parsedObjects = await getFromGHArchive(date+"-"+this.hourInput.value, debugProgress);
                     // Filtering every pullRequest
                     const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
                     debugProgress.total(pullRequests.length);
@@ -107,14 +108,14 @@ function makeUI(){
                 const context = this;
                 const date = this.input.value;
                 console.log('update', event, context);
-                const parsedObjects = await getFromGHArchive(date, debugProgress);
+                const parsedObjects = await getFromGHArchive(this.input.value+"-"+this.hourInput.value, debugProgress);
                 const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
                 if(context.isDesc === true){
                     context.isDesc = false;
                 } else {
                     context.isDesc = true;
                 }
-                const languages = parsePullRequestsLanguages(pullRequests).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
+                const languages = parsePullRequestsLanguages(pullRequests,debugProgress).sort((langA, langB) => context.isDesc ? langB.count - langA.count : langA.count - langB.count);
                 drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
                 debugProgress.total(pullRequests.length);
                 debugProgress.hide();            
@@ -128,18 +129,19 @@ function makeUI(){
         'drawCommonWords', 
         i18n.t('analysis2'),
         {
-            inputValue: "2018-01-01-12",
+            inputValue: "2018-01-01",
+            inputValueHour: 12,
             onStart: async function(){
                 debugProgress.show(i18n.t('analysisInProgress'));
                 // https://developers.google.com/machine-learning/guides/text-classification/step-2
                 const date = this.input.value;
-                if(!date){
+                if(!date || this.hourInput.value > 23 || this.hourInput.value < 0){
                     return;
                 }
 
                 // TODO : Remove bots
                 try {
-                    const part = await parseCommonWordsInCommits(this.input.value, numberOfWords, debugProgress);
+                    const part = await parseCommonWordsInCommits(this.input.value+"-"+this.hourInput.value, numberOfWords, debugProgress);
                     drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
 
                     // drawPie(part, date, this.pie, "pair", "occurences");
@@ -161,7 +163,7 @@ function makeUI(){
             onUpdate: async function(event) {
                 const context = this;
                 console.log('update', event, context);
-                const part = await parseCommonWordsInCommits(this.input.value, event.target.value, debugProgress);
+                const part = await parseCommonWordsInCommits(this.input.value+"-"+this.hourInput.value, event.target.value, debugProgress);
                 drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
                 // drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
             }

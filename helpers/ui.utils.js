@@ -40,13 +40,16 @@ function makeAnalysisContainer (id, title, config, i18n) {
         }
     }
 
+    console.log(config.inputValue);
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
-    const input = config.inputValue ? `<vaadin-date-picker value="${config.inputValue}"></vaadin-date-picker>` : "";
+    const input = config.inputValue ? `<vaadin-date-picker label="${i18n.t('pickDate')}" value="${config.inputValue}"></vaadin-date-picker>` : "";
+    const hourInput = config.inputValueHour ? `\t\t<vaadin-text-field placeholder="Ex : 24" pattern="2[0-3]|[01]?[0-9]" label="${i18n.t('pickHour')}" value="${config.inputValueHour}"></vaadin-text-field>` : "";
     let button = `<button class="analysis-start">${i18n.t('startAnalysis')}</button>`;
     if(!config.onStart) button = '';
     let panel = `
     <div class="panel" id="${selector.substring(1)}">
           ${input}
+          ${hourInput}
           ${button}
           <div id="${graphSelector}" class="pie"></div>
           ${updateComponent}
@@ -59,6 +62,7 @@ function makeAnalysisContainer (id, title, config, i18n) {
     container.appendChild(div);
 
     const inputNode = div.querySelector('vaadin-date-picker');
+    const inputHourNode = div.querySelector('vaadin-text-field');
     const pieNode = div.querySelector('.pie');
     const updateNode = div.querySelector('.update-handler');
     panel = div.querySelector('.panel');
@@ -69,6 +73,7 @@ function makeAnalysisContainer (id, title, config, i18n) {
         panel,
         pie: pieNode,
         input: inputNode,
+        hourInput: inputHourNode,
         update: updateNode
     };
 

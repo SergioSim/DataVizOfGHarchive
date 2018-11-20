@@ -13,7 +13,9 @@ export const languageResource = {
             "Tendance2016": "Languages utilises en 2016 dans les pull requests",
             "to": "&agrave;",
             "meanTimeInDays": "Temps en jours",
-            "date" : "Jalons au sein de la période"
+            "date" : "Jalons au sein de la période",
+            "pickDate" : "Date : choisissez une date",
+            "pickHour" : "Heure : entrez un nombre entre 0 et 23"
         }
     },
     en: {
@@ -30,7 +32,9 @@ export const languageResource = {
             "Tendance2016": "Language use in 2016 pull requests",
             "to": "to",
             "meanTimeInDays": "Mean time in days",
-            "date" : "Waypoints through the period"
+            "date" : "Waypoints through the period",
+            "pickDate" : "Date : choose a date",
+            "pickHour" : "Hour : pick a number between 0 and 23"
         }
     }
 }
