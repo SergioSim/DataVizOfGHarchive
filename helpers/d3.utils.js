@@ -348,7 +348,7 @@ function zoomIn(datum,anchor){
         return;
     }
     
-    const color = d3.scaleOrdinal().range(materialColors);
+    //const color = d3.scaleOrdinal().range(materialColors);
     const node = document.querySelector('#'+anchor.id);
     if(node.hasChildNodes()){
         node.removeChild(node.childNodes[0]);
@@ -357,6 +357,7 @@ function zoomIn(datum,anchor){
     let index = 0
     const titles = [];
     const dataSet = new Set();
+    var maxSize = 0;
     datum.repoTitles.forEach((title) => {
         // If our set doesn't contains title
         if (!dataSet.has(title)) {
@@ -371,8 +372,14 @@ function zoomIn(datum,anchor){
             lang.size += datum.repoSizes[index];
             lang.count++;
         }
+        if(maxSize < datum.repoSizes[index]){
+            maxSize = datum.repoSizes[index];
+        }
         index++;
     });
+     const color = function(t) {
+         return d3.interpolateYlGn(1 + Math.log(t / maxSize)/Math.exp(1));
+     }
     // -----------------------
     let width = window.innerWidth;
     if(width > 600){
@@ -414,7 +421,19 @@ function zoomIn(datum,anchor){
         .classed('the-node', true)
         .attr('r', d => d.r)
         .attr("fill-opacity", 0.7)
-        .attr("fill", d => color(d.data.size));
+        .attr("fill", d => color(d.data.size))
+        .on("mouseover", (d) => {
+            d3.select("#" + anchor.id).select("svg")
+            .append("text")
+            .attr("id" , "t" + parseInt(d.x, 10) + "-" + parseInt(d.y, 10))
+            .attr("x", d.x - 30)
+            .attr("y", d.y - 15)  // Create an id for text so we can select it later for removing on mouseout
+            .text( () => {
+                if(d.data.size > 0 ) return d.data.size + " Kilo Bytes"; });
+        })
+        .on("mouseout", (d) => {
+            d3.select("#t" + parseInt(d.x, 10) + "-" + parseInt(d.y, 10)).remove();
+        });
 
     packNodes
         .append("text")
