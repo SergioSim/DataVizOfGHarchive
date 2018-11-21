@@ -24,12 +24,13 @@ export function parsePullRequestsLanguages(pullRequests, progress) {
         const languageUsed = pr.payload.pull_request.base.repo.language;
         const repoTitle = pr.payload.pull_request.base.repo.name;
         const repoSize = pr.payload.pull_request.base.repo.size;
+        const repoURL = pr.payload.pull_request.html_url.split("/pull/")[0];
         // If our set doesn't contains language
         if (!languageSet.has(languageUsed)) {
             // add language
             languageSet.add(languageUsed);
             // push this language
-            languages.push({ language: languageUsed, count: 1, repoTitles: [repoTitle], repoSizes: [repoSize] });
+            languages.push({ language: languageUsed, count: 1, repoUrls: [repoURL], repoTitles: [repoTitle], repoSizes: [repoSize] });
         }
         else {
             // Find language in languages array
@@ -38,6 +39,7 @@ export function parsePullRequestsLanguages(pullRequests, progress) {
             lang.count++;
             lang.repoSizes.push(repoSize);
             lang.repoTitles.push(repoTitle);
+            lang.repoUrls.push(repoURL);
         }
         progress.add(1);
     });

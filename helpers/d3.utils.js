@@ -359,12 +359,13 @@ function zoomIn(datum,anchor){
     const dataSet = new Set();
     var maxSize = 0;
     datum.repoTitles.forEach((title) => {
+        console.log(datum);
         // If our set doesn't contains title
         if (!dataSet.has(title)) {
             // add title
             dataSet.add(title);
             // push this title
-            titles.push({ title: title, size: datum.repoSizes[index], count: 1});
+            titles.push({ title: title, size: datum.repoSizes[index], count: 1, url: datum.repoUrls[index]});
         }else{
             // Find title in titles set
             const lang = titles.find((t) => t.title === title);
@@ -417,6 +418,8 @@ function zoomIn(datum,anchor){
         .attr('transform', d => 'translate('+[d.x, d.y]+')');
 
     packNodes
+        .append("a")
+        .attr("xlink:href", d => d.data.url)
         .append('circle')
         .classed('the-node', true)
         .attr('r', d => d.r)
