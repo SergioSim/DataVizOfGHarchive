@@ -210,6 +210,7 @@ export function drawTendanceGraph(anchor, idata, date){
     }
     const height = width;
     const theDates = getDates(new Date(2016, 0, 1, 1),new Date(2017, 0, 1, 0));
+    var maxNbPR = getMaxNumberOfPR(idata);
     
     var xScale = d3.scaleTime()
         .domain([new Date(2016, 0, 1, 0), new Date(2017, 0, 1, 0)]) // input
@@ -275,8 +276,10 @@ export function drawTendanceGraph(anchor, idata, date){
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
 
     Object.keys(idata).forEach(function(lan) {
+        const theSize = 15 + 15 * idata[lan][0].reduce((a, b) => a + b, 0)/maxNbPR;
         namesList.append("li")
             .attr("id", "lang"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+" ,"p").replace("+" ,"p"))
+            .style("font-size",theSize+"px")
             .on("click", function(){
                 if (!langNames.has(lan)) {
                     langNames.add(lan);
@@ -326,6 +329,18 @@ function getHeight(idata){
         console.log(Math.max(...maxValues));
         return Math.max(...maxValues);
     }
+}
+
+function getMaxNumberOfPR(idata){
+    var count = 0;
+    var curr = 0;
+    Object.keys(idata).forEach(function(plReq){
+        curr = idata[plReq][0].reduce((a, b) => a + b, 0);
+        if(count < curr){
+            count = curr;
+        }
+    })
+    return count;
 }
 
 function zoomIn(datum,anchor){
