@@ -104,6 +104,8 @@ export async function getPeriodFromGH(startDate, endDate, progress){
     const splittedDate = startDate.split('-');
     // Compute "year-month"
     const yearMonth = splittedDate[0] + '-' + splittedDate[1];
+    // Compute "day"
+    const startDay = splittedDate[2];
 
     // Define a new array of a length who equals numberOfHours (to iterate easily)
     const hours = new Array(23);
@@ -128,16 +130,17 @@ export async function getPeriodFromGH(startDate, endDate, progress){
     const days = new Array(diff);
 
     const fullData = {};
-    for(let v = 1; v < days.length+1; v++){
+    for(let v = 0; v < days.length; v++){
         for(let i = 0; i < hours.length; i++){
-            let currentDay = v;
+            let currentDay = parseInt(startDay) + v;
             if(v < 9){
-                currentDay = "0"+v;
+                currentDay = "0"+(parseInt(startDay)+v);
             }
             try {
                 const parsed = await getFromGHArchive(yearMonth + `-${currentDay}-${i}`, progress);
                 fullData[`${yearMonth}-${currentDay}-${i}`] = {data: parsed}
             } catch(err){
+                console.log(err);
                 console.warn('Error while downloading, file not found?', yearMonth, currentDay, i);
                 continue;
             }

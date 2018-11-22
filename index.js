@@ -178,19 +178,14 @@ function makeUI(){
                 debugProgress.show(i18n.t('analysisInProgress'));
                 const startDate = this.input.value;
                 const endDate = document.querySelector("#endDateInput").value;
+                console.log(startDate + " " + endDate)
                 if(!startDate && !endDate){
                     return;
                 }
     
-                // TODO XXX : Cleanup after next analysis done (we will have a period choicer)
                 const periods = await getPeriodFromGH(`${startDate}`, `${endDate}`, debugProgress)
                 const dataset = [];
 
-                // WARN : I think it's a wrong analysis (dead-end)
-                // INFO : No, it could be an interesting KPI to display
-    
-                // TODO XXX : Fix this loop, we need to "concat days" as we have data for each hours
-                // Todo we just calc the "meanTime" for an hour, not so useful
                 Object.keys(periods).map((period)=>{
                     const issuesEvents = filterDataByEvent(periods[period].data, eventTypes.issues);
                     const middleTimeToResolve = issuesEvents
