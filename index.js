@@ -238,7 +238,7 @@ function makeUI(){
     // Classify every commit message found in a category
     
     // If we have time to do it...
-    UIUtils.makeAnalysisContainer(
+    /* UIUtils.makeAnalysisContainer(
         'topicBasedAnalysis', 
         i18n.t('topicBasedAnalysis'),  
         {
@@ -248,7 +248,6 @@ function makeUI(){
                 /* 
                     Append a topic add list, [TopicName, TopicInput] + AddButton
                     Append a "period choicer"
-                */
             },
             onStart: function(){
                 console.warn('WIP : Implement topic based analysis');
@@ -264,9 +263,8 @@ function makeUI(){
 
                     Period choice from : to:
                     bar graph of occurences in commit messages for period
-                */
             }
-    }, i18n);
+    }, i18n);*/
 
     UIUtils.makeAnalysisContainer(
         'Tendance2016', 
@@ -288,6 +286,3 @@ function makeUI(){
 
     UIUtils.bindAccordions();
 }
-
-
-// getPeriodFromGH('2018-01-01-10', '2018-02-01-10', debugProgress);
