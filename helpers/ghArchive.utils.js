@@ -192,7 +192,7 @@ export async function getPreparedData(date, progress) {
     return new Promise((resolve, reject) => {
         // TODO add date handling for 2015:2017
         console.log("Starting download from our Server for date ", date);
-        const serverURL = `https://cors-anywhere.herokuapp.com/http://82.255.166.104/tendance2016.json.gz`;
+        const serverURL = `https://cors-anywhere.herokuapp.com/http://82.255.166.104/tendance`+date+`.json.gz`;
         const xhr = new XMLHttpRequest();
         xhr.open('GET', serverURL, true);
         xhr.responseType = 'arraybuffer';

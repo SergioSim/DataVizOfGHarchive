@@ -209,11 +209,11 @@ export function drawTendanceGraph(anchor, idata, date){
         width = window.innerWidth / 2;
     }
     const height = width;
-    const theDates = getDates(new Date(2016, 0, 1, 1),new Date(2017, 0, 1, 0));
+    const theDates = getDates(new Date(date, 0, 1, 1),new Date(date+1, 0, 1, 0));
     var maxNbPR = getMaxNumberOfPR(idata);
     
     var xScale = d3.scaleTime()
-        .domain([new Date(2016, 0, 1, 0), new Date(2017, 0, 1, 0)]) // input
+        .domain([new Date(date, 0, 1, 0), new Date(date+1, 0, 1, 0)]) // input
         .range([0, width]); // output
 
     var	yScale = d3.scaleLinear()

@@ -273,14 +273,36 @@ function makeUI(){
             onMount: async function(){
                 const context = this;
                 console.log(context);
-                try {
-                    const parsedObjects = await getPreparedData("2016", debugProgress);
-                    const theObject = parsedObjects[0];
-                    drawTendanceGraph(this.pie, theObject,"2016");
-                } catch (err) {
-                    console.log("somethink went wrong...");
-                    throw err;
+                var theYear = 2016;
+                const aButton = document.createElement("button");
+                aButton.id="tendanceButton";
+                aButton.innerHTML=2016;
+                var thePie = this.pie;
+                aButton.onclick = function() { 
+                    if(theYear == 2016){
+                        theYear++;
+                    }else{
+                        theYear--;
+                    }
+                    aButton.innerHTML=theYear;
+                    while (thePie.firstChild) {
+                        thePie.removeChild(thePie.firstChild);
+                    }
+                    prepareTendanceGraph(theYear, thePie);
+                };
+                let panel = this.panel
+                panel.insertBefore(aButton, this.pie);
+                const prepareTendanceGraph = async function(date, apie){
+                    try {
+                        const parsedObjects = await getPreparedData(date, debugProgress);
+                        const theObject = parsedObjects[0];
+                        drawTendanceGraph(apie, theObject,date);
+                    } catch (err) {
+                        console.log("somethink went wrong...");
+                        throw err;
+                    }
                 }
+                prepareTendanceGraph(theYear, this.pie);
             },
     }, i18n);
 
