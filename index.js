@@ -273,15 +273,17 @@ function makeUI(){
             onMount: async function(){
                 const context = this;
                 console.log(context);
-                var theYear = 2016;
+                let theYear = 2016;
                 const aButton = document.createElement("button");
+                aButton.className = 'analysis-start';
+                aButton.style.margin = '1em';
                 aButton.id="tendanceButton";
                 aButton.innerHTML=2016;
-                var thePie = this.pie;
+                const thePie = this.pie;
                 aButton.onclick = function() { 
                     if(theYear == 2016){
                         theYear++;
-                    }else{
+                    } else{
                         theYear--;
                     }
                     aButton.innerHTML=theYear;
@@ -298,7 +300,7 @@ function makeUI(){
                         const theObject = parsedObjects[0];
                         drawTendanceGraph(apie, theObject,date);
                     } catch (err) {
-                        console.log("somethink went wrong...");
+                        console.log("something went wrong...");
                         throw err;
                     }
                 }
