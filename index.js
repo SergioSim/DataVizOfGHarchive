@@ -36,7 +36,7 @@ const i18n = i18next.init({
 });
 
 i18n.on('languageChanged', (_lang) => {
-    console.log('recreating UI for', _lang);
+    // console.log('recreating UI for', _lang);
     makeUI();
 });
 
@@ -94,7 +94,7 @@ function makeUI(){
                     drawHorizontalBarGraph(this.pie, languages, "language", "count", true);
                     this.input.style.border = "";
                     // @tools debug
-                    console.log(`Languages distribution in pull requests :`, languages);
+                    // console.log(`Languages distribution in pull requests :`, languages);
                     debugZone.style.display = "block";
                     debugZone.innerHTML = JSON.stringify(languages, null, 2);
                     debugProgress.hide();            
@@ -106,8 +106,6 @@ function makeUI(){
             onUpdate: async function(event) {
                 debugProgress.show(i18n.t('analysisInProgress'));
                 const context = this;
-                const date = this.input.value;
-                console.log('update', event, context);
                 const parsedObjects = await getFromGHArchive(this.input.value+"-"+this.hourInput.value, debugProgress);
                 const pullRequests = filterDataByEvent(parsedObjects, eventTypes.pullRequest);
                 if(context.isDesc === true){
@@ -139,14 +137,13 @@ function makeUI(){
                     return;
                 }
 
-                // TODO : Remove bots
+                // TODO XXX : Remove bots
                 try {
                     const part = await parseCommonWordsInCommits(this.input.value+"-"+this.hourInput.value, numberOfWords, debugProgress);
                     drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
 
                     // drawPie(part, date, this.pie, "pair", "occurences");
                     console.timeEnd();
-                    console.log(part);
                     debugZone.style.display = "block";
                     debugZone.innerHTML = JSON.stringify(part, null, 2);
                     debugProgress.hide();            
@@ -162,7 +159,6 @@ function makeUI(){
             initialValue: numberOfWords,
             onUpdate: async function(event) {
                 const context = this;
-                console.log('update', event, context);
                 const part = await parseCommonWordsInCommits(this.input.value+"-"+this.hourInput.value, event.target.value, debugProgress);
                 drawHorizontalBarGraph(this.pie, part, "pair", "occurences", true);
                 // drawPie(part, context.input.value, context.pie, "pair", "occurences", true, true);
@@ -178,7 +174,6 @@ function makeUI(){
                 debugProgress.show(i18n.t('analysisInProgress'));
                 const startDate = this.input.value;
                 const endDate = document.querySelector("#endDateInput").value;
-                console.log(startDate + " " + endDate)
                 if(!startDate && !endDate){
                     return;
                 }
@@ -244,7 +239,6 @@ function makeUI(){
         {
             onMount: function() {
                 const context = this;
-                console.log(context);
                 /* 
                     Append a topic add list, [TopicName, TopicInput] + AddButton
                     Append a "period choicer"
@@ -272,7 +266,6 @@ function makeUI(){
         {
             onMount: async function(){
                 const context = this;
-                console.log(context);
                 let theYear = 2016;
                 const aButton = document.createElement("button");
                 aButton.className = 'analysis-start';
@@ -300,7 +293,7 @@ function makeUI(){
                         const theObject = parsedObjects[0];
                         drawTendanceGraph(apie, theObject,date);
                     } catch (err) {
-                        console.log("something went wrong...");
+                        console.warn("Something went wrong during data download.");
                         throw err;
                     }
                 }

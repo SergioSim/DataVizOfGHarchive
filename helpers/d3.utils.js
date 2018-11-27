@@ -312,7 +312,7 @@ export function drawTendanceGraph(anchor, idata, date){
                     d3.select("#path"+lan.replace(/\s/g,'').replace("#","Sharp").replace("+","p").replace("+" ,"p")).remove();
                     d3.select(".right-side").select("svg").select("g").selectAll('.thinline').call(lines => lines.attr('d', line));
                 }
-                console.log(langNames);
+                // console.log(langNames);
             })
             .html(lan);
     });  
@@ -326,7 +326,7 @@ function getHeight(idata){
         langNames.forEach(function(langName){
             maxValues.push(Math.max(...idata[langName][0]))
         });
-        console.log(Math.max(...maxValues));
+        // console.log(Math.max(...maxValues));
         return Math.max(...maxValues);
     }
 }
@@ -359,7 +359,7 @@ function zoomIn(datum,anchor){
     const dataSet = new Set();
     var maxSize = 0;
     datum.repoTitles.forEach((title) => {
-        console.log(datum);
+        // console.log(datum);
         // If our set doesn't contains title
         if (!dataSet.has(title)) {
             // add title
@@ -402,7 +402,7 @@ function zoomIn(datum,anchor){
         return d.count * 10
     });
     packLayout(root);
-    console.log(root);
+    // console.log(root);
 
     var packNodes = d3.select("#" + anchor.id)
         .append("svg")

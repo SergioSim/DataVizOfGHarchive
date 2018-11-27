@@ -40,7 +40,6 @@ function makeAnalysisContainer (id, title, config, i18n) {
         }
     }
 
-    console.log(config.inputValue);
     const accordionButton = `<button class="accordion" id="${id}">${title}</button>`;
     const input = config.inputValue ? `<vaadin-date-picker label="${i18n.t('pickDate')}" value="${config.inputValue}"></vaadin-date-picker>` : "";
     const hourInput = config.inputValueHour ? `\t\t<vaadin-text-field placeholder="Ex : 24" pattern="2[0-3]|[01]?[0-9]" label="${i18n.t('pickHour')}" value="${config.inputValueHour}"></vaadin-text-field>` : "";

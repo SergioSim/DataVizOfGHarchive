@@ -140,7 +140,6 @@ export async function getPeriodFromGH(startDate, endDate, progress){
                 const parsed = await getFromGHArchive(yearMonth + `-${currentDay}-${i}`, progress);
                 fullData[`${yearMonth}-${currentDay}-${i}`] = {data: parsed}
             } catch(err){
-                console.log(err);
                 console.warn('Error while downloading, file not found?', yearMonth, currentDay, i);
                 continue;
             }
@@ -190,7 +189,6 @@ export function filterDataByEvent(data, eventType){
  */
 export async function getPreparedData(date, progress) {
     return new Promise((resolve, reject) => {
-        // TODO add date handling for 2015:2017
         console.log("Starting download from our Server for date ", date);
         const serverURL = `https://cors-anywhere.herokuapp.com/http://82.255.166.104/tendance`+date+`.json.gz`;
         const xhr = new XMLHttpRequest();
