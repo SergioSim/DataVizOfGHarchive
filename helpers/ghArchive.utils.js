@@ -188,6 +188,12 @@ export function filterDataByEvent(data, eventType){
  * @returns promise who contains parsed data
  */
 export async function getPreparedData(date, progress) {
+    const cached = await get(date);
+    if(cached){
+        console.log('retrieved from cache');
+        return cached;
+    }
+    
     return new Promise((resolve, reject) => {
         console.log("Starting download from our Server for date ", date);
         const serverURL = `https://cors-anywhere.herokuapp.com/http://82.255.166.104/tendance`+date+`.json.gz`;
